@@ -72,8 +72,3 @@ if [ $BUILDER == rosbuild ]; then rosmake -a --profile --pjobs=8       ; fi
 if [ $BUILDER == rosbuild ]; then export TARGET_PKG=`find -L src | grep $REPOSITORY_NAME | grep /build/Makefile$ | sed s@.*/\\\\\([^\/]*\\\\\)/build/Makefile@\\\1@g` ; fi
 if [ $BUILDER == rosbuild ]; then rosmake --test-only $TARGET_PKG --pjobs=8 ; fi
 
-### after_failure:
-if [ $BUILDER == rosbuild -a -e ${HOME}/.ros/rosmake/ ]; then find ${HOME}/.ros/rosmake/ -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
-if [ -e ${HOME}/.ros/test_results ]; then find ${HOME}/.ros/test_results -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
-for file in ${HOME}/.ros/log/rostest-*; do echo "=== $file ==="; cat $file; done
-
