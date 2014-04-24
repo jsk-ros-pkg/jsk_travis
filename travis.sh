@@ -9,8 +9,8 @@ if [ $ROS_DISTRO == "indigo" -a "$TRAVIS_JOB_ID" ]; then
 fi
 
 function error {
-    if [ $BUILDER == rosbuild ]; then find ${HOME}/.ros/rosmake/ -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
-    find ${HOME}/.ros/test_results -type f -exec echo "=== {} ===" \; -exec cat {} \;
+    if [ $BUILDER == rosbuild -a -e ${HOME}/.ros/rosmake/ ]; then find ${HOME}/.ros/rosmake/ -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
+    if [ -e ${HOME}/.ros/test_results ]; then find ${HOME}/.ros/test_results -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
     for file in ${HOME}/.ros/log/rostest-*; do echo "=== $file ==="; cat $file; done
     exit 1
 }
@@ -73,7 +73,7 @@ if [ $BUILDER == rosbuild ]; then export TARGET_PKG=`find -L src | grep $REPOSIT
 if [ $BUILDER == rosbuild ]; then rosmake --test-only $TARGET_PKG --pjobs=8 ; fi
 
 ### after_failure:
-if [ $BUILDER == rosbuild ]; then find ${HOME}/.ros/rosmake/ -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
-find ${HOME}/.ros/test_results -type f -exec echo "=== {} ===" \; -exec cat {} \;
+if [ $BUILDER == rosbuild -a -e ${HOME}/.ros/rosmake/ ]; then find ${HOME}/.ros/rosmake/ -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
+if [ -e ${HOME}/.ros/test_results ]; then find ${HOME}/.ros/test_results -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
 for file in ${HOME}/.ros/log/rostest-*; do echo "=== $file ==="; cat $file; done
 
