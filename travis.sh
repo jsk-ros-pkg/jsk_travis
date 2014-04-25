@@ -21,6 +21,7 @@ trap error ERR
 # Define some config vars
 export CI_SOURCE_PATH=$(pwd)
 export REPOSITORY_NAME=${PWD##*/}
+if [ ! "$ROS_PARALLEL_JOBS" ]; then export ROS_PARALLEL_JOBS="-j8 -l8";  fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 sudo sh -c 'echo "deb http://packages.ros.org/ros-shadow-fixed/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
@@ -59,16 +60,16 @@ if [ $BUILDER == rosbuild ]; then rospack profile              ; fi
 
 ### script: # All commands must exit with code 0 on success. Anything else is considered failure.
 # for catkin
-if [ $BUILDER == catkin ]; then catkin_make -j8 -l8            ; fi
+if [ $BUILDER == catkin ]; then catkin_make $ROS_PARALLEL_JOBS            ; fi
 if [ $BUILDER == catkin ]; then export TARGET_PKG=`find build/$REPOSITORY_NAME -name Makefile -print |  sed s@.*/\\\\\([^\/]*\\\\\)/Makefile@\\\1@g` ; fi
-if [ $BUILDER == catkin ]; then catkin_make test --pkg $TARGET_PKG -j8 -l8  ; fi
+if [ $BUILDER == catkin ]; then catkin_make test --pkg $TARGET_PKG $ROS_PARALLEL_JOBS  ; fi
 if [ $BUILDER == catkin ]; then find build -name LastTest.log -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
-if [ $BUILDER == catkin ]; then catkin_make -j8 -l8 install            ; fi
+if [ $BUILDER == catkin ]; then catkin_make $ROS_PARALLEL_JOBS install            ; fi
 if [ $BUILDER == catkin ]; then rm -fr devel src build                 ; fi
 if [ $BUILDER == catkin ]; then source install/setup.bash              ; fi
 if [ $BUILDER == catkin ]; then export EXIT_STATUS=0; for pkg in $TARGET_PKG; do [ "`find install/share/$pkg -iname '*.test'`" == "" ] && echo "[$pkg] No tests ware found!!!"  || find install/share/$pkg -iname "*.test" -print0 | xargs -0 -n1 rostest || export EXIT_STATUS=$?; done; [ $EXIT_STATUS == 0 ] ; fi
 # for rosbuild
-if [ $BUILDER == rosbuild ]; then rosmake -a --profile --pjobs=8       ; fi
+if [ $BUILDER == rosbuild ]; then rosmake -a --profile            ; fi
 if [ $BUILDER == rosbuild ]; then export TARGET_PKG=`find -L src | grep $REPOSITORY_NAME | grep /build/Makefile$ | sed s@.*/\\\\\([^\/]*\\\\\)/build/Makefile@\\\1@g` ; fi
-if [ $BUILDER == rosbuild ]; then rosmake --test-only $TARGET_PKG --pjobs=8 ; fi
+if [ $BUILDER == rosbuild ]; then rosmake --test-only $TARGET_PKG ; fi
 
