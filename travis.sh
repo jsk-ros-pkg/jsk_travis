@@ -31,8 +31,8 @@ if [ $ROSWS == rosws ]; then sudo apt-get install -qq -y python-rosinstall     ;
 if [ $BUILDER == rosbuild ]; then sudo apt-get install -qq -y ros-$ROS_DISTRO-rosmake ; fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
 (dpkg -s mongodb || echo "ok"; export HAVE_MONGO_DB=$?)
-if [ $HAVE_MONG_DB == 0 ]; then sudo apt-get remove -y mongodb mongodb-10gen || echo "ok"; fi
-if [ $HAVE_MONG_DB == 0 ]; then sudo apt-get install -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"; fi # default actions
+if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get remove -y mongodb mongodb-10gen || echo "ok"; fi
+if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get install -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"; fi # default actions
 # Setup rosdep
 sudo rosdep init
 rosdep update; while [ $? != 0 ]; do sleep 1; rosdep update; done
