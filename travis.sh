@@ -9,6 +9,7 @@ if [ $ROS_DISTRO == "indigo" -a "$TRAVIS_JOB_ID" ]; then
 fi
 
 function error {
+    trap - ERR
     if [ $BUILDER == rosbuild -a -e ${HOME}/.ros/rosmake/ ]; then find ${HOME}/.ros/rosmake/ -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
     if [ -e ${HOME}/.ros/test_results ]; then find ${HOME}/.ros/test_results -type f -exec echo "=== {} ===" \; -exec cat {} \; ; fi
     for file in ${HOME}/.ros/log/rostest-*; do echo "=== $file ==="; cat $file; done
