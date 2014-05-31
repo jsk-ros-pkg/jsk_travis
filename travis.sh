@@ -71,7 +71,7 @@ if [ $BUILDER == catkin ]; then rm -fr devel src build                 ; fi
 if [ $BUILDER == catkin ]; then source install/setup.bash              ; fi
 if [ $BUILDER == catkin ]; then export EXIT_STATUS=0; for pkg in $TARGET_PKG; do [ "`find install/share/$pkg -iname '*.test'`" == "" ] && echo "[$pkg] No tests ware found!!!"  || find install/share/$pkg -iname "*.test" -print0 | xargs -0 -n1 rostest || export EXIT_STATUS=$?; done; [ $EXIT_STATUS == 0 ] ; fi
 # for rosbuild
-if [ $BUILDER == rosbuild ]; then rosmake -a --profile            ; fi
+if [ $BUILDER == rosbuild ]; then rosmake --profile `find -L $CI_SOURCE_PATH | grep manifest.xml | sed s@.*/\\\\\([^\/]*\\\\\)/manifest.xml\\\$@\\\1@g` ; fi
 if [ $BUILDER == rosbuild ]; then export TARGET_PKG=`find -L src | grep $REPOSITORY_NAME | grep /build/Makefile$ | sed s@.*/\\\\\([^\/]*\\\\\)/build/Makefile@\\\1@g` ; fi
 if [ $BUILDER == rosbuild ]; then rosmake --test-only $TARGET_PKG ; fi
 
