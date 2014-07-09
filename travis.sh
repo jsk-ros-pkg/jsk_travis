@@ -52,12 +52,12 @@ if [ $USE_DEB == false -o $BUILDER == rosbuild ]; then $ROSWS set $REPOSITORY_NA
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
 cd ../
 # Install dependencies for source repos
+source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
 find -L src -name package.xml -exec dirname {} \; | xargs -n 1 -i find {} -name manifest.xml | xargs -n 1 -i mv {} {}.deprecated # rename manifest.xml for rosdep install
 rosdep install -r -n --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
 find -L src -name manifest.xml.deprecated | xargs -n 1 -i dirname {} | xargs -n 1 -i ln -sf `pwd`/{}/manifest.xml.deprecated `pwd`/{}/manifest.xml # rename manifest.xml for rosdep install
 
 ### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
-source /opt/ros/$ROS_DISTRO/setup.bash
 if [ $BUILDER == rosbuild ]; then source src/setup.bash        ; fi
 if [ $BUILDER == rosbuild ]; then rospack profile              ; fi
 
