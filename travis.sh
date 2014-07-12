@@ -58,6 +58,7 @@ rosdep install -r -n --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
 find -L src -name manifest.xml.deprecated | xargs -n 1 -i dirname {} | xargs -n 1 -i ln -sf `pwd`/{}/manifest.xml.deprecated `pwd`/{}/manifest.xml # rename manifest.xml for rosdep install
 
 ### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
+source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
 if [ $BUILDER == rosbuild ]; then source src/setup.bash        ; fi
 if [ $BUILDER == rosbuild ]; then rospack profile              ; fi
 
