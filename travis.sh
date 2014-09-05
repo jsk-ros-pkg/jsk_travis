@@ -56,9 +56,8 @@ if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
     ROSDEP_ARGS=>/dev/null
 fi
 source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
-find -L src -name package.xml -exec dirname {} \; | xargs -n 1 -i find {} -name manifest.xml | xargs -n 1 -i mv {} {}.deprecated # rename manifest.xml for rosdep install
-rosdep install -r -n --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y $ROSDEP_ARGS
-find -L src -name manifest.xml.deprecated | xargs -n 1 -i dirname {} | xargs -n 1 -i ln -sf `pwd`/{}/manifest.xml.deprecated `pwd`/{}/manifest.xml # rename manifest.xml for rosdep install
+${CI_SOURCE_PATH}/.travis/rosdep-install.sh
+
 
 ### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
 source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
