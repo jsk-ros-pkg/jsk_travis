@@ -52,9 +52,12 @@ if [ $USE_DEB == false -o $BUILDER == rosbuild ]; then $ROSWS set $REPOSITORY_NA
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
 cd ../
 # Install dependencies for source repos
+if [ "$ROSDEP_UPDATE_QUIET" = "true" ]; then
+    ROSDEP_ARGS=>/dev/null
+fi
 source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
 find -L src -name package.xml -exec dirname {} \; | xargs -n 1 -i find {} -name manifest.xml | xargs -n 1 -i mv {} {}.deprecated # rename manifest.xml for rosdep install
-rosdep install -r -n --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
+rosdep install -r -n --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y $ROSDEP_ARGS
 find -L src -name manifest.xml.deprecated | xargs -n 1 -i dirname {} | xargs -n 1 -i ln -sf `pwd`/{}/manifest.xml.deprecated `pwd`/{}/manifest.xml # rename manifest.xml for rosdep install
 
 ### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
@@ -76,4 +79,3 @@ if [ $BUILDER == catkin ]; then export EXIT_STATUS=0; for pkg in $TARGET_PKG; do
 if [ $BUILDER == rosbuild ]; then rosmake --profile `find -L $CI_SOURCE_PATH | grep manifest.xml | sed s@.*/\\\\\([^\/]*\\\\\)/manifest.xml\\\$@\\\1@g` ; fi
 if [ $BUILDER == rosbuild ]; then export TARGET_PKG=`find -L src | grep $REPOSITORY_NAME | grep /build/Makefile$ | sed s@.*/\\\\\([^\/]*\\\\\)/build/Makefile@\\\1@g` ; fi
 if [ $BUILDER == rosbuild ]; then rosmake --test-only $TARGET_PKG ; fi
-
