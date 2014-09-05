@@ -52,7 +52,7 @@ if [ $USE_DEB == false -o $BUILDER == rosbuild ]; then $ROSWS set $REPOSITORY_NA
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
 cd ../
 # Install dependencies for source repos
-if [ "$ROSDEP_UPDATE_QUIET" = "true" ]; then
+if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
     ROSDEP_ARGS=>/dev/null
 fi
 source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
