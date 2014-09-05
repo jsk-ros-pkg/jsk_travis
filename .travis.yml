@@ -13,5 +13,6 @@ env:
   - ROS_DISTRO=hydro AFTER_INSTALL=""
   - ROS_DISTRO=hydro AFTER_INSTALL="mongodb-clients"
 script:
-  - source ./travis.sh
+  - cd ..; mv jsk_travis .travis
+  - source .travis/travis.sh
   - if [ "${AFTER_INSTALL}" != "" ] ; then sudo apt-get install -f ${AFTER_INSTALL}; fi
