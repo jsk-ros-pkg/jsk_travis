@@ -27,7 +27,12 @@ if [ ! "$ROS_PARALLEL_JOBS" ]; then export ROS_PARALLEL_JOBS="-j8 -l8";  fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 sudo sh -c 'echo "deb http://packages.ros.org/ros-shadow-fixed/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+lsb_release -a
 sudo apt-get update
+#### this is debug code http://lists.ros.org/pipermail/ros-release/2014-October/004542.html
+sudo sed -i 's@Depends: python (<< 2.7), python (>= 2.6)@Depends: python (<< 2.8), python (>= 2.7)@' /var/lib/apt/lists/packages.ros.org_ros-shadow-fixed_ubuntu_dists_precise_main_binary-amd64_Packages || echo "ok"
+(sudo apt-get install -y python-rosdep ;  sudo  dpkg --configure -a --force-depends; pip install --user rosdep; echo "ok")
+sudo sed -i 's@Depends: python (<< 2.7), python (>= 2.6)@Depends: python (<< 2.8), python (>= 2.7)@' /var/lib/dpkg/status
 sudo apt-get install -y python-catkin-pkg python-rosdep python-wstool ros-$ROS_DISTRO-catkin ros-$ROS_DISTRO-rosbash
 if [ "$ROSWS" == rosws ]; then sudo apt-get install -qq -y python-rosinstall     ; fi
 if [ "$BUILDER" == rosbuild ]; then sudo apt-get install -qq -y ros-$ROS_DISTRO-rosmake ; fi
