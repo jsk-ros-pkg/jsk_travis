@@ -78,11 +78,14 @@ j.build_job('trusty-travis', {'TRAVIS_BRANCH': env['TRAVIS_BRANCH'], 'TRAVIS_COM
 
 building = True
 while building == True :
-    time.sleep(10)
-    info = j.get_build_info('trusty-travis',next_build_number)
-    building = info['building']
-    result = info['result']
-    print info['url'], "building..",building, "result...",result
+    try:
+        time.sleep(10)
+        info = j.get_build_info('trusty-travis',next_build_number)
+        building = info['building']
+        result = info['result']
+        print info['url'], "building..",building, "result...",result
+    except Exception, e: 
+        print(e)
 
 if result == "SUCCESS" :
     exit(0)
