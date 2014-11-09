@@ -19,6 +19,8 @@ print "TRAVIS_JOB_NUMBER",env['TRAVIS_JOB_NUMBER']
 print "TRAVIS_PULL_REQUEST",env['TRAVIS_PULL_REQUEST']
 print "TRAVIS_SECURE_ENV_VARS",env['TRAVIS_SECURE_ENV_VARS']
 print "TRAVIS_REPO_SLUG",env['TRAVIS_REPO_SLUG']
+print "TRAVIS_SECURE_ENV_VARS",env['TRAVIS_SECURE_ENV_VARS']
+print "TRAVIS_PULL_REQUEST",env['TRAVIS_PULL_REQUEST']
 
 #u = urllib2.Request(j.build_job_url('trusty-travis') , "TRAVIS_BRANCH=%s&TRAVIS_COMMIT=%s&TRAVIS_REPO_SLUG=%s"%(env['TRAVIS_BRANCH'],env['TRAVIS_COMMIT'],env['TRAVIS_REPO_SLUG']))
 #print "TRAVIS_BRANCH=%s&TRAVIS_COMMIT=%s&TRAVIS_REPO_SLUG=%s&ROS_DISTRO=%s&ROSWS=%s&BUILDER=%s&USE_DEB=%s"%(env['TRAVIS_BRANCH'],env['TRAVIS_COMMIT'],env['TRAVIS_REPO_SLUG'],env['ROS_DISTRO'],env['ROSWS'],env['BUILDER'],env['USE_DEB'])
@@ -74,7 +76,7 @@ class Jenkins2(jenkins.Jenkins):
 ## start from here
 j = Jenkins2('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/')
 next_build_number = j.get_job_info('trusty-travis')['nextBuildNumber']
-j.build_job('trusty-travis', {'TRAVIS_BRANCH': env['TRAVIS_BRANCH'], 'TRAVIS_COMMIT': env['TRAVIS_COMMIT'], 'TRAVIS_REPO_SLUG': env['TRAVIS_REPO_SLUG'], 'ROS_DISTRO': env['ROS_DISTRO'], 'ROSWS': env['ROSWS'], 'BUILDER': env['BUILDER'], 'USE_DEB':env['USE_DEB']})
+j.build_job('trusty-travis', {'TRAVIS_BRANCH': env['TRAVIS_BRANCH'], 'TRAVIS_COMMIT': env['TRAVIS_COMMIT'], 'TRAVIS_PULL_REQUEST': env['TRAVIS_PULL_REQUEST'], 'TRAVIS_REPO_SLUG': env['TRAVIS_REPO_SLUG'], 'ROS_DISTRO': env['ROS_DISTRO'], 'ROSWS': env['ROSWS'], 'BUILDER': env['BUILDER'], 'USE_DEB':env['USE_DEB']})
 
 building = True
 while building == True :
