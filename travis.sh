@@ -2,6 +2,19 @@
 
 set -x
 
+if [ "$USE_SUDO" == "" ]; then
+    export USE_SUDO=true
+fi
+
+function sudo()
+{
+    if [ "$USE_SUDO" = "true" ]; then
+        /usr/bin/sudo $@
+    else
+        $@
+    fi
+}
+
 if [ $ROS_DISTRO == "indigo" -a "$TRAVIS_JOB_ID" ]; then
     sudo apt-get install -qq -y python-jenkins
     ./.travis/travis_jenkins.py
