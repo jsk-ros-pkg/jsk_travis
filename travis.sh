@@ -65,8 +65,7 @@ source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting enviro
 ### script: # All commands must exit with code 0 on success. Anything else is considered failure.
 # for catkin
 if [ "$BUILDER" == catkin ]; then catkin build --make-args $ROS_PARALLEL_JOBS            ; fi
-if [ "$BUILDER" == catkin ]; then export TARGET_PKG=`find build/$REPOSITORY_NAME -name Makefile -print |  sed s@.*/\\\\\([^\/]*\\\\\)/Makefile@\\\1@g` ; fi
-if [ "$BUILDER" == catkin ]; then catkin test $TARGET_PKG --make-args $ROS_PARALLEL_JOBS  ; fi
+if [ "$BUILDER" == catkin ]; then catkin build --make-args test $ROS_PARALLEL_JOBS       ; fi
 if [ "$BUILDER" == catkin ]; then find build -name LastTest.log -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
 if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
 if [ "$BUILDER" == catkin ]; then catkin config --install                ; fi
