@@ -10,8 +10,8 @@ fi
 
 function error {
     trap - ERR
-    if [ "$BUILDER" == catkin ]; then catkin_test_results ; fi
-    if [ "$BUILDER" == catkin ]; then find $CATKIN_TEST_RESULT_DIR -name LastTest.log -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
+    if [ "$BUILDER" == catkin ]; then (cd ~/ros/ws_$REPOSITORY_NAME/; catkin_test_results --all); fi
+    if [ "$BUILDER" == catkin ]; then find ~/ros/ws_$REPOSITORY_NAME/build/*/test_results -type f -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
     exit 1
 }
 
