@@ -2,7 +2,7 @@
 
 set -x
 
-if [ $ROS_DISTRO == "indigo" -a "$TRAVIS_JOB_ID" ]; then
+if [ "$ROS_DISTRO" == "indigo" -a "$TRAVIS_JOB_ID" ]; then
     sudo apt-get install -qq -y python-jenkins
     ./.travis/travis_jenkins.py
     exit $?
@@ -15,8 +15,8 @@ function error {
     exit 1
 }
 
-[ $BUILDER == rosbuild ] && ( echo "$BUILDER is no longer supported"; exit 1; )
-[ $ROSWS == rosws ] && ( echo "$ROSWS is no longer supported"; exit 1; )
+[ "$BUILDER" == rosbuild ] && ( echo "$BUILDER is no longer supported"; exit 1; )
+[ "$ROSWS" == rosws ] && ( echo "$ROSWS is no longer supported"; exit 1; )
 
 trap error ERR
 
