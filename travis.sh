@@ -67,7 +67,7 @@ source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting enviro
 if [ "$BUILDER" == catkin ]; then catkin build -i -v --no-status $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
 if [ "$BUILDER" == catkin ]; then catkin run_tests $BUILD_PKGS ; fi
 if [ "$BUILDER" == catkin ]; then find build -name LastTest.log -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
-if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
+# if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
 if [ "$BUILDER" == catkin ]; then catkin config --install                ; fi
 if [ "$BUILDER" == catkin ]; then catkin build -i -v --no-status $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
 if [ "$BUILDER" == catkin ]; then source install/setup.bash              ; fi
