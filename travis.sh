@@ -43,7 +43,8 @@ if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get remove -qq -y mongodb mongodb-10ge
 if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get install -qq -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"; fi # default actions
 # Setup rosdep
 sudo rosdep init
-rosdep update; while [ $? != 0 ]; do sleep 1; rosdep update; done
+ret=1
+rosdep update || while [ $ret != 0 ]; do sleep 1; rosdep update && ret=0 || echo "failed"; done
 
 ### install: # Use this to install any prerequisites or dependencies necessary to run your build
 # Create workspace
