@@ -3,7 +3,8 @@
 set -x
 
 if [ "$ROS_DISTRO" == "indigo" -a "$TRAVIS_JOB_ID" ]; then
-    sudo apt-get install -qq -y python-jenkins
+    sudo apt-get install -y -qq python-pip
+    sudo pip install python-jenkins
     ./.travis/travis_jenkins.py
     exit $?
 fi
@@ -23,8 +24,8 @@ trap error ERR
 ### before_install: # Use this to prepare the system to install prerequisites or dependencies
 ## to avoid stty error, until catkin_tools 2.0.x (http://stackoverflow.com/questions/27969057/cant-launch-catkin-build-from-jenkins-job)
 sudo apt-get install -qq -y python-setuptools
-[ ! -e /tmp/catkin_tools ] && (cd /tmp/; git clone https://github.com/catkin/catkin_tools)
-(cd /tmp/catkin_tools; sudo python setup.py install)
+[ ! -e /tmp/catkin_tools ] && (cd /tmp/; git clone -q https://github.com/catkin/catkin_tools)
+(cd /tmp/catkin_tools; sudo python setup.py --quiet install)
 
 # Define some config vars
 export CI_SOURCE_PATH=$(pwd)
