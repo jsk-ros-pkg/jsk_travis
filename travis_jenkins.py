@@ -77,7 +77,7 @@ class Jenkins2(jenkins.Jenkins):
 ## start from here
 j = Jenkins2('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/')
 pid = os.getpid()
-url = j.build_job('trusty-travis', {'TRAVIS_BRANCH': env['TRAVIS_BRANCH'], 'TRAVIS_COMMIT': env['TRAVIS_COMMIT'], 'TRAVIS_PULL_REQUEST': env['TRAVIS_PULL_REQUEST'], 'TRAVIS_REPO_SLUG': env['TRAVIS_REPO_SLUG'], 'ROS_DISTRO': env['ROS_DISTRO'], 'ROSWS': env['ROSWS'], 'BUILDER': env['BUILDER'], 'USE_DEB':env['USE_DEB'], 'EXTRA_DEB':env['EXTRA_DEB'], 'NOT_TEST_INSTALL':env['NOT_TEST_INSTALL'], BUILD_PKGS:env['BUILD_PKGS'], 'PID':pid})
+url = j.build_job('trusty-travis', {'TRAVIS_BRANCH': env['TRAVIS_BRANCH'], 'TRAVIS_COMMIT': env['TRAVIS_COMMIT'], 'TRAVIS_PULL_REQUEST': env['TRAVIS_PULL_REQUEST'], 'TRAVIS_REPO_SLUG': env['TRAVIS_REPO_SLUG'], 'ROS_DISTRO': env.get('ROS_DISTRO'), 'ROSWS': env.get('ROSWS'), 'BUILDER': env.get('BUILDER'), 'USE_DEB':env.get('USE_DEB'), 'EXTRA_DEB':env.get('EXTRA_DEB'), 'NOT_TEST_INSTALL':env.get('NOT_TEST_INSTALL'), 'BUILD_PKGS':env.get('BUILD_PKGS'), 'PID':pid})
 build_number = False
 while not build_number:
     time.sleep(5)
