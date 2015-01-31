@@ -40,23 +40,25 @@ def jenkins_open(name):
     ## start from here
     for item in env.items():
         print('{}={}'.format(item[0], item[1]))
+    env['TRAVIS_JENKINS_UNIQUE_ID']='{}.{}'.format(env.get('TRAVIS_JOB_ID'),time.time())
     j.jenkins_open(urllib2.Request(j.build_job_url(name, {'this is dummy': 'parm to call wich "buildWithParameters"'}), urllib.urlencode(env)))
 
 # get build number
 def get_build_number(name):
     global j
+    unique_id = 'TRAVIS_JENKINS_UNIQUE_ID'
     build_number = False
     while not build_number:
         try:
             numbers = []
-            print('wait for {} ...'.format(env.get('TRAVIS_JOB_ID'))),
+            print('wait for {} ...'.format(env.get(unique_id))),
             for build in j.get_job_info(name)['builds']:
                 build_info = j.get_build_info(name, build['number'])
-                job_id = [item for item in build_info['actions'][0]['parameters'] if item['name'] == 'TRAVIS_JOB_ID']
+                job_id = [item for item in build_info['actions'][0]['parameters'] if item['name'] == unique_id]
                 print(build['number'],job_id and job_id[0] and job_id[0]['value']),
                 sys.stdout.flush()
                 if job_id :
-                    if job_id and job_id[0]['value'] == env.get('TRAVIS_JOB_ID'):
+                    if job_id and job_id[0]['value'] == env.get(unique_id):
                         build_number = int(build['number'])
             print()
             if build_number : return build_number 
@@ -99,6 +101,9 @@ print('build nuber is {}'.format(build_number))
 set_build_configuration(job_name, build_number)
 result = wait_for_building(job_name, build_number)
 print j.get_build_console_output(job_name, build_number)
+print "======================================="
+print j.get_build_info(job_name, build_number)['url']
+print "======================================="
 if result == "SUCCESS" :
     exit(0)
 else:
