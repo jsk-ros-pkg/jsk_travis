@@ -93,11 +93,11 @@ while not build_number:
 building = True
 while building == True :
     try:
-        time.sleep(300)
         info = j.get_build_info('trusty-travis',build_number)
         building = info['building']
         result = info['result']
         print info['url'], "building..",building, "result...",result
+        time.sleep(300)
     except Exception, e: 
         print(e)
 

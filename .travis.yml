@@ -13,6 +13,7 @@ env:
   - ROS_DISTRO=hydro AFTER_INSTALL=""
   - ROS_DISTRO=hydro AFTER_INSTALL="mongodb-clients"
   - ROS_DISTRO=hydro AFTER_INSTALL="ros-hydro-roseus"
+  - ROS_DISTRO=indigo
 script:
   - cd ..; mv jsk_travis .travis
   - source .travis/travis.sh
