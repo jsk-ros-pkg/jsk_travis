@@ -35,26 +35,23 @@ class Jenkins(jenkins.Jenkins):
                 % (name, number)
             )
 
-j = None
-def jenkins_open():
+def jenkins_open(name):
     global j
     ## start from here
     for item in env.items():
         print('{}={}'.format(item[0], item[1]))
-        j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/')
-    url = j.jenkins_open(urllib2.Request(j.build_job_url(job_name, {'this is dummy': 'parm to call wich "buildWithParameters"'}), urllib.urlencode(env)))
-    return j
+    j.jenkins_open(urllib2.Request(j.build_job_url(name, {'this is dummy': 'parm to call wich "buildWithParameters"'}), urllib.urlencode(env)))
 
 # get build number
-def get_build_number():
+def get_build_number(name):
     global j
     build_number = False
     while not build_number:
         try:
             numbers = []
             print('wait for {} ...'.format(env.get('TRAVIS_JOB_ID'))),
-            for build in j.get_job_info(job_name)['builds']:
-                build_info = j.get_build_info(job_name, build['number'])
+            for build in j.get_job_info(name)['builds']:
+                build_info = j.get_build_info(name, build['number'])
                 job_id = [item for item in build_info['actions'][0]['parameters'] if item['name'] == 'TRAVIS_JOB_ID']
                 print(build['number'],job_id and job_id[0] and job_id[0]['value']),
                 sys.stdout.flush()
@@ -68,6 +65,7 @@ def get_build_number():
 
 # set build configuration
 def set_build_configuration(name, number):
+    global j
     j.set_build_config(name, number, '#{} {}'.format(number, env.get('TRAVIS_REPO_SLUG')), 
                        'github <a href=http://github.com/{0}/pull/{1}>PR #{1}</a><br>'.format(env.get('TRAVIS_REPO_SLUG'), env.get('TRAVIS_PULL_REQUEST'))+
                        'travis <a href=http://travis-ci.org/{0}/builds/{1}>Build #{2}</a> '.format(env.get('TRAVIS_REPO_SLUG'), env.get('TRAVIS_BUILD_ID'), env.get('TRAVIS_BUILD_NUMBER'))+
@@ -76,6 +74,7 @@ def set_build_configuration(name, number):
     )
 
 def wait_for_building(name, number):
+    global j
     sleep = 30
     display = 300
     loop = 0
@@ -93,8 +92,9 @@ def wait_for_building(name, number):
 
 ### start here
 job_name = 'trusty-travis'
-j = jenkins_open()
-build_number = get_build_number()
+j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/')
+jenkins_open(job_name)
+build_number = get_build_number(job_name)
 print('build nuber is {}'.format(build_number))
 set_build_configuration(job_name, build_number)
 result = wait_for_building(job_name, build_number)
