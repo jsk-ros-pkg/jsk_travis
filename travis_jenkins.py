@@ -51,6 +51,7 @@ def get_build_number(name):
     while not build_number:
         try:
             numbers = []
+            time.sleep(10)
             print('wait for {} ...'.format(env.get(unique_id))),
             for build in j.get_job_info(name)['builds']:
                 build_info = j.get_build_info(name, build['number'])
