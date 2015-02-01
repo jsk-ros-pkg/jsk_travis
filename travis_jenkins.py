@@ -48,11 +48,6 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
           <description></description>
           <defaultValue></defaultValue>
         </hudson.model.TextParameterDefinition>
-        <hudson.model.TextParameterDefinition>
-          <name>BUILD_TAG</name>
-          <description></description>
-          <defaultValue></defaultValue>
-        </hudson.model.TextParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -71,6 +66,7 @@ set -x
 set -e
 env
 WORKSPACE=`pwd`
+[ "${BULID_TAG}" == "" ] BUILD_TAG="build_tag" # jenkins usually has build_tag environment
 trap "pwd; sudo rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
 
 git clone http://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
@@ -178,7 +174,6 @@ def wait_for_building(name, number):
         loop += 1
 
 ##
-BUILD_TAG       = env.get('BUILD_TAG') or 'build_tag'
 TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH')
 TRAVIS_COMMIT   = env.get('TRAVIS_COMMIT') or 'HEAD'
 TRAVIS_PULL_REQUEST     = env.get('TRAVIS_PULL_REQUEST') or 'false'
@@ -196,7 +191,6 @@ NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL') or ''
 BUILD_PKGS       = env.get('BUILD_PKGS') or ''
 
 print('''
-BUILD_TAG            = %(BUILD_TAG)s
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
 TRAVIS_COMMIT        = %(TRAVIS_COMMIT)s
 TRAVIS_PULL_REQUEST  = %(TRAVIS_PULL_REQUEST)s
@@ -231,7 +225,7 @@ j.reconfig_job(job_name, CONFIGURE_XML % locals())
 build_number = j.get_job_info(job_name)['nextBuildNumber']
 TRAVIS_JENKINS_UNIQUE_ID='{}.{}'.format(TRAVIS_JOB_ID,time.time())
 
-j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT, 'BUILD_TAG':BUILD_TAG})
+j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
 print('next build nuber is {}'.format(build_number))
 
 ## wait for starting
