@@ -34,6 +34,11 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_JENKINS_UNIQUE_ID</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
           <name>TRAVIS_PULL_REQUEST</name>
           <description></description>
           <defaultValue></defaultValue>
@@ -44,7 +49,7 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
           <defaultValue></defaultValue>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
-          <name>TRAVIS_JENKINS_UNIQUE_ID</name>
+          <name>BUILD_TAG</name>
           <description></description>
           <defaultValue></defaultValue>
         </hudson.model.TextParameterDefinition>
@@ -66,10 +71,10 @@ set -x
 set -e
 env
 WORKSPACE=`pwd`
-trap "pwd; sudo rm -fr $WORKSPACE/%(BUILD_TAG)s || echo 'ok'" EXIT
+trap "pwd; sudo rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
 
-git clone http://github.com/%(TRAVIS_REPO_SLUG)s %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
-cd %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
+git clone http://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
+cd ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
 #git fetch -q origin '+refs/pull/*:refs/remotes/pull/*'
 #git checkout -qf %(TRAVIS_COMMIT)s || git checkout -qf pull/${TRAVIS_PULL_REQUEST}/head
 if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
@@ -86,7 +91,7 @@ git submodule update
 sudo docker rm `sudo docker ps --no-trunc -a -q` || echo "ok"
 sudo docker rmi $(sudo docker images | awk '/^&lt;none&gt;/ { print $3 }') || echo "oK"
 
-sudo docker run -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGS="%(BUILD_PKG)sS"  -e HOME=/workspace -v $WORKSPACE/%(BUILD_TAG)s:/workspace -w /workspace ros-ubuntu:14.04 /bin/bash -c "$(cat &lt;&lt;EOL
+sudo docker run -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGS="%(BUILD_PKG)sS"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:14.04 /bin/bash -c "$(cat &lt;&lt;EOL
 
 cd %(TRAVIS_REPO_SLUG)s
 set -x
@@ -226,7 +231,7 @@ j.reconfig_job(job_name, CONFIGURE_XML % locals())
 build_number = j.get_job_info(job_name)['nextBuildNumber']
 TRAVIS_JENKINS_UNIQUE_ID='{}.{}'.format(TRAVIS_JOB_ID,time.time())
 
-j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
+j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT, 'BUILD_TAG':BUILD_TAG})
 print('next build nuber is {}'.format(build_number))
 
 ## wait for starting
