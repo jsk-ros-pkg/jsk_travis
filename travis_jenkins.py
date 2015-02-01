@@ -46,7 +46,7 @@ set -x
 set -e
 
 WORKSPACE=`pwd`
-trap "pwd; rm -fr $WORKSPACE/%(BUILD_TAG)s" EXIT
+trap "pwd; sudo rm -fr $WORKSPACE/%(BUILD_TAG)s || echo 'ok'" EXIT
 
 git clone http://github.com/%(TRAVIS_REPO_SLUG)s %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
 cd %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
@@ -190,6 +190,7 @@ if TRAVIS_BUILD_ID and TRAVIS_JOB_ID:
     travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/builds/%(TRAVIS_BUILD_ID)s>Build #%(TRAVIS_BUILD_NUMBER)s</a><br>'+ '<a href=http://travis-ci.org/%s(TRAVIS_REPO_SLUG)/builds/%(TRAVIS_JOB_ID)s>Job #(TRAVIS_JOB_NUMBER)s</a><br>'
 else:
     travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/>%(TRAVIS_REPO_SLUG)s</a><br>'
+print locals()
 j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG)s' % locals(),
                    (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>%(USE_DEB)s<br>') % locals())
 
