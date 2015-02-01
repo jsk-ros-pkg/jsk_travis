@@ -30,7 +30,27 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
        BUILDING_PKG = %(BUILD_PKG)s&lt;br&gt;
   </description>
   <keepDependencies>false</keepDependencies>
-  <properties/>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_PULL_REQUEST</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_COMMIT</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_JENKINS_UNIQUE_ID</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
   <scm class='hudson.scm.NullSCM'/>
   <assignedNode>master</assignedNode>
   <canRoam>true</canRoam>
@@ -44,19 +64,19 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
       <command>
 set -x
 set -e
-
+env
 WORKSPACE=`pwd`
 trap "pwd; sudo rm -fr $WORKSPACE/%(BUILD_TAG)s || echo 'ok'" EXIT
 
 git clone http://github.com/%(TRAVIS_REPO_SLUG)s %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
 cd %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
 #git fetch -q origin '+refs/pull/*:refs/remotes/pull/*'
-#git checkout -qf %(TRAVIS_COMMIT)s || git checkout -qf pull/%(TRAVIS_PULL_REQUEST)s/head
-if [ "%(TRAVIS_PULL_REQUEST)s" != "false" ]; then
- git fetch origin +refs/pull/%(TRAVIS_PULL_REQUEST)s/merge
+#git checkout -qf %(TRAVIS_COMMIT)s || git checkout -qf pull/${TRAVIS_PULL_REQUEST}/head
+if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+ git fetch origin +refs/pull/${TRAVIS_PULL_REQUEST}/merge
  git checkout -qf FETCH_HEAD
 else
- git checkout -qf %(TRAVIS_COMMIT)s
+ git checkout -qf ${TRAVIS_COMMIT}
 fi
 
 
@@ -133,13 +153,16 @@ def wait_for_building(name, number):
             print info['url'], "building..", info['building'], "result...", info['result']
         time.sleep(sleep)
         loop += 1
-        print loop
 
 BUILD_TAG       = env.get('BUILD_TAG') or 'build_tag'
-TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH') or 'master'
+TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH')
 TRAVIS_COMMIT   = env.get('TRAVIS_COMMIT') or 'HEAD'
 TRAVIS_PULL_REQUEST     = env.get('TRAVIS_PULL_REQUEST') or 'false'
 TRAVIS_REPO_SLUG        = env.get('TRAVIS_REPO_SLUG') or 'jsk-ros-pkg/jsk_travis'
+TRAVIS_BUILD_ID         = env.get('TRAVIS_BUILD_ID')
+TRAVIS_BUILD_NUMBER     = env.get('TRAVIS_BUILD_NUMBER')
+TRAVIS_JOB_ID           = env.get('TRAVIS_JOB_ID')
+TRAVIS_JOB_NUMBER       = env.get('TRAVIS_JOB_NUMBER')
 ROS_DISTRO      = env.get('ROS_DISTRO') or 'indigo'
 ROSWS           = env.get('ROSWS') or 'wstool'
 BUILDER         = env.get('BUILDER') or 'catkin'
@@ -148,19 +171,43 @@ EXTRA_DEB       = env.get('EXTRA_DEB') or ''
 NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL') or ''
 BUILD_PKG       = env.get('BUILD_PKG') or ''
 
+print('''
+BUILD_TAG            = %(BUILD_TAG)s
+TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
+TRAVIS_COMMIT        = %(TRAVIS_COMMIT)s
+TRAVIS_PULL_REQUEST  = %(TRAVIS_PULL_REQUEST)s
+TRAVIS_REPO_SLUG     = %(TRAVIS_REPO_SLUG)s
+TRAVIS_BUILD_ID      = %(TRAVIS_BUILD_ID)s
+TRAVIS_BUILD_NUMBER  = %(TRAVIS_BUILD_NUMBER)s
+TRAVIS_JOB_ID        = %(TRAVIS_JOB_ID)s
+TRAVIS_JOB_NUMBER    = %(TRAVIS_JOB_NUMBER)s
+TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
+ROS_DISTRO       = %(ROS_DISTRO)s
+ROSWS            = %(ROSWS)s
+BUILDER          = %(BUILDER)s
+USE_DEB          = %(USE_DEB)s
+EXTRA_DEB        = %(EXTRA_DEB)s
+NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s
+BUILD_PKG        = %(BUILD_PKG)s
+''' % locals())
+
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
 job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 'deb', USE_DEB, EXTRA_DEB, NOT_TEST_INSTALL, BUILD_PKG])).replace('/','-').replace(' ','-')
 if j.job_exists(job_name) is None:
-    print "create"
     j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
 
-## reconfigure job
+## if reconfigure job is already in queue, wait for more seconds...
+while [item for item in j.get_queue_info() if item['task']['name'] == job_name]:
+    time.sleep(10)
+# reconfigure job
 j.reconfig_job(job_name, CONFIGURE_XML % locals())
 
 ## get next number and run
 build_number = j.get_job_info(job_name)['nextBuildNumber']
-j.build_job(job_name)
+TRAVIS_JENKINS_UNIQUE_ID='{}.{}'.format(TRAVIS_JOB_ID,time.time())
+
+j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
 print('next build nuber is {}'.format(build_number))
 
 ## wait for starting
@@ -174,11 +221,6 @@ while not start_building:
         pass
 
 ## configure description
-TRAVIS_BUILD_ID = env.get('TRAVIS_BUILD_ID')
-TRAVIS_BUILD_NUMBER = env.get('TRAVIS_BUILD_NUMBER')
-TRAVIS_JOB_ID = env.get('TRAVIS_JOB_ID')
-TRAVIS_JOB_NUMBER = env.get('TRAVIS_JOB_NUMBER')
-TRAVIS_BRANCH = env.get('TRAVIS_BRANCH')
 if TRAVIS_PULL_REQUEST != 'false':
     github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s/pull/%(TRAVIS_PULL_REQUEST)s>PR #%(TRAVIS_PULL_REQUEST)s</a><br>'
 elif TRAVIS_BRANCH:
@@ -191,7 +233,7 @@ if TRAVIS_BUILD_ID and TRAVIS_JOB_ID:
 else:
     travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/>%(TRAVIS_REPO_SLUG)s</a><br>'
 j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG)s' % locals(),
-                   (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>%(USE_DEB)s<br>') % locals())
+                   (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>USE_DEB=%(USE_DEB)s<br>') % locals())
 
 ## wait for result
 result = wait_for_building(job_name, build_number)
