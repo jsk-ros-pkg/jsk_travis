@@ -63,7 +63,11 @@ if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
     ROSDEP_ARGS=>/dev/null
 fi
 source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
-${CI_SOURCE_PATH}/.travis/rosdep-install.sh
+if [ -e ${CI_SOURCE_PATH}/.travis/rosdep-install.sh]; then ## this is mainly for jsk_travis itself
+    ${CI_SOURCE_PATH}/.travis/rosdep-install.sh
+else
+    wget http://raw.github.com/jsk-ros-pkg/jsk_travis/master/rosdep-install.sh -O - | bash
+fi
 
 
 ### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
