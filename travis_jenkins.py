@@ -191,7 +191,7 @@ if TRAVIS_BUILD_ID and TRAVIS_JOB_ID:
 else:
     travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/>%(TRAVIS_REPO_SLUG)s</a><br>'
 j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG)s' % locals(),
-                   (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>%(USE_DEB)s<br>') % locals())
+                   (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>USE_DEB=%(USE_DEB)s<br>') % locals())
 
 ## wait for result
 result = wait_for_building(job_name, build_number)
