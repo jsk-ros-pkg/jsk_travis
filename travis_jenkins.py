@@ -66,7 +66,7 @@ set -x
 set -e
 env
 WORKSPACE=`pwd`
-[ "${BULID_TAG}" == "" ] BUILD_TAG="build_tag" # jenkins usually has build_tag environment
+[ "${BUILD_TAG}" = "" ] &amp;&amp; BUILD_TAG="build_tag" # jenkins usually has build_tag environment, note this is sh
 trap "pwd; sudo rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
 
 git clone http://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
