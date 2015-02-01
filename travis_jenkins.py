@@ -253,7 +253,7 @@ j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG
                    (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>USE_DEB=%(USE_DEB)s<br>') % locals())
 
 ## wait for result
-result = wait_for_fnished(job_name, build_number)
+result = wait_for_finished(job_name, build_number)
 
 ## show console
 print j.get_build_console_output(job_name, build_number)
