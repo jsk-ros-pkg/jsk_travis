@@ -230,6 +230,7 @@ print('next build nuber is {}'.format(build_number))
 
 ## wait for starting
 result = wait_for_building(job_name, build_number)
+print('start building, wait for result....')
 
 ## configure description
 if TRAVIS_PULL_REQUEST != 'false':
