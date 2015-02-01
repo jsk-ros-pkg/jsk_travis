@@ -138,7 +138,7 @@ class Jenkins(jenkins.Jenkins):
 def set_build_configuration(name, number):
     global j
 
-def wait_for_building(name, number):
+def wait_for_finished(name, number):
     global j
     sleep = 30
     display = 300
@@ -154,6 +154,25 @@ def wait_for_building(name, number):
         time.sleep(sleep)
         loop += 1
 
+def wait_for_building(name, number):
+    global j
+    sleep = 30
+    display = 300
+    loop = 0
+    start_building = None
+    while True:
+        try:
+            j.get_build_info(name,number)
+            start_building = True
+            return
+        except:
+            pass
+        if loop % (display/sleep) == 0:
+            print 'wait for {} {}'%(name, number)
+        time.sleep(sleep)
+        loop += 1
+
+##
 BUILD_TAG       = env.get('BUILD_TAG') or 'build_tag'
 TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH')
 TRAVIS_COMMIT   = env.get('TRAVIS_COMMIT') or 'HEAD'
@@ -211,14 +230,7 @@ j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRA
 print('next build nuber is {}'.format(build_number))
 
 ## wait for starting
-start_building = None
-while not start_building:
-    try:
-        j.get_build_info(job_name, build_number)
-        start_building = True
-    except:
-        time.sleep(10)
-        pass
+result = wait_for_building(job_name, build_number)
 
 ## configure description
 if TRAVIS_PULL_REQUEST != 'false':
@@ -236,7 +248,7 @@ j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG
                    (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>USE_DEB=%(USE_DEB)s<br>') % locals())
 
 ## wait for result
-result = wait_for_building(job_name, build_number)
+result = wait_for_fnished(job_name, build_number)
 
 ## show console
 print j.get_build_console_output(job_name, build_number)
