@@ -32,6 +32,7 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
   <keepDependencies>false</keepDependencies>
   <properties/>
   <scm class='hudson.scm.NullSCM'/>
+  <assignedNode>master</assignedNode>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
