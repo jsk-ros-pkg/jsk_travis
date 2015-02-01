@@ -30,7 +30,27 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
        BUILDING_PKG = %(BUILD_PKG)s&lt;br&gt;
   </description>
   <keepDependencies>false</keepDependencies>
-  <properties/>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_PULL_REQUEST</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_COMMIT</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_JENKINS_UNIQUE_ID</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
   <scm class='hudson.scm.NullSCM'/>
   <assignedNode>master</assignedNode>
   <canRoam>true</canRoam>
@@ -44,19 +64,19 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
       <command>
 set -x
 set -e
-
+env
 WORKSPACE=`pwd`
 trap "pwd; sudo rm -fr $WORKSPACE/%(BUILD_TAG)s || echo 'ok'" EXIT
 
 git clone http://github.com/%(TRAVIS_REPO_SLUG)s %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
 cd %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
 #git fetch -q origin '+refs/pull/*:refs/remotes/pull/*'
-#git checkout -qf %(TRAVIS_COMMIT)s || git checkout -qf pull/%(TRAVIS_PULL_REQUEST)s/head
-if [ "%(TRAVIS_PULL_REQUEST)s" != "false" ]; then
- git fetch origin +refs/pull/%(TRAVIS_PULL_REQUEST)s/merge
+#git checkout -qf %(TRAVIS_COMMIT)s || git checkout -qf pull/${TRAVIS_PULL_REQUEST}/head
+if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
+ git fetch origin +refs/pull/${TRAVIS_PULL_REQUEST}/merge
  git checkout -qf FETCH_HEAD
 else
- git checkout -qf %(TRAVIS_COMMIT)s
+ git checkout -qf ${TRAVIS_COMMIT}
 fi
 
 
@@ -185,7 +205,9 @@ j.reconfig_job(job_name, CONFIGURE_XML % locals())
 
 ## get next number and run
 build_number = j.get_job_info(job_name)['nextBuildNumber']
-j.build_job(job_name)
+TRAVIS_JENKINS_UNIQUE_ID='{}.{}'.format(TRAVIS_JOB_ID,time.time())
+
+j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
 print('next build nuber is {}'.format(build_number))
 
 ## wait for starting
