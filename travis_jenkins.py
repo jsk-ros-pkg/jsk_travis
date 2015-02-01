@@ -117,12 +117,6 @@ class Jenkins(jenkins.Jenkins):
 # set build configuration
 def set_build_configuration(name, number):
     global j
-    j.set_build_config(name, number, '#{} {}'.format(number, TRAVIS_REPO_SLUG), 
-                       'github <a href=http://github.com/{0}/pull/{1}>PR #{1}</a><br>'.format(TRAVIS_REPO_SLUG, TRAVIS_PULL_REQUEST)+
-                       'travis <a href=http://travis-ci.org/{0}/builds/{1}>Build #{2}</a> '.format(TRAVIS_REPO_SLUG, env.get('TRAVIS_BUILD_ID'), env.get('TRAVIS_BUILD_NUMBER'))+
-                       '<a href=http://travis-ci.org/{0}/builds/{1}>Job #{2}</a><br>'.format(TRAVIS_REPO_SLUG, env.get('TRAVIS_JOB_ID'), env.get('TRAVIS_JOB_NUMBER'))+
-                       'ROS_DISTRO={}<br>USE_DEB={}<br>'.format(ROS_DISTRO,USE_DEB)
-    )
 
 def wait_for_building(name, number):
     global j
@@ -160,10 +154,16 @@ job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 
 if j.job_exists(job_name) is None:
     print "create"
     j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
+
+## reconfigure job
 j.reconfig_job(job_name, CONFIGURE_XML % locals())
+
+## get next number and run
 build_number = j.get_job_info(job_name)['nextBuildNumber']
 j.build_job(job_name)
 print('next build nuber is {}'.format(build_number))
+
+## wait for starting
 start_building = None
 while not start_building:
     try:
@@ -172,8 +172,31 @@ while not start_building:
     except:
         time.sleep(10)
         pass
-set_build_configuration(job_name, build_number)
+
+## configure description
+TRAVIS_BUILD_ID = env.get('TRAVIS_BUILD_ID')
+TRAVIS_BUILD_NUMBER = env.get('TRAVIS_BUILD_NUMBER')
+TRAVIS_JOB_ID = env.get('TRAVIS_JOB_ID')
+TRAVIS_JOB_NUMBER = env.get('TRAVIS_JOB_NUMBER')
+TRAVIS_BRANCH = env.get('TRAVIS_BRANCH')
+if TRAVIS_PULL_REQUEST != 'false':
+    github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s/pull/%(TRAVIS_PULL_REQUEST)s>PR #%(TRAVIS_PULL_REQUEST)s</a><br>'
+elif TRAVIS_BRANCH:
+    github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s/tree/%(TRAVIS_BRANCH)s>http://github.com/%(TRAVIS_REPO_SLUG)s</a><br>'
+else:
+    github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s>http://github.com/%(TRAVIS_REPO_SLUG)s</a><br>'
+
+if TRAVIS_BUILD_ID and TRAVIS_JOB_ID:
+    travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/builds/%(TRAVIS_BUILD_ID)s>Build #%(TRAVIS_BUILD_NUMBER)s</a><br>'+ '<a href=http://travis-ci.org/%s(TRAVIS_REPO_SLUG)/builds/%(TRAVIS_JOB_ID)s>Job #(TRAVIS_JOB_NUMBER)s</a><br>'
+else:
+    travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/>%(TRAVIS_REPO_SLUG)s</a><br>'
+j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG)s' % locals(),
+                   (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>%(USE_DEB)s<br>') % locals())
+
+## wait for result
 result = wait_for_building(job_name, build_number)
+
+## show console
 print j.get_build_console_output(job_name, build_number)
 print "======================================="
 print j.get_build_info(job_name, build_number)['url']
