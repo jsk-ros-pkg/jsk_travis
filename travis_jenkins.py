@@ -133,7 +133,6 @@ def wait_for_building(name, number):
             print info['url'], "building..", info['building'], "result...", info['result']
         time.sleep(sleep)
         loop += 1
-        print loop
 
 BUILD_TAG       = env.get('BUILD_TAG') or 'build_tag'
 TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH')
