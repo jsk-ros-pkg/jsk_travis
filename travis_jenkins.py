@@ -27,7 +27,7 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
        USE_DEB    = %(USE_DEB)s&lt;br&gt;
        EXTRA_DEB  = %(EXTRA_DEB)s&lt;br&gt;
        NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s&lt;br&gt;
-       BUILDING_PKG = %(BUILD_PKG)s&lt;br&gt;
+       BUILDING_PKG = %(BUILD_PKGS)s&lt;br&gt;
   </description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -91,7 +91,7 @@ git submodule update
 sudo docker rm `sudo docker ps --no-trunc -a -q` || echo "ok"
 sudo docker rmi $(sudo docker images | awk '/^&lt;none&gt;/ { print $3 }') || echo "oK"
 
-sudo docker run -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGS="%(BUILD_PKG)s"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:14.04 /bin/bash -c "$(cat &lt;&lt;EOL
+sudo docker run -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGSS="%(BUILD_PKGS)s"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:14.04 /bin/bash -c "$(cat &lt;&lt;EOL
 
 cd %(TRAVIS_REPO_SLUG)s
 set -x
@@ -173,7 +173,7 @@ def wait_for_building(name, number):
         except:
             pass
         if loop % (display/sleep) == 0:
-            print 'wait for {} {}'%(name, number)
+            print('wait for {} {}'.format(name, number))
         time.sleep(sleep)
         loop += 1
 
@@ -193,7 +193,7 @@ BUILDER         = env.get('BUILDER') or 'catkin'
 USE_DEB         = env.get('USE_DEB') or 'true'
 EXTRA_DEB       = env.get('EXTRA_DEB') or ''
 NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL') or ''
-BUILD_PKG       = env.get('BUILD_PKG') or ''
+BUILD_PKGS       = env.get('BUILD_PKGS') or ''
 
 print('''
 BUILD_TAG            = %(BUILD_TAG)s
@@ -212,12 +212,12 @@ BUILDER          = %(BUILDER)s
 USE_DEB          = %(USE_DEB)s
 EXTRA_DEB        = %(EXTRA_DEB)s
 NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s
-BUILD_PKG        = %(BUILD_PKG)s
+BUILD_PKGS       = %(BUILD_PKGS)s
 ''' % locals())
 
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
-job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 'deb', USE_DEB, EXTRA_DEB, NOT_TEST_INSTALL, BUILD_PKG])).replace('/','-').replace(' ','-')
+job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 'deb', USE_DEB, EXTRA_DEB, NOT_TEST_INSTALL, BUILD_PKGS])).replace('/','-').replace(' ','-')
 if j.job_exists(job_name) is None:
     j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
 
