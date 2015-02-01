@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# need pip installed version of python-jenkins > 0.4.0
+
 import jenkins
 import urllib
 import urllib2
@@ -10,13 +12,90 @@ import sys
 
 from os import environ as env
 
+CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>
+     &lt;h4&gt;
+     This is jenkins buildfirm for &lt;a href=http://github.com/%(TRAVIS_REPO_SLUG)s&gt;http://github.com/%(TRAVIS_REPO_SLUG)s&lt;/a&gt;&lt;br/&gt;
+     see &lt;a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s&gt;http://travis-ci.org/%(TRAVIS_REPO_SLUG)s&lt;/a&gt; for travis page that execute this job.&lt;br&gt;
+     &lt;/h4&gt;
+     Parameters are&lt;br&gt;
+       ROS_DISTRO = %(ROS_DISTRO)s&lt;br&gt;
+       ROSWS      = %(ROSWS)s&lt;br&gt;
+       BUILDIER   = %(BUILDER)s&lt;br&gt;
+       USE_DEB    = %(USE_DEB)s&lt;br&gt;
+       EXTRA_DEB  = %(EXTRA_DEB)s&lt;br&gt;
+       NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s&lt;br&gt;
+       BUILDING_PKG = %(BUILD_PKG)s&lt;br&gt;
+  </description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class='hudson.scm.NullSCM'/>
+  <assignedNode>master</assignedNode>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>
+set -x
+set -e
+
+WORKSPACE=`pwd`
+trap "pwd; rm -fr $WORKSPACE/%(BUILD_TAG)s" EXIT
+
+git clone http://github.com/%(TRAVIS_REPO_SLUG)s %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
+cd %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
+#git fetch -q origin '+refs/pull/*:refs/remotes/pull/*'
+#git checkout -qf %(TRAVIS_COMMIT)s || git checkout -qf pull/%(TRAVIS_PULL_REQUEST)s/head
+if [ "%(TRAVIS_PULL_REQUEST)s" != "false" ]; then
+ git fetch origin +refs/pull/%(TRAVIS_PULL_REQUEST)s/merge
+ git checkout -qf FETCH_HEAD
+else
+ git checkout -qf %(TRAVIS_COMMIT)s
+fi
+
+
+git submodule init
+git submodule update
+
+sudo docker rm `sudo docker ps --no-trunc -a -q` || echo "ok"
+sudo docker rmi $(sudo docker images | awk '/^&lt;none&gt;/ { print $3 }') || echo "oK"
+
+sudo docker run -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGS="%(BUILD_PKG)sS"  -e HOME=/workspace -v $WORKSPACE/%(BUILD_TAG)s:/workspace -w /workspace ros-ubuntu:14.04 /bin/bash -c "$(cat &lt;&lt;EOL
+
+cd %(TRAVIS_REPO_SLUG)s
+set -x
+trap 'exit 1' ERR
+env
+
+apt-get install -qq -y git wget sudo lsb-release
+rosdep update || rosdep update || echo "OK"
+
+export SHELL=/bin/bash
+`cat .travis/travis.sh`
+
+EOL
+)"
+
+     </command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>'''
+
 BUILD_SET_CONFIG= 'job/%(name)s/%(number)d/configSubmit'
 
 class Jenkins(jenkins.Jenkins):
     # http://blog.keshi.org/hogememo/2012/12/14/jenkins-setting-build-info
     def set_build_config(self, name, number, display_name, description): # need to allow anonymous user to update build 
         try:
-            #print '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)
+            print '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)
             response = self.jenkins_open(urllib2.Request(
                 self.server + BUILD_SET_CONFIG % locals(),
                 urllib.urlencode({'json': '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)})
@@ -35,45 +114,14 @@ class Jenkins(jenkins.Jenkins):
                 % (name, number)
             )
 
-def jenkins_open(name):
-    global j
-    ## start from here
-    for item in env.items():
-        print('{}={}'.format(item[0], item[1]))
-    env['TRAVIS_JENKINS_UNIQUE_ID']='{}.{}'.format(env.get('TRAVIS_JOB_ID'),time.time())
-    j.jenkins_open(urllib2.Request(j.build_job_url(name, {'this is dummy': 'parm to call wich "buildWithParameters"'}), urllib.urlencode(env)))
-
-# get build number
-def get_build_number(name):
-    global j
-    unique_id = 'TRAVIS_JENKINS_UNIQUE_ID'
-    build_number = False
-    while not build_number:
-        try:
-            numbers = []
-            time.sleep(10)
-            print('wait for {} ...'.format(env.get(unique_id))),
-            for build in j.get_job_info(name)['builds']:
-                build_info = j.get_build_info(name, build['number'])
-                job_id = [item for item in build_info['actions'][0]['parameters'] if item['name'] == unique_id]
-                print(build['number'],job_id and job_id[0] and job_id[0]['value']),
-                sys.stdout.flush()
-                if job_id :
-                    if job_id and job_id[0]['value'] == env.get(unique_id):
-                        build_number = int(build['number'])
-            print()
-            if build_number : return build_number 
-        except Exception as e:
-            print(e)
-
 # set build configuration
 def set_build_configuration(name, number):
     global j
-    j.set_build_config(name, number, '#{} {}'.format(number, env.get('TRAVIS_REPO_SLUG')), 
-                       'github <a href=http://github.com/{0}/pull/{1}>PR #{1}</a><br>'.format(env.get('TRAVIS_REPO_SLUG'), env.get('TRAVIS_PULL_REQUEST'))+
-                       'travis <a href=http://travis-ci.org/{0}/builds/{1}>Build #{2}</a> '.format(env.get('TRAVIS_REPO_SLUG'), env.get('TRAVIS_BUILD_ID'), env.get('TRAVIS_BUILD_NUMBER'))+
-                       '<a href=http://travis-ci.org/{0}/builds/{1}>Job #{2}</a><br>'.format(env.get('TRAVIS_REPO_SLUG'), env.get('TRAVIS_JOB_ID'), env.get('TRAVIS_JOB_NUMBER'))+
-                       'ROS_DISTRO={}<br>USE_DEB={}<br>'.format(env.get('ROS_DISTRO'),env.get('USE_DEB'))
+    j.set_build_config(name, number, '#{} {}'.format(number, TRAVIS_REPO_SLUG), 
+                       'github <a href=http://github.com/{0}/pull/{1}>PR #{1}</a><br>'.format(TRAVIS_REPO_SLUG, TRAVIS_PULL_REQUEST)+
+                       'travis <a href=http://travis-ci.org/{0}/builds/{1}>Build #{2}</a> '.format(TRAVIS_REPO_SLUG, env.get('TRAVIS_BUILD_ID'), env.get('TRAVIS_BUILD_NUMBER'))+
+                       '<a href=http://travis-ci.org/{0}/builds/{1}>Job #{2}</a><br>'.format(TRAVIS_REPO_SLUG, env.get('TRAVIS_JOB_ID'), env.get('TRAVIS_JOB_NUMBER'))+
+                       'ROS_DISTRO={}<br>USE_DEB={}<br>'.format(ROS_DISTRO,USE_DEB)
     )
 
 def wait_for_building(name, number):
@@ -93,12 +141,37 @@ def wait_for_building(name, number):
         loop += 1
         print loop
 
+BUILD_TAG       = env.get('BUILD_TAG') or 'build_tag'
+TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH') or 'master'
+TRAVIS_COMMIT   = env.get('TRAVIS_COMMIT') or 'HEAD'
+TRAVIS_PULL_REQUEST     = env.get('TRAVIS_PULL_REQUEST') or 'false'
+TRAVIS_REPO_SLUG        = env.get('TRAVIS_REPO_SLUG') or 'jsk-ros-pkg/jsk_travis'
+ROS_DISTRO      = env.get('ROS_DISTRO') or 'indigo'
+ROSWS           = env.get('ROSWS') or 'wstool'
+BUILDER         = env.get('BUILDER') or 'catkin'
+USE_DEB         = env.get('USE_DEB') or 'true'
+EXTRA_DEB       = env.get('EXTRA_DEB') or ''
+NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL') or ''
+BUILD_PKG       = env.get('BUILD_PKG') or ''
+
 ### start here
-job_name = 'trusty-travis'
-j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/')
-jenkins_open(job_name)
-build_number = get_build_number(job_name)
-print('build nuber is {}'.format(build_number))
+j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
+job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 'deb', USE_DEB, EXTRA_DEB, NOT_TEST_INSTALL, BUILD_PKG])).replace('/','-')
+if j.job_exists(job_name) is None:
+    print "create"
+    j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
+j.reconfig_job(job_name, CONFIGURE_XML % locals())
+build_number = j.get_job_info(job_name)['nextBuildNumber']
+j.build_job(job_name)
+print('next build nuber is {}'.format(build_number))
+start_building = None
+while not start_building:
+    try:
+        j.get_build_info(job_name, build_number)
+        start_building = True
+    except:
+        time.sleep(10)
+        pass
 set_build_configuration(job_name, build_number)
 result = wait_for_building(job_name, build_number)
 print j.get_build_console_output(job_name, build_number)
