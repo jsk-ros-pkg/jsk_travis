@@ -136,10 +136,14 @@ def wait_for_building(name, number):
         print loop
 
 BUILD_TAG       = env.get('BUILD_TAG') or 'build_tag'
-TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH') or 'master'
+TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH')
 TRAVIS_COMMIT   = env.get('TRAVIS_COMMIT') or 'HEAD'
 TRAVIS_PULL_REQUEST     = env.get('TRAVIS_PULL_REQUEST') or 'false'
 TRAVIS_REPO_SLUG        = env.get('TRAVIS_REPO_SLUG') or 'jsk-ros-pkg/jsk_travis'
+TRAVIS_BUILD_ID         = env.get('TRAVIS_BUILD_ID')
+TRAVIS_BUILD_NUMBER     = env.get('TRAVIS_BUILD_NUMBER')
+TRAVIS_JOB_ID           = env.get('TRAVIS_JOB_ID')
+TRAVIS_JOB_NUMBER       = env.get('TRAVIS_JOB_NUMBER')
 ROS_DISTRO      = env.get('ROS_DISTRO') or 'indigo'
 ROSWS           = env.get('ROSWS') or 'wstool'
 BUILDER         = env.get('BUILDER') or 'catkin'
@@ -147,6 +151,26 @@ USE_DEB         = env.get('USE_DEB') or 'true'
 EXTRA_DEB       = env.get('EXTRA_DEB') or ''
 NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL') or ''
 BUILD_PKG       = env.get('BUILD_PKG') or ''
+
+print('''
+BUILD_TAG            = %(BUILD_TAG)s
+TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
+TRAVIS_COMMIT        = %(TRAVIS_COMMIT)s
+TRAVIS_PULL_REQUEST  = %(TRAVIS_PULL_REQUEST)s
+TRAVIS_REPO_SLUG     = %(TRAVIS_REPO_SLUG)s
+TRAVIS_BUILD_ID      = %(TRAVIS_BUILD_ID)s
+TRAVIS_BUILD_NUMBER  = %(TRAVIS_BUILD_NUMBER)s
+TRAVIS_JOB_ID        = %(TRAVIS_JOB_ID)s
+TRAVIS_JOB_NUMBER    = %(TRAVIS_JOB_NUMBER)s
+TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
+ROS_DISTRO       = %(ROS_DISTRO)s
+ROSWS            = %(ROSWS)s
+BUILDER          = %(BUILDER)s
+USE_DEB          = %(USE_DEB)s
+EXTRA_DEB        = %(EXTRA_DEB)s
+NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s
+BUILD_PKG        = %(BUILD_PKG)s
+''' % locals())
 
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
@@ -174,11 +198,6 @@ while not start_building:
         pass
 
 ## configure description
-TRAVIS_BUILD_ID = env.get('TRAVIS_BUILD_ID')
-TRAVIS_BUILD_NUMBER = env.get('TRAVIS_BUILD_NUMBER')
-TRAVIS_JOB_ID = env.get('TRAVIS_JOB_ID')
-TRAVIS_JOB_NUMBER = env.get('TRAVIS_JOB_NUMBER')
-TRAVIS_BRANCH = env.get('TRAVIS_BRANCH')
 if TRAVIS_PULL_REQUEST != 'false':
     github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s/pull/%(TRAVIS_PULL_REQUEST)s>PR #%(TRAVIS_PULL_REQUEST)s</a><br>'
 elif TRAVIS_BRANCH:
