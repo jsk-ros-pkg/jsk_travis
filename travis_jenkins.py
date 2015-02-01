@@ -95,7 +95,7 @@ class Jenkins(jenkins.Jenkins):
     # http://blog.keshi.org/hogememo/2012/12/14/jenkins-setting-build-info
     def set_build_config(self, name, number, display_name, description): # need to allow anonymous user to update build 
         try:
-            print '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)
+            # print '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)
             response = self.jenkins_open(urllib2.Request(
                 self.server + BUILD_SET_CONFIG % locals(),
                 urllib.urlencode({'json': '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)})
@@ -187,10 +187,9 @@ else:
     github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s>http://github.com/%(TRAVIS_REPO_SLUG)s</a><br>'
 
 if TRAVIS_BUILD_ID and TRAVIS_JOB_ID:
-    travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/builds/%(TRAVIS_BUILD_ID)s>Build #%(TRAVIS_BUILD_NUMBER)s</a><br>'+ '<a href=http://travis-ci.org/%s(TRAVIS_REPO_SLUG)/builds/%(TRAVIS_JOB_ID)s>Job #(TRAVIS_JOB_NUMBER)s</a><br>'
+    travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/builds/%(TRAVIS_BUILD_ID)s>Build #%(TRAVIS_BUILD_NUMBER)s</a> '+ '<a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/builds/%(TRAVIS_JOB_ID)s>Job #%(TRAVIS_JOB_NUMBER)s</a><br>'
 else:
     travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/>%(TRAVIS_REPO_SLUG)s</a><br>'
-print locals()
 j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG)s' % locals(),
                    (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>%(USE_DEB)s<br>') % locals())
 
