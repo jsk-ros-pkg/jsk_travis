@@ -27,12 +27,17 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
        USE_DEB    = %(USE_DEB)s&lt;br&gt;
        EXTRA_DEB  = %(EXTRA_DEB)s&lt;br&gt;
        NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s&lt;br&gt;
-       BUILDING_PKG = %(BUILD_PKG)s&lt;br&gt;
+       BUILDING_PKG = %(BUILD_PKGS)s&lt;br&gt;
   </description>
   <keepDependencies>false</keepDependencies>
   <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_JENKINS_UNIQUE_ID</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>TRAVIS_PULL_REQUEST</name>
           <description></description>
@@ -40,11 +45,6 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>TRAVIS_COMMIT</name>
-          <description></description>
-          <defaultValue></defaultValue>
-        </hudson.model.TextParameterDefinition>
-        <hudson.model.TextParameterDefinition>
-          <name>TRAVIS_JENKINS_UNIQUE_ID</name>
           <description></description>
           <defaultValue></defaultValue>
         </hudson.model.TextParameterDefinition>
@@ -66,10 +66,11 @@ set -x
 set -e
 env
 WORKSPACE=`pwd`
-trap "pwd; sudo rm -fr $WORKSPACE/%(BUILD_TAG)s || echo 'ok'" EXIT
+[ "${BUILD_TAG}" = "" ] &amp;&amp; BUILD_TAG="build_tag" # jenkins usually has build_tag environment, note this is sh
+trap "pwd; sudo rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
 
-git clone http://github.com/%(TRAVIS_REPO_SLUG)s %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
-cd %(BUILD_TAG)s/%(TRAVIS_REPO_SLUG)s
+git clone http://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
+cd ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
 #git fetch -q origin '+refs/pull/*:refs/remotes/pull/*'
 #git checkout -qf %(TRAVIS_COMMIT)s || git checkout -qf pull/${TRAVIS_PULL_REQUEST}/head
 if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
@@ -86,7 +87,7 @@ git submodule update
 sudo docker rm `sudo docker ps --no-trunc -a -q` || echo "ok"
 sudo docker rmi $(sudo docker images | awk '/^&lt;none&gt;/ { print $3 }') || echo "oK"
 
-sudo docker run -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGS="%(BUILD_PKG)s"  -e HOME=/workspace -v $WORKSPACE/%(BUILD_TAG)s:/workspace -w /workspace ros-ubuntu:14.04 /bin/bash -c "$(cat &lt;&lt;EOL
+sudo docker run -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGSS="%(BUILD_PKGS)s"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:14.04 /bin/bash -c "$(cat &lt;&lt;EOL
 
 cd %(TRAVIS_REPO_SLUG)s
 set -x
@@ -138,7 +139,7 @@ class Jenkins(jenkins.Jenkins):
 def set_build_configuration(name, number):
     global j
 
-def wait_for_building(name, number):
+def wait_for_finished(name, number):
     global j
     sleep = 30
     display = 300
@@ -154,7 +155,25 @@ def wait_for_building(name, number):
         time.sleep(sleep)
         loop += 1
 
-BUILD_TAG       = env.get('BUILD_TAG') or 'build_tag'
+def wait_for_building(name, number):
+    global j
+    sleep = 30
+    display = 300
+    loop = 0
+    start_building = None
+    while True:
+        try:
+            j.get_build_info(name,number)
+            start_building = True
+            return
+        except:
+            pass
+        if loop % (display/sleep) == 0:
+            print('wait for {} {}'.format(name, number))
+        time.sleep(sleep)
+        loop += 1
+
+##
 TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH')
 TRAVIS_COMMIT   = env.get('TRAVIS_COMMIT') or 'HEAD'
 TRAVIS_PULL_REQUEST     = env.get('TRAVIS_PULL_REQUEST') or 'false'
@@ -169,10 +188,9 @@ BUILDER         = env.get('BUILDER') or 'catkin'
 USE_DEB         = env.get('USE_DEB') or 'true'
 EXTRA_DEB       = env.get('EXTRA_DEB') or ''
 NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL') or ''
-BUILD_PKG       = env.get('BUILD_PKG') or ''
+BUILD_PKGS       = env.get('BUILD_PKGS') or ''
 
 print('''
-BUILD_TAG            = %(BUILD_TAG)s
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
 TRAVIS_COMMIT        = %(TRAVIS_COMMIT)s
 TRAVIS_PULL_REQUEST  = %(TRAVIS_PULL_REQUEST)s
@@ -188,12 +206,12 @@ BUILDER          = %(BUILDER)s
 USE_DEB          = %(USE_DEB)s
 EXTRA_DEB        = %(EXTRA_DEB)s
 NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s
-BUILD_PKG        = %(BUILD_PKG)s
+BUILD_PKGS       = %(BUILD_PKGS)s
 ''' % locals())
 
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
-job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 'deb', USE_DEB, EXTRA_DEB, NOT_TEST_INSTALL, BUILD_PKG])).replace('/','-').replace(' ','-')
+job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 'deb', USE_DEB, EXTRA_DEB, NOT_TEST_INSTALL, BUILD_PKGS])).replace('/','-').replace(' ','-')
 if j.job_exists(job_name) is None:
     j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
 
@@ -211,14 +229,8 @@ j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRA
 print('next build nuber is {}'.format(build_number))
 
 ## wait for starting
-start_building = None
-while not start_building:
-    try:
-        j.get_build_info(job_name, build_number)
-        start_building = True
-    except:
-        time.sleep(10)
-        pass
+result = wait_for_building(job_name, build_number)
+print('start building, wait for result....')
 
 ## configure description
 if TRAVIS_PULL_REQUEST != 'false':
@@ -236,7 +248,7 @@ j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG
                    (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>USE_DEB=%(USE_DEB)s<br>') % locals())
 
 ## wait for result
-result = wait_for_building(job_name, build_number)
+result = wait_for_finished(job_name, build_number)
 
 ## show console
 print j.get_build_console_output(job_name, build_number)
