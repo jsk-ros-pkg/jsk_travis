@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 trap 'find -L . -name manifest.xml.deprecated | xargs -n 1 -i dirname {} | xargs -n 1 -i mv `pwd`/{}/manifest.xml.deprecated `pwd`/{}/manifest.xml' 1 2 3 15
 
