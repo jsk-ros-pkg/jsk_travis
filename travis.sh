@@ -23,7 +23,7 @@ trap error ERR
 
 ### before_install: # Use this to prepare the system to install prerequisites or dependencies
 ## to avoid stty error, until catkin_tools 2.0.x (http://stackoverflow.com/questions/27969057/cant-launch-catkin-build-from-jenkins-job)
-sudo apt-get install -qq -y python-setuptools
+sudo apt-get install -q -qq -y python-setuptools
 [ ! -e /tmp/catkin_tools ] && (cd /tmp/; git clone -q https://github.com/catkin/catkin_tools)
 (cd /tmp/catkin_tools; sudo python setup.py --quiet install)
 
@@ -36,12 +36,12 @@ sudo sh -c 'echo "deb http://packages.ros.org/ros-shadow-fixed/ubuntu `lsb_relea
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 lsb_release -a
 sudo apt-get update
-sudo apt-get install -y -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash
-if [ "$EXTRA_DEB" ]; then sudo apt-get install -qq -y $EXTRA_DEB;  fi
+sudo apt-get install -y -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash
+if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
 dpkg -s mongodb || echo "ok"; export HAVE_MONGO_DB=$?
-if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get remove -qq -y mongodb mongodb-10gen || echo "ok"; fi
-if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get install -qq -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"; fi # default actions
+if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get remove -q -qq -y mongodb mongodb-10gen || echo "ok"; fi
+if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get install -q -qq -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"; fi # default actions
 # Setup rosdep
 sudo rosdep init
 ret=1
