@@ -107,7 +107,11 @@ EOL
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
-  <buildWrappers/>
+  <buildWrappers>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@%(ANSICOLOR_PLUGIN_VERSION)s">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+  </buildWrappers>
 </project>'''
 
 BUILD_SET_CONFIG= 'job/%(name)s/%(number)d/configSubmit'
@@ -211,6 +215,11 @@ BUILD_PKGS       = %(BUILD_PKGS)s
 
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
+
+if j.get_plugin_info('ansicolor'):
+    ANSICOLOR_PLUGIN_VERSION=j.get_plugin_info('ansicolor')['version']
+else:
+    print('you need to install ansi color plugin')
 job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 'deb', USE_DEB, EXTRA_DEB, NOT_TEST_INSTALL, BUILD_PKGS])).replace('/','-').replace(' ','-')
 if j.job_exists(job_name) is None:
     j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
