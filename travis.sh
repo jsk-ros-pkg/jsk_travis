@@ -18,6 +18,8 @@ function error {
 
 [ "$BUILDER" == rosbuild ] && ( echo "$BUILDER is no longer supported"; exit 1; )
 [ "$ROSWS" == rosws ] && ( echo "$ROSWS is no longer supported"; exit 1; )
+BUILDER=catkin
+ROSWS=wstools
 
 trap error ERR
 
