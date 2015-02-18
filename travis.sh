@@ -2,7 +2,7 @@
 
 set -x
 
-if [ "$ROS_DISTRO" == "indigo" -a "$TRAVIS_JOB_ID" ]; then
+if [ "$ROS_DISTRO" == "indigo" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
     sudo apt-get install -y -qq python-pip
     sudo pip install python-jenkins
     ./.travis/travis_jenkins.py
