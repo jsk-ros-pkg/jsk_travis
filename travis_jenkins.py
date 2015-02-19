@@ -58,7 +58,7 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers/>
-  <concurrentBuild>false</concurrentBuild>
+  <concurrentBuild>true</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
       <command>
@@ -87,7 +87,7 @@ git submodule update
 sudo docker rm `sudo docker ps --no-trunc -a -q` || echo "ok"
 sudo docker rmi $(sudo docker images | awk '/^&lt;none&gt;/ { print $3 }') || echo "oK"
 
-sudo docker run -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGSS="%(BUILD_PKGS)s"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:14.04 /bin/bash -c "$(cat &lt;&lt;EOL
+sudo docker run -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGS="%(BUILD_PKGS)s"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:%(LSB_RELEASE)s /bin/bash -c "$(cat &lt;&lt;EOL
 
 cd %(TRAVIS_REPO_SLUG)s
 set -x
@@ -109,7 +109,11 @@ EOL
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
-  <buildWrappers/>
+  <buildWrappers>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@%(ANSICOLOR_PLUGIN_VERSION)s">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+  </buildWrappers>
 </project>'''
 
 BUILD_SET_CONFIG= 'job/%(name)s/%(number)d/configSubmit'
@@ -211,8 +215,18 @@ NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s
 BUILD_PKGS       = %(BUILD_PKGS)s
 ''' % locals())
 
+if env.get('ROS_DISTRO') == 'hydro':
+    LSB_RELEASE = '12.04'
+else:
+    LSB_RELEASE = '14.04'
+
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
+
+if j.get_plugin_info('ansicolor'):
+    ANSICOLOR_PLUGIN_VERSION=j.get_plugin_info('ansicolor')['version']
+else:
+    print('you need to install ansi color plugin')
 job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 'deb', USE_DEB, EXTRA_DEB, NOT_TEST_INSTALL, BUILD_PKGS])).replace('/','-').replace(' ','-')
 if j.job_exists(job_name) is None:
     j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)

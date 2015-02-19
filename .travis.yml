@@ -13,11 +13,12 @@ env:
   - ROS_DISTRO=hydro AFTER_INSTALL=""
   - ROS_DISTRO=hydro AFTER_INSTALL="mongodb-clients"
   - ROS_DISTRO=hydro AFTER_INSTALL="ros-hydro-roseus"
+  - ROS_DISTRO=hydro USE_JENKINS="true"
   - ROS_DISTRO=indigo BUILDER='not-compile'
   - ROS_DISTRO=indigo BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
   - ROS_DISTRO=indigo BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT=''  TRAVIS_PULL_REQUEST=''
 script:
-  - mkdir .travis; mv * .travis
-  - if [ "${ROS_DISTRO}" = "indigo" ] ; then sed -i 's@cat .travis/travis.sh@cat travis.sh@' .travis/travis_jenkins.py; fi
+  - mkdir .travis; cp * .travis # need to copy, since directory starting from . is ignoreed by catkin build
+  - if [ "${ROS_DISTRO}" = "indigo" -o "${USE_JENKINS}" = "true" ] ; then sed -i 's@cat .travis/travis.sh@cat travis.sh@' .travis/travis_jenkins.py; fi
   - source .travis/travis.sh
   - if [ "${AFTER_INSTALL}" != "" ] ; then sudo apt-get install -f ${AFTER_INSTALL}; fi

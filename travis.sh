@@ -2,7 +2,7 @@
 
 set -x
 
-if [ "$ROS_DISTRO" == "indigo" -a "$TRAVIS_JOB_ID" ]; then
+if [ "$ROS_DISTRO" == "indigo" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
     sudo apt-get install -y -qq python-pip
     sudo pip install python-jenkins
     ./.travis/travis_jenkins.py
@@ -18,6 +18,8 @@ function error {
 
 [ "$BUILDER" == rosbuild ] && ( echo "$BUILDER is no longer supported"; exit 1; )
 [ "$ROSWS" == rosws ] && ( echo "$ROSWS is no longer supported"; exit 1; )
+BUILDER=catkin
+ROSWS=wstool
 
 trap error ERR
 
@@ -30,7 +32,7 @@ sudo apt-get install -q -qq -y python-setuptools
 # Define some config vars
 export CI_SOURCE_PATH=$(pwd)
 export REPOSITORY_NAME=${PWD##*/}
-if [ ! "$ROS_PARALLEL_JOBS" ]; then export ROS_PARALLEL_JOBS="-j8 -l8";  fi
+if [ ! "$ROS_PARALLEL_JOBS" ]; then export ROS_PARALLEL_JOBS="-j8";  fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 sudo sh -c 'echo "deb http://packages.ros.org/ros-shadow-fixed/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
@@ -57,7 +59,7 @@ if [ "$USE_DEB" == false ]; then sed -i "s@^\(.*github.com/$TRAVIS_REPO_SLUG.*\)
 if [ "$USE_DEB" == false ]; then $ROSWS update   ; fi
 if [ "$USE_DEB" == false ]; then $ROSWS set $REPOSITORY_NAME http://github.com/$TRAVIS_REPO_SLUG --git -y        ; fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
-if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $ROSWS init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; fi
+if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $ROSWS init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; $ROSWS update; fi
 cd ../
 # Install dependencies for source repos
 if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
@@ -77,7 +79,7 @@ source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting enviro
 ### script: # All commands must exit with code 0 on success. Anything else is considered failure.
 # for catkin
 if [ "$BUILDER" == catkin ]; then catkin build -i -v --no-status $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
-if [ "$BUILDER" == catkin ]; then catkin run_tests --no-status $BUILD_PKGS ; fi
+if [ "$BUILDER" == catkin ]; then catkin run_tests --no-status $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS --           ; fi
 if [ "$BUILDER" == catkin ]; then find build -name LastTest.log -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
 if [ "$NOT_TEST_INSTALL" != "true" ]; then
     if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
