@@ -94,6 +94,8 @@ set -x
 trap 'exit 1' ERR
 env
 
+mkdir log
+export ROS_LOG_DIR=`pwd`/log
 apt-get install -qq -y git wget sudo lsb-release
 rosdep update || rosdep update || echo "OK"
 
