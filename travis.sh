@@ -11,8 +11,11 @@ fi
 
 function error {
     trap - ERR
-    if [ "$BUILDER" == catkin ]; then (cd ~/ros/ws_$REPOSITORY_NAME/; catkin_test_results --all); fi
-    if [ "$BUILDER" == catkin ]; then find ~/ros/ws_$REPOSITORY_NAME/build/*/test_results -type f -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
+    if [ "$ROS_LOG_DIR" == "" ]; then export ROS_LOG_DIR=~/.ros/test_results; fi # http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LOG_DIR
+    if [ "$BUILDER" == catkin ]; then catkin_test_results --all $ROS_LOG_DIR; fi
+    if [ "$BUILDER" == catkin ]; then catkin_test_results --all ~/ros/ws_$REPOSITORY_NAME/build/; fi
+    if [ "$BUILDER" == catkin ]; then find $ROS_LOG_DIR -type f -iname "*.xml" -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
+    if [ "$BUILDER" == catkin ]; then find ~/ros/ws_$REPOSITORY_NAME/build/*/test_results -type f -iname "*.xml" -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
     exit 1
 }
 
