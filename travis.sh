@@ -11,11 +11,6 @@ fi
 
 function error {
     trap - ERR
-    if [ "$ROS_LOG_DIR" == "" ]; then export ROS_LOG_DIR=~/.ros/test_results; fi # http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LOG_DIR
-    if [ "$BUILDER" == catkin ]; then catkin_test_results --all $ROS_LOG_DIR; fi
-    if [ "$BUILDER" == catkin ]; then catkin_test_results --all ~/ros/ws_$REPOSITORY_NAME/build/; fi
-    if [ "$BUILDER" == catkin ]; then find $ROS_LOG_DIR -type f -iname "*.xml" -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
-    if [ "$BUILDER" == catkin ]; then find ~/ros/ws_$REPOSITORY_NAME/build/*/test_results -type f -iname "*.xml" -exec echo "==== {} ====" \; -exec cat {} \;  ; fi
     exit 1
 }
 
@@ -25,12 +20,6 @@ BUILDER=catkin
 ROSWS=wstool
 
 trap error ERR
-
-### before_install: # Use this to prepare the system to install prerequisites or dependencies
-## to avoid stty error, until catkin_tools 2.0.x (http://stackoverflow.com/questions/27969057/cant-launch-catkin-build-from-jenkins-job)
-sudo apt-get install -q -qq -y python-setuptools
-[ ! -e /tmp/catkin_tools ] && (cd /tmp/; git clone -q https://github.com/catkin/catkin_tools)
-(cd /tmp/catkin_tools; sudo python setup.py --quiet install)
 
 # Define some config vars
 export CI_SOURCE_PATH=$(pwd)
@@ -51,6 +40,14 @@ if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get install -q -qq -y mongodb-clients 
 sudo rosdep init
 ret=1
 rosdep update || while [ $ret != 0 ]; do sleep 1; rosdep update && ret=0 || echo "failed"; done
+
+### before_install: # Use this to prepare the system to install prerequisites or dependencies
+## to avoid stty error, until catkin_tools 2.0.x (http://stackoverflow.com/questions/27969057/cant-launch-catkin-build-from-jenkins-job)
+sudo apt-get install -q -qq -y python-setuptools python-catkin-pkg
+[ ! -e /tmp/catkin_tools ] && (cd /tmp/; git clone -q https://github.com/catkin/catkin_tools)
+### https://github.com/ros/catkin/pull/705
+[ ! -e /tmp/catkin ] && (cd /tmp/; git clone -q https://github.com/ros/catkin)
+(cd /tmp/catkin; sudo python setup.py --quiet install)
 
 ### install: # Use this to install any prerequisites or dependencies necessary to run your build
 # Create workspace
@@ -92,3 +89,10 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     if [ "$BUILDER" == catkin ]; then source install/setup.bash              ; fi
     if [ "$BUILDER" == catkin ]; then export EXIT_STATUS=0; for pkg in $TARGET_PKG; do echo "test $pkg..." ;[ "`find install/share/$pkg -iname '*.test'`" == "" ] && echo "[$pkg] No tests ware found!!!"  || find install/share/$pkg -iname "*.test" -print0 | xargs -0 -n1 rostest || export EXIT_STATUS=$?; done; [ $EXIT_STATUS == 0 ] ; fi
 fi
+
+## after_script
+PATH=/usr/local/bin:$PATH  # for installed catkin_test_results
+PYTHONPATH=/usr/local/lib/python2.7/dist-packages:$PYTHONPATH
+if [ "$ROS_LOG_DIR" == "" ]; then export ROS_LOG_DIR=~/.ros/test_results; fi # http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LOG_DIR
+if [ "$BUILDER" == catkin -a -e $ROS_LOG_DIR ]; then catkin_test_results --verbose --all $ROS_LOG_DIR; fi
+if [ "$BUILDER" == catkin -a -e ~/ros/ws_$REPOSITORY_NAME/build/ ]; then catkin_test_results --verbose --all ~/ros/ws_$REPOSITORY_NAME/build/; fi
