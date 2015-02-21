@@ -45,6 +45,7 @@ rosdep update || while [ $ret != 0 ]; do sleep 1; rosdep update && ret=0 || echo
 ## to avoid stty error, until catkin_tools 2.0.x (http://stackoverflow.com/questions/27969057/cant-launch-catkin-build-from-jenkins-job)
 sudo apt-get install -q -qq -y python-setuptools python-catkin-pkg
 [ ! -e /tmp/catkin_tools ] && (cd /tmp/; git clone -q https://github.com/catkin/catkin_tools)
+(cd /tmp/catkin_tools; sudo python setup.py --quiet install)
 ### https://github.com/ros/catkin/pull/705
 [ ! -e /tmp/catkin ] && (cd /tmp/; git clone -q https://github.com/ros/catkin)
 (cd /tmp/catkin; sudo python setup.py --quiet install)
@@ -79,14 +80,14 @@ source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting enviro
 ### script: # All commands must exit with code 0 on success. Anything else is considered failure.
 # for catkin
 if [ "$TARGET_PKG" == ""  ] ;then export TARGET_PKG=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
-if [ "$BUILDER" == catkin ]; then catkin build -i -v --no-status $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
+if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.01 $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
 if [ "$BUILDER" == catkin ]; then catkin run_tests --no-status $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS --           ; fi
 # it seems catkin run_tests write test result to wrong place, and ceate MISSING...
 if [ "$BUILDER" == catkin ]; then find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build          ; fi
 if [ "$NOT_TEST_INSTALL" != "true" ]; then
     if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
     if [ "$BUILDER" == catkin ]; then catkin config --install                ; fi
-    if [ "$BUILDER" == catkin ]; then catkin build -i -v --no-status $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
+    if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.01 $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
     if [ "$BUILDER" == catkin ]; then source install/setup.bash              ; fi
     if [ "$BUILDER" == catkin ]; then export EXIT_STATUS=0; for pkg in $TARGET_PKG; do echo "test $pkg..." ;[ "`find install/share/$pkg -iname '*.test'`" == "" ] && echo "[$pkg] No tests ware found!!!"  || find install/share/$pkg -iname "*.test" -print0 | xargs -0 -n1 rostest || export EXIT_STATUS=$?; done; [ $EXIT_STATUS == 0 ] ; fi
 fi
