@@ -81,7 +81,8 @@ source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting enviro
 if [ "$TARGET_PKG" == ""  ] ;then export TARGET_PKG=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "$BUILDER" == catkin ]; then catkin build -i -v --no-status $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
 if [ "$BUILDER" == catkin ]; then catkin run_tests --no-status $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS --           ; fi
-if [ "$BUILDER" == catkin ]; then catkin_test_results build                  ; fi
+# it seems catkin run_tests write test result to wrong place, and ceate MISSING...
+if [ "$BUILDER" == catkin ]; then find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build          ; fi
 if [ "$NOT_TEST_INSTALL" != "true" ]; then
     if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
     if [ "$BUILDER" == catkin ]; then catkin config --install                ; fi
