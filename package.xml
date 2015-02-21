@@ -10,6 +10,8 @@
 
   <build_depend>python</build_depend>
   <build_depend>catkin</build_depend>
+  <build_depend>rostest</build_depend>
+  <test_depend>rospy_tutorials</test_depend>
 
   <export/>
 </package>
