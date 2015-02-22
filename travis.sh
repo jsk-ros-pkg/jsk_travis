@@ -79,17 +79,18 @@ source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting enviro
 
 ### script: # All commands must exit with code 0 on success. Anything else is considered failure.
 # for catkin
-if [ "$TARGET_PKG" == ""  ] ;then export TARGET_PKG=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
+if [ "$TARGET_PKGS" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
+if [ "$TEST_PKGS" == "" ]; then export TEST_PKGS=$( [ "$BUILD_PKGS" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
 if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
-if [ "$BUILDER" == catkin ]; then catkin run_tests --limit-status-rate 0.001 $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS --           ; fi
+if [ "$BUILDER" == catkin ]; then for pkg in $TEST_PKGS ; do catkin run_tests --limit-status-rate 0.001 $pkg --make-args $ROS_PARALLEL_JOBS --; done ; fi
 # it seems catkin run_tests write test result to wrong place, and ceate MISSING...
-if [ "$BUILDER" == catkin ]; then find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build          ; fi
+if [ "$BUILDER" == catkin ]; then catkin_test_results build                                                            ; fi
 if [ "$NOT_TEST_INSTALL" != "true" ]; then
     if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
     if [ "$BUILDER" == catkin ]; then catkin config --install                ; fi
     if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
     if [ "$BUILDER" == catkin ]; then source install/setup.bash              ; fi
-    if [ "$BUILDER" == catkin ]; then export EXIT_STATUS=0; for pkg in $TARGET_PKG; do echo "test $pkg..." ;[ "`find install/share/$pkg -iname '*.test'`" == "" ] && echo "[$pkg] No tests ware found!!!"  || find install/share/$pkg -iname "*.test" -print0 | xargs -0 -n1 rostest || export EXIT_STATUS=$?; done; [ $EXIT_STATUS == 0 ] ; fi
+    if [ "$BUILDER" == catkin ]; then export EXIT_STATUS=0; for pkg in $TEST_PKGS; do echo "test $pkg..." ;[ "`find install/share/$pkg -iname '*.test'`" == "" ] && echo "[$pkg] No tests ware found!!!"  || find install/share/$pkg -iname "*.test" -print0 | xargs -0 -n1 rostest || export EXIT_STATUS=$?; done; [ $EXIT_STATUS == 0 ] ; fi
 fi
 
 ## after_script
