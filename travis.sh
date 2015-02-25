@@ -84,7 +84,7 @@ if [ "$TEST_PKGS" == "" ]; then export TEST_PKGS=$( [ "$BUILD_PKGS" == "" ] && e
 if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
 if [ "$BUILDER" == catkin ]; then catkin run_tests --limit-status-rate 0.001 $TEST_PKGS --make-args $ROS_PARALLEL_JOBS --; fi
 # it seems catkin run_tests write test result to wrong place, and ceate MISSING...
-if [ "$BUILDER" == catkin ]; then catkin_test_results build                                                            ; fi
+if [ "$BUILDER" == catkin ]; then  find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build           ; fi
 if [ "$NOT_TEST_INSTALL" != "true" ]; then
     if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
     if [ "$BUILDER" == catkin ]; then catkin config --install                ; fi
