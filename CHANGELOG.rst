@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.1 (2015-02-26)
+------------------
 * [travis.sh] remove MISSING-* xml files
 * Add CATKIN_IGNORED and remove it on testing
 * [travis.sh] do not run run_tests for each package, run everything at once
