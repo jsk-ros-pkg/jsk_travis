@@ -2,6 +2,27 @@
 
 set -x
 
+function travis_time_start {
+    set +x
+    TRAVIS_START_TIME=$(date +%s%N)
+    TRAVIS_TIME_ID=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
+    TRAVIS_FOLD_NAME=$1
+    echo -e "\e[0Ktraivs_fold:start:$TRAVIS_FOLD_NAME"
+    echo -e "\e[0Ktraivs_time:start:$TRAVIS_TIME_ID"
+    set -x
+}
+function travis_time_end {
+    set +x
+    _COLOR=${1:-32}
+    TRAVIS_END_TIME=$(date +%s%N)
+    TIME_ELAPSED_SECONDS=$(( ($TRAVIS_END_TIME - $TRAVIS_START_TIME)/1000000000 ))
+    echo -e "traivs_time:end:$TRAVIS_TIME_ID:start=$TRAVIS_START_TIME,finish=$TRAVIS_END_TIME,duration=$(($TRAVIS_END_TIME - $TRAVIS_START_TIME))\n\e[0K"
+    echo -e "traivs_fold:end:$TRAVIS_FOLD_NAME"
+    echo -e "\e[0K\e[${_COLOR}mFunction $TRAVIS_FOLD_NAME takes $(( $TIME_ELAPSED_SECONDS / 60 )) min $(( $TIME_ELAPSED_SECONDS % 60 )) sec\e[0m"
+    set -x
+}
+
+
 if [ "$ROS_DISTRO" == "indigo" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
     sudo apt-get install -y -qq python-pip
     sudo pip install python-jenkins
@@ -10,6 +31,7 @@ if [ "$ROS_DISTRO" == "indigo" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB
 fi
 
 function error {
+    travis_time_end 31
     trap - ERR
     exit 1
 }
@@ -20,6 +42,8 @@ BUILDER=catkin
 ROSWS=wstool
 
 trap error ERR
+
+travis_time_start setup_ros
 
 # Define some config vars
 export CI_SOURCE_PATH=$(pwd)
@@ -36,10 +60,17 @@ if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
 dpkg -s mongodb || echo "ok"; export HAVE_MONGO_DB=$?
 if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get remove -q -qq -y mongodb mongodb-10gen || echo "ok"; fi
 if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get install -q -qq -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"; fi # default actions
+
+travis_time_end
+travis_time_start setup_rosdep
+
 # Setup rosdep
 sudo rosdep init
 ret=1
 rosdep update || while [ $ret != 0 ]; do sleep 1; rosdep update && ret=0 || echo "failed"; done
+
+travis_time_end
+travis_time_start setup_catkin
 
 ### before_install: # Use this to prepare the system to install prerequisites or dependencies
 ## to avoid stty error, until catkin_tools 2.0.x (http://stackoverflow.com/questions/27969057/cant-launch-catkin-build-from-jenkins-job)
@@ -49,6 +80,9 @@ sudo apt-get install -q -qq -y python-setuptools python-catkin-pkg
 ### https://github.com/ros/catkin/pull/705
 [ ! -e /tmp/catkin ] && (cd /tmp/; git clone -q https://github.com/ros/catkin)
 (cd /tmp/catkin; sudo python setup.py --quiet install)
+
+travis_time_end
+travis_time_start setup_rosws
 
 ### install: # Use this to install any prerequisites or dependencies necessary to run your build
 # Create workspace
@@ -67,6 +101,10 @@ if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
     ROSDEP_ARGS=>/dev/null
 fi
 source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
+
+travis_time_end
+travis_time_start rosdep_install
+
 if [ -e ${CI_SOURCE_PATH}/.travis/rosdep-install.sh ]; then ## this is mainly for jsk_travis itself
     ${CI_SOURCE_PATH}/.travis/rosdep-install.sh
 else
@@ -77,21 +115,43 @@ fi
 ### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
 source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
 
+travis_time_end
+travis_time_start catkin_build
+
 ### script: # All commands must exit with code 0 on success. Anything else is considered failure.
 # for catkin
 if [ "$TARGET_PKGS" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "$TEST_PKGS" == "" ]; then export TEST_PKGS=$( [ "$BUILD_PKGS" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
 if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
+
+travis_time_end
+travis_time_start catkin_run_tests
+
 if [ "$BUILDER" == catkin ]; then catkin run_tests --limit-status-rate 0.001 $TEST_PKGS --make-args $ROS_PARALLEL_JOBS --; fi
 # it seems catkin run_tests write test result to wrong place, and ceate MISSING...
 if [ "$BUILDER" == catkin ]; then  find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build           ; fi
+
+travis_time_end
+
 if [ "$NOT_TEST_INSTALL" != "true" ]; then
+
+    travis_time_start catkin_install_build
+
     if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
     if [ "$BUILDER" == catkin ]; then catkin config --install                ; fi
     if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
     if [ "$BUILDER" == catkin ]; then source install/setup.bash              ; fi
+
+    travis_time_end
+    travis_time_start catkin_install_run_tests
+
     if [ "$BUILDER" == catkin ]; then export EXIT_STATUS=0; for pkg in $TEST_PKGS; do echo "test $pkg..." ;[ "`find install/share/$pkg -iname '*.test'`" == "" ] && echo "[$pkg] No tests ware found!!!"  || find install/share/$pkg -iname "*.test" -print0 | xargs -0 -n1 rostest || export EXIT_STATUS=$?; done; [ $EXIT_STATUS == 0 ] ; fi
+
+    travis_time_end
+
 fi
+
+travis_time_start after_script
 
 ## after_script
 PATH=/usr/local/bin:$PATH  # for installed catkin_test_results
@@ -99,3 +159,5 @@ PYTHONPATH=/usr/local/lib/python2.7/dist-packages:$PYTHONPATH
 if [ "$ROS_LOG_DIR" == "" ]; then export ROS_LOG_DIR=~/.ros/test_results; fi # http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LOG_DIR
 if [ "$BUILDER" == catkin -a -e $ROS_LOG_DIR ]; then catkin_test_results --verbose --all $ROS_LOG_DIR; fi
 if [ "$BUILDER" == catkin -a -e ~/ros/ws_$REPOSITORY_NAME/build/ ]; then catkin_test_results --verbose --all ~/ros/ws_$REPOSITORY_NAME/build/; fi
+
+travis_time_end
