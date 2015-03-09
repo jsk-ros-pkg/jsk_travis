@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.2 (2015-03-09)
+------------------
 * [travis.sh] add fake travis_time_start
 * Contributors: Kei Okada
 
