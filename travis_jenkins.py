@@ -100,6 +100,10 @@ apt-get install -qq -y git wget sudo lsb-release
 rosdep update || rosdep update || echo "OK"
 
 export SHELL=/bin/bash
+
+# remove .travis/CATKIN_IGNORE under jsk_travis for testing on jsk_travis
+find .. -name jsk_travis -exec rm -f {}/CATKIN_IGNORE \;
+
 `cat .travis/travis.sh`
 
 EOL

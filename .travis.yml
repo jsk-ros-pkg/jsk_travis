@@ -19,7 +19,7 @@ env:
   - ROS_DISTRO=indigo BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT=''  TRAVIS_PULL_REQUEST=''
 script:
   - mkdir .travis; cp * .travis # need to copy, since directory starting from . is ignoreed by catkin build
-  - rm .travis/CATKIN_IGNORED
+  - find . -name CATKIN_IGNORE -exec rm {} \;
   - if [ "${ROS_DISTRO}" = "indigo" -o "${USE_JENKINS}" = "true" ] ; then sed -i 's@cat .travis/travis.sh@cat travis.sh@' .travis/travis_jenkins.py; fi
   - source .travis/travis.sh
   - if [ "${AFTER_INSTALL}" != "" ] ; then sudo apt-get install -f ${AFTER_INSTALL}; fi
