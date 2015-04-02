@@ -95,6 +95,9 @@ if [ "$USE_DEB" == false ]; then $ROSWS update   ; fi
 if [ "$USE_DEB" == false ]; then $ROSWS set $REPOSITORY_NAME http://github.com/$TRAVIS_REPO_SLUG --git -y        ; fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
 if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $ROSWS init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; $ROSWS update; fi
+# disable hrpsys/doc generation
+find  -ipath "*/hrpsys-base-source/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
+
 cd ../
 # Install dependencies for source repos
 if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
