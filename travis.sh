@@ -49,6 +49,7 @@ travis_time_start setup_ros
 export CI_SOURCE_PATH=$(pwd)
 export REPOSITORY_NAME=${PWD##*/}
 if [ ! "$ROS_PARALLEL_JOBS" ]; then export ROS_PARALLEL_JOBS="-j8";  fi
+if [ ! "$CATKIN_PARALLEL_JOBS" ]; then export CATKIN_PARALLEL_JOBS="-p4";  fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 sudo sh -c 'echo "deb http://packages.ros.org/ros-shadow-fixed/ubuntu `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
@@ -122,12 +123,12 @@ travis_time_start catkin_build
 # for catkin
 if [ "$TARGET_PKGS" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "$TEST_PKGS" == "" ]; then export TEST_PKGS=$( [ "$BUILD_PKGS" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
-if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
+if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
 
 travis_time_end
 travis_time_start catkin_run_tests
 
-if [ "$BUILDER" == catkin ]; then catkin run_tests --limit-status-rate 0.001 $TEST_PKGS --make-args $ROS_PARALLEL_JOBS --; fi
+if [ "$BUILDER" == catkin ]; then catkin run_tests --limit-status-rate 0.001 $TEST_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --; fi
 # it seems catkin run_tests write test result to wrong place, and ceate MISSING...
 if [ "$BUILDER" == catkin ]; then  find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build || error  ; fi
 
@@ -139,7 +140,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
     if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
     if [ "$BUILDER" == catkin ]; then catkin config --install                ; fi
-    if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS --make-args $ROS_PARALLEL_JOBS            ; fi
+    if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
     if [ "$BUILDER" == catkin ]; then source install/setup.bash              ; fi
 
     travis_time_end
