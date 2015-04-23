@@ -106,7 +106,14 @@ if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
 fi
 source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
 
+if [ ! -e src/.rosinstall ]; then
+    echo "- git: {local-name: $REPOSITORY_NAME, uri: 'http://github.com/$TRAVIS_REPO_SLUG'}" >> src/.rosinstall
+fi
+
 travis_time_end
+
+$ROSWS info -t src
+
 travis_time_start rosdep_install
 
 if [ -e ${CI_SOURCE_PATH}/.travis/rosdep-install.sh ]; then ## this is mainly for jsk_travis itself
