@@ -2,6 +2,35 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
+* upload-docs.sh
+
+  * [upload-docs.sh] fix :tell them who am i, push data
+  * [upload-docs.sh] add euslisp-docs uploader
+
+* travis_jenkins.py
+
+  * [travis_jenkins.py] add --rm option to remove container asap
+
+* travis.sh
+
+  * [travis.sh] show wstool info
+  * [travis.sh] install ros/catkin under /opt/ros/$ROS_DISTRO (this installs 0.6.14 as of today and this solve COPY problem https://github.com/ros/catkin/issues/718)
+  * [travis.sh] add CATKIN_PARALLEL_JOBS which control catkin concurrent jobs, not make concurrent jobs
+  * [.travis] FIX use latest travis which disable hrpsys doc generation
+  * [travis.sh] disable hrpsys doc generation
+  * [travis.sh] do not error when .rosinstall is not exists
+  * Run `apt-get update` before runnign `apt-get install`
+  * call error when run_tests failed
+
+* Rename CATKIN_IGNORED to CATKIN_IGNORE
+
+* use ROS_PACKAGE_PATH into from-paths and ignore non-existing directories such as /opt/ros/<distro>/stacks
+
+* Contributors: Kei Okada, Ryohei Ueda, Eisoku Kuroiwa
+
 0.0.2 (2015-03-09)
 ------------------
 * [travis.sh] add fake travis_time_start
