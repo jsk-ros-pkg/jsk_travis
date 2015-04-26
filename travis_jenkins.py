@@ -27,6 +27,10 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
        USE_DEB    = %(USE_DEB)s&lt;br&gt;
        EXTRA_DEB  = %(EXTRA_DEB)s&lt;br&gt;
        NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s&lt;br&gt;
+       ROS_PARALLEL_JOBS = %(ROS_PARALLEL_JOBS)s&lt;br&gt;
+       CATKIN_PARALLEL_JOBS = %(CATKIN_PARALLEL_JOBS)s&lt;br&gt;
+       ROS_PARALLEL_TEST_JOBS = %(ROS_PARALLEL_TEST_JOBS)s&lt;br&gt;
+       CATKIN_PARALLEL_TEST_JOBS = %(CATKIN_PARALLEL_TEST_JOBS)s&lt;br&gt;
        BUILDING_PKG = %(BUILD_PKGS)s&lt;br&gt;
   </description>
   <keepDependencies>false</keepDependencies>
@@ -87,7 +91,7 @@ git submodule update
 sudo docker rm `sudo docker ps --no-trunc -a -q` || echo "ok"
 sudo docker rmi $(sudo docker images | awk '/^&lt;none&gt;/ { print $3 }') || echo "oK"
 
-sudo docker run --rm -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e BUILD_PKGS="%(BUILD_PKGS)s"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:%(LSB_RELEASE)s /bin/bash -c "$(cat &lt;&lt;EOL
+sudo docker run --rm -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e ROS_PARALLEL_JOBS="%(ROS_PARALLEL_JOBS)s" -e CATKIN_PARALLEL_JOBS="%(CATKIN_PARALLEL_JOBS)s" -e ROS_PARALLEL_TEST_JOBS="%(ROS_PARALLEL_TEST_JOBS)s" -e CATKIN_PARALLEL_TEST_JOBS="%(CATKIN_PARALLEL_TEST_JOBS)s" -e BUILD_PKGS="%(BUILD_PKGS)s"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:%(LSB_RELEASE)s /bin/bash -c "$(cat &lt;&lt;EOL
 
 cd %(TRAVIS_REPO_SLUG)s
 set -x
@@ -199,6 +203,10 @@ BUILDER         = env.get('BUILDER') or 'catkin'
 USE_DEB         = env.get('USE_DEB') or 'true'
 EXTRA_DEB       = env.get('EXTRA_DEB') or ''
 NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL') or ''
+ROS_PARALLEL_JOBS       = env.get('ROS_PARALLEL_JOBS') or ''
+CATKIN_PARALLEL_JOBS    = env.get('CATKIN_PARALLEL_JOBS') or ''
+ROS_PARALLEL_TEST_JOBS  = env.get('ROS_PARALLEL_TEST_JOBS') or ''
+CATKIN_PARALLEL_TEST_JOBS = env.get('CATKIN_PARALLEL_TEST_JOBS') or ''
 BUILD_PKGS       = env.get('BUILD_PKGS') or ''
 
 print('''
@@ -217,6 +225,10 @@ BUILDER          = %(BUILDER)s
 USE_DEB          = %(USE_DEB)s
 EXTRA_DEB        = %(EXTRA_DEB)s
 NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s
+ROS_PARALLEL_JOBS       = %(ROS_PARALLEL_JOBS)s
+CATKIN_PARALLEL_JOBS    = %(CATKIN_PARALLEL_JOBS)s
+ROS_PARALLEL_TEST_JOBS  = %(ROS_PARALLEL_TEST_JOBS)s
+CATKIN_PARALLEL_TEST_JOBS = %(CATKIN_PARALLEL_TEST_JOBS)s
 BUILD_PKGS       = %(BUILD_PKGS)s
 ''' % locals())
 
