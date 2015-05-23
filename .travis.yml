@@ -21,7 +21,7 @@ env:
 before_script:
   - mkdir .travis; cp * .travis # need to copy, since directory starting from . is ignoreed by catkin build
   - find . -name CATKIN_IGNORE -exec rm {} \;
-  - sh -c \"${BEFORE_SCRIPT}\"
+  - if [ "$BEFORE_SCRIPT" != "" ]; then sh -c "${BEFORE_SCRIPT}"; fi
 script:
   - if [ "${ROS_DISTRO}" = "indigo" -o "${USE_JENKINS}" = "true" ] ; then sed -i 's@cat .travis/travis.sh@cat travis.sh@' .travis/travis_jenkins.py; fi
   - source .travis/travis.sh
