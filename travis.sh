@@ -125,8 +125,12 @@ else
 fi
 
 
+travis_time_end
+travis_time_start before_script
+
 ### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
 source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
+if [ "$BEFORE_SCRIPT" != "" ]; then sh -c "${BEFORE_SCRIPT}"; fi
 
 travis_time_end
 travis_time_start catkin_build
