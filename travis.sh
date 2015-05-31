@@ -113,6 +113,14 @@ fi
 
 travis_time_end
 
+travis_time_start before_script
+
+### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
+source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
+if [ "$BEFORE_SCRIPT" != "" ]; then sh -c "${BEFORE_SCRIPT}"; fi
+
+travis_time_end
+
 travis_time_start rosdep_install
 
 if [ -e ${CI_SOURCE_PATH}/.travis/rosdep-install.sh ]; then ## this is mainly for jsk_travis itself
@@ -121,13 +129,6 @@ else
     wget http://raw.github.com/jsk-ros-pkg/jsk_travis/master/rosdep-install.sh -O - | bash
 fi
 
-
-travis_time_end
-travis_time_start before_script
-
-### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
-source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
-if [ "$BEFORE_SCRIPT" != "" ]; then sh -c "${BEFORE_SCRIPT}"; fi
 
 travis_time_end
 
