@@ -13,7 +13,7 @@ env:
   - ROS_DISTRO=hydro AFTER_INSTALL=""
   - ROS_DISTRO=hydro AFTER_INSTALL="mongodb-clients"
   - ROS_DISTRO=hydro AFTER_INSTALL="ros-hydro-roseus"
-  - ROS_DISTRO=hydro BEFORE_SCRIPT="git clone http://github.com/jsk-ros-pkg/jsk_common; mv jsk_common/* .; rm -fr jsk_common"
+  - ROS_DISTRO=hydro BEFORE_SCRIPT="git clone http://github.com/jsk-ros-pkg/jsk_common /tmp/jsk_common_$$; cp -r /tmp/jsk_common_$$/jsk_*_msgs ."
   - ROS_DISTRO=hydro USE_JENKINS="true"
   - ROS_DISTRO=indigo BUILDER='not-compile'
   - ROS_DISTRO=indigo BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis

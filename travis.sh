@@ -101,20 +101,25 @@ if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $ROSW
 # disable hrpsys/doc generation
 find . -ipath "*/hrpsys/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
 
-cd ../
 # Install dependencies for source repos
 if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
     ROSDEP_ARGS=>/dev/null
 fi
 source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
 
-if [ ! -e src/.rosinstall ]; then
-    echo "- git: {local-name: $REPOSITORY_NAME, uri: 'http://github.com/$TRAVIS_REPO_SLUG'}" >> src/.rosinstall
+if [ ! -e .rosinstall ]; then
+    echo "- git: {local-name: $REPOSITORY_NAME, uri: 'http://github.com/$TRAVIS_REPO_SLUG'}" >> .rosinstall
 fi
 
 travis_time_end
 
-$ROSWS info -t src
+travis_time_start before_script
+
+### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
+source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
+if [ "$BEFORE_SCRIPT" != "" ]; then sh -c "${BEFORE_SCRIPT}"; fi
+
+travis_time_end
 
 travis_time_start rosdep_install
 
@@ -125,10 +130,11 @@ else
 fi
 
 
-### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
-source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
-
 travis_time_end
+
+$ROSWS info -t .
+cd ../
+
 travis_time_start catkin_build
 
 ### script: # All commands must exit with code 0 on success. Anything else is considered failure.
