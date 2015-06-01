@@ -2,6 +2,22 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [.travis.yml] fix BEFORE_SCRIPT for test
+* [.travis.yml] run BEFORE_SCRIPT before rosdep install
+* [travis.sh] run BEFORE_SCRIPT under src directory
+* [travis.sh] run before_script on before_script
+* [travis_jenkins.py] not sure why but, 'docker rm' waits forever
+* [travis_jenkins.py] use timeout plugin
+* [.travis.yml] Check if BEFORE_SCRIPT is valid or not
+* [travis.sh] rosdep requres pip
+* [.travis.yml] add BEFORE_SCRIPT and test with jsk_common
+* [travis.sh] check ROS_PACKAGE_PATH with rospack profile and also check nodelet plugins
+* [travis_jenkins.py] export ROS_PARALLEL_JOBS, CATKIN_PARALLEL_JOBS, ROS_PARALLEL_TEST_JOBS, CATKIN_PARALLEL_TEST_JOBS to jenkins
+* [travis.sh] add ROS_PARALLEL_TEST_JOBS and CATKIN_PARALLEL_TEST_JOBS which used for run_test, default value is ROS_PARALLEL_JOBS and CATKIN_PARALLEL_JOBS
+* Contributors: Kei Okada, Ryohei Ueda
+
 0.0.3 (2015-04-24)
 ------------------
 
