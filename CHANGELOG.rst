@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.4 (2015-06-01)
+------------------
 * [.travis.yml] fix BEFORE_SCRIPT for test
 * [.travis.yml] run BEFORE_SCRIPT before rosdep install
 * [travis.sh] run BEFORE_SCRIPT under src directory
