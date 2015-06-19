@@ -2,6 +2,15 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [travis.sh] Add jade for travis test
+* [.traivs.yml] fix test code, due to jsk_common has been split
+* [.travis.yml] add test code to check jade environment
+* [travis.sh] source setup.bash before catkin
+* [travis.sh] travis.sh need rospack command
+* Contributors: Kei Okada, Kentaro Wada
+
 0.0.4 (2015-06-01)
 ------------------
 * [.travis.yml] fix BEFORE_SCRIPT for test
