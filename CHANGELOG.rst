@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2015-06-19)
+------------------
 * [travis.sh] Add jade for travis test
 * [.traivs.yml] fix test code, due to jsk_common has been split
 * [.travis.yml] add test code to check jade environment
