@@ -274,7 +274,7 @@ build_number = j.get_job_info(job_name)['nextBuildNumber']
 TRAVIS_JENKINS_UNIQUE_ID='{}.{}'.format(TRAVIS_JOB_ID,time.time())
 
 j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
-print('next build nuber is {}'.format(build_number))
+print('next build number is {}'.format(build_number))
 
 ## wait for starting
 result = wait_for_building(job_name, build_number)
