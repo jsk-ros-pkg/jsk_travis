@@ -142,7 +142,7 @@ source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting enviro
 # for catkin
 if [ "$TARGET_PKGS" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "$TEST_PKGS" == "" ]; then export TEST_PKGS=$( [ "$BUILD_PKGS" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
-if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
+if [ "$BUILDER" == catkin ]; then catkin build -i -v --no-color --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
 
 travis_time_end
 travis_time_start catkin_run_tests
@@ -159,7 +159,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
     if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
     if [ "$BUILDER" == catkin ]; then catkin config --install                ; fi
-    if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
+    if [ "$BUILDER" == catkin ]; then catkin build -i -v --no-color --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
     if [ "$BUILDER" == catkin ]; then source install/setup.bash              ; fi
     if [ "$BUILDER" == catkin ]; then rospack profile                        ; fi
     if [ "$BUILDER" == catkin ]; then rospack plugins --attrib=plugin nodelet; fi
