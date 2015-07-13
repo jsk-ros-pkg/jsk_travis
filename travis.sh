@@ -147,6 +147,13 @@ if [ "$BUILDER" == catkin ]; then catkin build -i -v --limit-status-rate 0.001 $
 travis_time_end
 travis_time_start catkin_run_tests
 
+# patch for rostest
+(cd /opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/611.diff -O - | sudo patch -f -p4 || echo "ok" )
+if [ "$ROS_DISTRO" == "hydro" ]; then
+    (cd /opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros/pull/82.diff -O - | sudo patch -p4)
+    (cd /opt/ros/$ROS_DISTRO/share; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/611.diff -O - | sed s@.cmake.em@.cmake@ | sed 's@/${PROJECT_NAME}@@' | sed 's@ DEPENDENCIES ${_rostest_DEPENDENCIES})@)@' | sudo patch -f -p2 || echo "ok")
+fi
+
 if [ "$BUILDER" == catkin ]; then catkin run_tests --limit-status-rate 0.001 $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --; fi
 # it seems catkin run_tests write test result to wrong place, and ceate MISSING...
 if [ "$BUILDER" == catkin ]; then  find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build || error  ; fi
