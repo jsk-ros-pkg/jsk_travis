@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.6 (2015-07-21)
+------------------
 * [travis.sh] enable to set ROS_REPOSITORY_PATH
 * [travis.sh] Echo what test is being done
 * [travis.sh] Fix typo ware -> were
