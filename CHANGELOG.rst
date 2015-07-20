@@ -2,6 +2,15 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [travis.sh] enable to set ROS_REPOSITORY_PATH
+* [travis.sh] Echo what test is being done
+* [travis.sh] Fix typo ware -> were
+* [travis_jenkins.py] pass TEST_PKGS and TARGET_PKGS params to docker
+* [travis_jenkins.py] Fix typo nuber -> number
+* Contributors: Kei Okada, Kentaro Wada
+
 0.0.5 (2015-06-19)
 ------------------
 * [travis.sh] Add jade for travis test
