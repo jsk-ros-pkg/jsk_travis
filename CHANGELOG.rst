@@ -2,6 +2,13 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* travis_jenkins.py: support BEFORE_SCRIPT
+* .travis.yml: rm CATKIN_IGNORE using BEFORE_SCRIPT
+* travis.sh : update roslaunch for understanding roslaunch arguments
+* Contributors: Kei Okada
+
 0.0.6 (2015-07-21)
 ------------------
 * [travis.sh] enable to set ROS_REPOSITORY_PATH
