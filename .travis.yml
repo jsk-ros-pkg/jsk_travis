@@ -24,8 +24,7 @@ env:
   - ROS_DISTRO=jade BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT=''  TRAVIS_PULL_REQUEST=''
 before_script:
   - mkdir .travis; cp * .travis # need to copy, since directory starting from . is ignoreed by catkin build
-  - find . -name CATKIN_IGNORE -exec rm {} \;
-  - if [ "$BEFORE_SCRIPT" != "" ]; then sh -c "${BEFORE_SCRIPT}"; fi
+  - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; ${BEFORE_SCRIPT}"
 script:
   - if [ "${ROS_DISTRO}" = "indigo" -o "${USE_JENKINS}" = "true" ] ; then sed -i 's@cat .travis/travis.sh@cat travis.sh@' .travis/travis_jenkins.py; fi
   - source .travis/travis.sh
