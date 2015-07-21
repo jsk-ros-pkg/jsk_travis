@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2015-07-21)
+------------------
 * travis_jenkins.py: support BEFORE_SCRIPT
 * .travis.yml: rm CATKIN_IGNORE using BEFORE_SCRIPT
 * travis.sh : update roslaunch for understanding roslaunch arguments
