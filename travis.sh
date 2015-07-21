@@ -84,6 +84,10 @@ sudo apt-get install -q -qq -y python-setuptools python-catkin-pkg
 ### https://github.com/ros/catkin/pull/705
 [ ! -e /tmp/catkin ] && (cd /tmp/; git clone -q https://github.com/ros/catkin)
 (cd /tmp/catkin; cmake . -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO/ ; make; sudo make install)
+sudo apt-get install -y -q -qq ros-$ROS_DISTRO-roslaunch
+### https://github.com/ros/ros_comm/pull/641
+(cd /opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/641.diff -O /tmp/641.diff; [ "$ROS_DISTRO" == "hydro" ] && sed -i s@items@iteritems@ /tmp/641.diff ; sudo patch -p4 < /tmp/641.diff)
+
 
 travis_time_end
 travis_time_start setup_rosws
