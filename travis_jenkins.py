@@ -27,6 +27,7 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
        USE_DEB    = %(USE_DEB)s&lt;br&gt;
        EXTRA_DEB  = %(EXTRA_DEB)s&lt;br&gt;
        TARGET_PKGS = %(TARGET_PKGS)s&lt;br&gt;
+       BEFORE_SCRIPT = %(BEFORE_SCRIPT)s&lt;br&gt;
        TEST_PKGS  = %(TEST_PKGS)s&lt;br&gt;
        NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s&lt;br&gt;
        ROS_PARALLEL_JOBS = %(ROS_PARALLEL_JOBS)s&lt;br&gt;
@@ -93,7 +94,7 @@ git submodule update
 # sudo docker rm -f `sudo docker ps --no-trunc -a -q` || echo "ok"
 sudo docker rmi $(sudo docker images | awk '/^&lt;none&gt;/ { print $3 }') || echo "oK"
 
-sudo docker run --rm -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e TARGET_PKGS="%(TARGET_PKGS)s" -e TEST_PKGS="%(TEST_PKGS)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e ROS_PARALLEL_JOBS="%(ROS_PARALLEL_JOBS)s" -e CATKIN_PARALLEL_JOBS="%(CATKIN_PARALLEL_JOBS)s" -e ROS_PARALLEL_TEST_JOBS="%(ROS_PARALLEL_TEST_JOBS)s" -e CATKIN_PARALLEL_TEST_JOBS="%(CATKIN_PARALLEL_TEST_JOBS)s" -e BUILD_PKGS="%(BUILD_PKGS)s"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:%(LSB_RELEASE)s /bin/bash -c "$(cat &lt;&lt;EOL
+sudo docker run --rm -t -e ROS_DISTRO=%(ROS_DISTRO)s -e ROSWS=%(ROSWS)s -e BUILDER=%(BUILDER)s -e USE_DEB=%(USE_DEB)s -e TRAVIS_REPO_SLUG=%(TRAVIS_REPO_SLUG)s -e EXTRA_DEB="%(EXTRA_DEB)s" -e TARGET_PKGS="%(TARGET_PKGS)s" -e BEFORE_SCRIPT="%(BEFORE_SCRIPT)s" -e TEST_PKGS="%(TEST_PKGS)s" -e NOT_TEST_INSTALL=%(NOT_TEST_INSTALL)s -e ROS_PARALLEL_JOBS="%(ROS_PARALLEL_JOBS)s" -e CATKIN_PARALLEL_JOBS="%(CATKIN_PARALLEL_JOBS)s" -e ROS_PARALLEL_TEST_JOBS="%(ROS_PARALLEL_TEST_JOBS)s" -e CATKIN_PARALLEL_TEST_JOBS="%(CATKIN_PARALLEL_TEST_JOBS)s" -e BUILD_PKGS="%(BUILD_PKGS)s"  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -w /workspace ros-ubuntu:%(LSB_RELEASE)s /bin/bash -c "$(cat &lt;&lt;EOL
 
 cd %(TRAVIS_REPO_SLUG)s
 set -x
@@ -107,9 +108,6 @@ apt-get install -qq -y git wget sudo lsb-release
 rosdep update || rosdep update || echo "OK"
 
 export SHELL=/bin/bash
-
-# remove .travis/CATKIN_IGNORE under jsk_travis for testing on jsk_travis
-find .. -name jsk_travis -exec rm -f {}/CATKIN_IGNORE \;
 
 `cat .travis/travis.sh`
 
@@ -214,6 +212,7 @@ USE_DEB         = env.get('USE_DEB') or 'true'
 EXTRA_DEB       = env.get('EXTRA_DEB') or ''
 TEST_PKGS       = env.get('TEST_PKGS') or ''
 TARGET_PKGS     = env.get('TARGET_PKGS') or ''
+BEFORE_SCRIPT   = env.get('BEFORE_SCRIPT') or ''
 NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL') or ''
 ROS_PARALLEL_JOBS       = env.get('ROS_PARALLEL_JOBS') or ''
 CATKIN_PARALLEL_JOBS    = env.get('CATKIN_PARALLEL_JOBS') or ''
@@ -238,6 +237,7 @@ USE_DEB          = %(USE_DEB)s
 EXTRA_DEB        = %(EXTRA_DEB)s
 TEST_PKGS        = %(TEST_PKGS)s
 TARGET_PKGS       = %(TARGET_PKGS)s
+BEFORE_SCRIPT      = %(BEFORE_SCRIPT)s
 NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s
 ROS_PARALLEL_JOBS       = %(ROS_PARALLEL_JOBS)s
 CATKIN_PARALLEL_JOBS    = %(CATKIN_PARALLEL_JOBS)s
