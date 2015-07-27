@@ -105,7 +105,6 @@ mkdir log
 export ROS_LOG_DIR=\$PWD/log
 apt-get update -qq || echo Ignore error of apt-get update
 apt-get install -qq -y git wget sudo lsb-release
-rosdep update || rosdep update || echo "OK"
 
 export SHELL=/bin/bash
 
