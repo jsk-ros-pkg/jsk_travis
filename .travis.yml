@@ -9,6 +9,8 @@ python:
   - "2.7"
 compiler:
   - gcc
+notifications:
+  slack: jsk-robotics:Av7tc8wj3IWkLYvlTzHE7x2g
 env:
   - ROS_DISTRO=hydro AFTER_INSTALL=""
   - ROS_DISTRO=hydro AFTER_INSTALL="" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
