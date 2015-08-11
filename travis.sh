@@ -43,6 +43,8 @@ ROSWS=wstool
 
 trap error ERR
 
+if [ "`git diff .travis`" != "" ] ; then DIFF=`git diff .travis | grep .*Subproject | sed s'@.*Subproject commit @@' | sed 'N;s/\n/.../'`; (cd .travis/;git log --oneline --graph --left-right --first-parent --decorate $DIFF) | tee >(grep -c '<' && error); fi
+
 travis_time_start setup_ros
 
 # Define some config vars
