@@ -108,7 +108,7 @@ if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $ROSW
 # disable hrpsys/doc generation
 find . -ipath "*/hrpsys/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
 # disable metapackage
-find . -name package.xml -print -exec grep metapackage {} \; -a -exec bash -c 'touch `dirname ${1}`/CATKIN_IGNORE' funcname {} \;
+find -L . -name package.xml -print -exec grep metapackage {} \; -a -exec bash -c 'touch `dirname ${1}`/CATKIN_IGNORE' funcname {} \;
 
 # Install dependencies for source repos
 if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
