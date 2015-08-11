@@ -105,6 +105,8 @@ ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
 if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $ROSWS init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; $ROSWS update; fi
 # disable hrpsys/doc generation
 find . -ipath "*/hrpsys/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
+# disable metapackage
+find . -name package.xml -print -exec grep metapackage {} \; -a -exec bash -c 'touch `dirname ${1}`/CATKIN_IGNORE' funcname {} \;
 
 # Install dependencies for source repos
 if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
