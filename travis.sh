@@ -43,6 +43,8 @@ ROSWS=wstool
 
 trap error ERR
 
+if [ "`git diff .travis`" != "" ] ; then DIFF=`git diff .travis | grep .*Subproject | sed s'@.*Subproject commit @@' | sed 'N;s/\n/.../'`; (cd .travis/;git log --oneline --graph --left-right --first-parent --decorate $DIFF) | tee >(grep -c '<' && error); fi
+
 travis_time_start setup_ros
 
 # Define some config vars
@@ -105,6 +107,8 @@ ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
 if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $ROSWS init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; $ROSWS update; fi
 # disable hrpsys/doc generation
 find . -ipath "*/hrpsys/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
+# disable metapackage
+find . -name package.xml -print -exec grep metapackage {} \; -a -exec bash -c 'touch `dirname ${1}`/CATKIN_IGNORE' funcname {} \;
 
 # Install dependencies for source repos
 if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
