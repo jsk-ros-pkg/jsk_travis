@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.8 (2015-08-12)
+------------------
 * travis.sh : FIX raise error if .travis is rollbacked
 * need to follow symlink
 * travis.sh : raise error if .travis is rollbacked
