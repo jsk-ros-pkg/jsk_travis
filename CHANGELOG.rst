@@ -2,6 +2,17 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* travis.sh : FIX raise error if .travis is rollbacked
+* need to follow symlink
+* travis.sh : raise error if .travis is rollbacked
+* travis.sh: add CATKIN_IGNORE to metapackages
+* travis_jenkins.py: need to run rosdep update after rosdep init; and that is executed within travis.sh
+* Create README.md
+* travis_jenkins.py: quoate environment variables
+* Contributors: Kei Okada
+
 0.0.7 (2015-07-21)
 ------------------
 * travis_jenkins.py: support BEFORE_SCRIPT
