@@ -43,7 +43,9 @@ ROSWS=wstool
 
 trap error ERR
 
-if [ "`git diff .travis`" != "" ] ; then DIFF=`git diff .travis | grep .*Subproject | sed s'@.*Subproject commit @@' | sed 'N;s/\n/.../'`; (cd .travis/;git log --oneline --graph --left-right --first-parent --decorate $DIFF) | tee >(grep -c '<' && error); fi
+git branch --all
+if [ "`git diff origin/master FETCH_HEAD .travis`" != "" ] ; then DIFF=`git diff origin/master FETCH_HEAD .travis | grep .*Subproject | sed s'@.*Subproject commit @@' | sed 'N;s/\n/.../'`; (cd .travis/;git log --oneline --graph --left-right --first-parent --decorate $DIFF) | tee /tmp/$$-travis-diff.log; grep -c '<' /tmp/$$-travis-diff.log && error; echo "ok"; fi
+
 
 travis_time_start setup_ros
 
