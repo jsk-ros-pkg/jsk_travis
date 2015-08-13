@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* travis.sh : FIX raise error if .travis is rollbacked
+* Contributors: Kei Okada
+
 0.0.8 (2015-08-12)
 ------------------
 * travis.sh : FIX raise error if .travis is rollbacked
