@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.10 (2015-08-13)
+-------------------
 * travis.sh : FIX raise error if .travis is rollbacked (AGAIN, AGAIN, exit with exit function)
 * add to check catkin_make works
 * Contributors: Kei Okada
