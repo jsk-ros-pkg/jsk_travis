@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.11 (2015-08-13)
+-------------------
 * travis.sh : FIX raise error if .travis is rollbacked (AGAIN, AGAIN, diff old...new)
 * Contributors: Kei Okada
 
