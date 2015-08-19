@@ -24,8 +24,10 @@ function travis_time_end {
 
 
 if [ "$ROS_DISTRO" == "indigo" -o "$ROS_DISTRO" == "jade" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
-    sudo apt-get install -y -qq python-pip
-    sudo pip install python-jenkins
+    if [ "$NO_SUDO" != "true" ]; then
+        sudo apt-get install -y -qq python-pip
+    fi
+    pip install --user python-jenkins
     ./.travis/travis_jenkins.py
     exit $?
 fi
