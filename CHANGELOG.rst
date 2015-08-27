@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2015-08-28)
+------------------
 * catkin is now 2.0+ http://packages.ros.org/ros/ubuntu/pool/main/p/python-catkin-tools/
 * travis.sh add ~/.ros/test_results/
 * Install python-jenkins user-locally instead of install via sudo and add
