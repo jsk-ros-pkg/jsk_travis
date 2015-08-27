@@ -83,10 +83,6 @@ travis_time_end
 travis_time_start setup_catkin
 
 ### before_install: # Use this to prepare the system to install prerequisites or dependencies
-## to avoid stty error, until catkin_tools 2.0.x (http://stackoverflow.com/questions/27969057/cant-launch-catkin-build-from-jenkins-job)
-sudo apt-get install -q -qq -y python-setuptools python-catkin-pkg
-[ ! -e /tmp/catkin_tools ] && (cd /tmp/; git clone -q https://github.com/catkin/catkin_tools)
-(cd /tmp/catkin_tools; sudo python setup.py --quiet install)
 ### https://github.com/ros/catkin/pull/705
 [ ! -e /tmp/catkin ] && (cd /tmp/; git clone -q https://github.com/ros/catkin)
 (cd /tmp/catkin; cmake . -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO/ ; make; sudo make install)
