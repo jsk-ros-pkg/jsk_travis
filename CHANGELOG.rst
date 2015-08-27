@@ -2,6 +2,16 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* catkin is now 2.0+ http://packages.ros.org/ros/ubuntu/pool/main/p/python-catkin-tools/
+* travis.sh add ~/.ros/test_results/
+* Install python-jenkins user-locally instead of install via sudo and add
+  NO_SUDO environmental variable to skip apt-get
+* add slack notifications
+* [travis.sh] Correct run_tests result using catkin_test_results (*THIS ONLY FOR HYDRO, previously hydro pass test even if it failed, but from this patch it failed*)
+* Contributors: Kei Okada, Kentaro Wada, Ryohei Ueda
+
 0.0.11 (2015-08-13)
 -------------------
 * travis.sh : FIX raise error if .travis is rollbacked (AGAIN, AGAIN, diff old...new)
