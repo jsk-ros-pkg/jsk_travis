@@ -40,6 +40,7 @@ function error {
 
 [ "$BUILDER" == rosbuild ] && ( echo "$BUILDER is no longer supported"; exit 1; )
 [ "$ROSWS" == rosws ] && ( echo "$ROSWS is no longer supported"; exit 1; )
+[ -z $ROSINSTALL_FILE ] && ROSINSTALL_FILE=.rosinstall
 BUILDER=catkin
 ROSWS=wstool
 
@@ -99,8 +100,8 @@ travis_time_start setup_rosws
 mkdir -p ~/ros/ws_$REPOSITORY_NAME/src
 cd ~/ros/ws_$REPOSITORY_NAME/src
 if [ "$USE_DEB" == false ]; then $ROSWS init .   ; fi
-if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/.rosinstall ]; then $ROSWS merge file://$CI_SOURCE_PATH/.rosinstall      ; fi
-if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/.rosinstall ]; then sed -i "s@^\(.*github.com/$TRAVIS_REPO_SLUG.*\)@#\1@" .rosinstall               ; fi # comment out current repo
+if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/$ROSINSTALL_FILE ]; then $ROSWS merge file://$CI_SOURCE_PATH/$ROSINSTALL_FILE      ; fi
+if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/$ROSINSTALL_FILE ]; then sed -i "s@^\(.*github.com/$TRAVIS_REPO_SLUG.*\)@#\1@" $ROSINSTALL_FILE               ; fi # comment out current repo
 if [ "$USE_DEB" == false ]; then $ROSWS update   ; fi
 if [ "$USE_DEB" == false ]; then $ROSWS set $REPOSITORY_NAME http://github.com/$TRAVIS_REPO_SLUG --git -y        ; fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
@@ -116,8 +117,8 @@ if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
 fi
 source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
 
-if [ ! -e .rosinstall ]; then
-    echo "- git: {local-name: $REPOSITORY_NAME, uri: 'http://github.com/$TRAVIS_REPO_SLUG'}" >> .rosinstall
+if [ ! -e $ROSINSTALL_FILE ]; then
+    echo "- git: {local-name: $REPOSITORY_NAME, uri: 'http://github.com/$TRAVIS_REPO_SLUG'}" >> $ROSINSTALL_FILE
 fi
 
 travis_time_end
