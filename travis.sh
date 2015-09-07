@@ -99,8 +99,12 @@ travis_time_start setup_rosws
 mkdir -p ~/ros/ws_$REPOSITORY_NAME/src
 cd ~/ros/ws_$REPOSITORY_NAME/src
 if [ "$USE_DEB" == false ]; then $ROSWS init .   ; fi
-if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/.rosinstall ]; then $ROSWS merge file://$CI_SOURCE_PATH/.rosinstall      ; fi
-if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/.rosinstall ]; then sed -i "s@^\(.*github.com/$TRAVIS_REPO_SLUG.*\)@#\1@" .rosinstall               ; fi # comment out current repo
+if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
+  # install (maybe unreleased version) dependencies from source
+  $ROSWS merge file://$CI_SOURCE_PATH/.travis.rosinstall
+  $ROSWS info --only=localname,uri | awk -v search="github.com/$TRAVIS_REPO_SLUG(|.git)$" \
+    'BEGIN {FS=","} { if ($2 ~ search) print $1 }' | xargs -n1 $ROSWS rm
+fi
 if [ "$USE_DEB" == false ]; then $ROSWS update   ; fi
 if [ "$USE_DEB" == false ]; then $ROSWS set $REPOSITORY_NAME http://github.com/$TRAVIS_REPO_SLUG --git -y        ; fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
