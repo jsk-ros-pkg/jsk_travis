@@ -145,7 +145,7 @@ fi
 
 travis_time_end
 
-$ROSWS info -t . || echo "Ignore error"
+$ROSWS info -t .
 cd ../
 
 travis_time_start catkin_build
