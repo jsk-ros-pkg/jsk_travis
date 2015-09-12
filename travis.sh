@@ -104,7 +104,7 @@ if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
   # install (maybe unreleased version) dependencies from source
   $ROSWS merge file://$CI_SOURCE_PATH/.travis.rosinstall
   $ROSWS info --only=localname,uri | awk -v search="github.com/$TRAVIS_REPO_SLUG(|.git)$" \
-    'BEGIN {FS=","} { if ($2 ~ search) print $1 }' | xargs -n1 $ROSWS rm
+    'BEGIN {FS=","} { if ($2 ~ search) print $1 }' | xargs -I{} $ROSWS rm {}
 fi
 if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO ]; then
   # install (maybe unreleased version) dependencies from source for specific ros version
