@@ -20,6 +20,11 @@ The jenkins server is available on [jenkins.jsk.imi.i.u-tokyo.ac.jp](https://jen
 see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-from-slack)
 
 ## Environmental Variables
+* `ROS_DISTRO` (required)
+
+  Specify your target distribution of ROS. Now we support hydro, indigo and jade.
+  If you specify indigo or jade, tests automatically run on jenkins.
+
 * `USE_JENKINS` (default: `false`)
 
   Force to run test on jenkins. jenkins server is more powerful than travis environment, so we can use jenkins to compile pcl-related packages such as [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git).
