@@ -16,10 +16,19 @@ jsk_travis is a package to test ROS repositories on travis and jenkins.
 In order to test on hydro, it uses travis and on indigo and jade, it uses jenkins.
 The jenkins server is available on [jenkins.jsk.imi.i.u-tokyo.ac.jp](https://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080).
 
+
 ## Restarting tests
+
 see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-from-slack)
 
+
 ## Environmental Variables
+
+* `NO_SUDO` (default: `false`)
+
+  `NO_SUDO` expects to be run with `USE_JENKINS=true` and this option is required to run test with
+  [container-based travis environment](http://docs.travis-ci.com/user/workers/container-based-infrastructure/).
+
 * `ROS_DISTRO` (required)
 
   Specify your target distribution of ROS. Now we support hydro, indigo and jade.
@@ -27,7 +36,6 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
 * `USE_JENKINS` (default: `false`)
 
-  Force to run test on jenkins. jenkins server is more powerful than travis environment, so we can use jenkins to compile pcl-related packages such as [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git).
-* `NO_SUDO` (default: `false`)
-
-  `NO_SUDO` expects to be run with `USE_JENKINS=true` and this option is required to run test with [container-based travis environment](http://docs.travis-ci.com/user/workers/container-based-infrastructure/).
+  Force to run test on jenkins. jenkins server is more powerful than travis environment,
+  so we can use jenkins to compile pcl-related packages such as
+  [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git).
