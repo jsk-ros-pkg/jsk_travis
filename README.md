@@ -34,8 +34,21 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   Specify your target distribution of ROS. Now we support hydro, indigo and jade.
   If you specify indigo or jade, tests automatically run on jenkins.
 
+* `USE_DEB` (value: [`true`|`false`])
+
+  If `false`, travis firstly sees [config files](#config-files) to resolve dependencies,
+  and then installs left dependencies by apt.
+
 * `USE_JENKINS` (default: `false`)
 
   Force to run test on jenkins. jenkins server is more powerful than travis environment,
   so we can use jenkins to compile pcl-related packages such as
   [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git).
+
+
+## Config Files
+
+* `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`
+
+  If [`USE_DEB`](#environmental-variables) is `false`, `.travis.rosinstall` is used to generate ROS workspace.
+  You can specify distribution by `.travis.rosinstall.{{ ROS_DISTRO }}` like `.travis.rosinstall.indigo`.
