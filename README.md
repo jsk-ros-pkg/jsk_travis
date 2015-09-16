@@ -24,6 +24,11 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
 ## Environmental Variables
 
+* `BUILD_PKGS` (default: none)
+
+  You can specify the packages to build and test. If your repository has some troubles about several packages,
+  you can ignore them by this option like `BUILD_PKGS="jsk_pcl_ros jsk_recognition_msgs"`.
+
 * `NO_SUDO` (default: `false`)
 
   `NO_SUDO` expects to be run with `USE_JENKINS=true` and this option is required to run test with
@@ -44,7 +49,6 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   Force to run test on jenkins. jenkins server is more powerful than travis environment,
   so we can use jenkins to compile pcl-related packages such as
   [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git).
-
 
 ## Config Files
 
