@@ -16,6 +16,15 @@ jsk_travis is a package to test ROS repositories on travis and jenkins.
 In order to test on hydro, it uses travis and on indigo and jade, it uses jenkins.
 The jenkins server is available on [jenkins.jsk.imi.i.u-tokyo.ac.jp](https://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080).
 
+jsk\_travis expects to be added to .travis as submodule.
+```
+git submodule add https://github.com/jsk-ros-pkg/jsk_travis.git .travis
+```
+
+And each project needs to setup .travis.yml for the travis.
+[jsk_common's .travis.yml](https://github.com/jsk-ros-pkg/jsk_common/blob/master/.travis.yml) is a good example to setup
+.travis.yml.
+
 
 ## Restarting tests
 
