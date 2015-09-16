@@ -24,10 +24,18 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
 ## Environmental Variables
 
+* `BEFORE_SCRIPT` (default: none)
+
+  `BEFORE_SCRIPT` is used to specify shell commands which run before building packages.
+
 * `BUILD_PKGS` (default: none)
 
   You can specify the packages to build and test. If your repository has some troubles about several packages,
   you can ignore them by this option like `BUILD_PKGS="jsk_pcl_ros jsk_recognition_msgs"`.
+
+* `EXTRA_DEB` (default: none)
+
+  You can specify extra deb packages by `EXTRA_DEB` variable. The packages are installed before building packages.
 
 * `NO_SUDO` (default: `false`)
 
