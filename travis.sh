@@ -73,6 +73,8 @@ travis_time_end
 travis_time_start setup_rosdep
 
 # Setup rosdep
+pip --version
+rosdep --version
 sudo rosdep init
 ret=1
 rosdep update || while [ $ret != 0 ]; do sleep 1; rosdep update && ret=0 || echo "failed"; done
