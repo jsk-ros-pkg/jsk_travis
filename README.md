@@ -46,11 +46,6 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   You can specify extra deb packages by `EXTRA_DEB` variable. The packages are installed before building packages.
 
-* `NO_SUDO` (default: `false`)
-
-  `NO_SUDO` expects to be run with `USE_JENKINS=true` and this option is required to run test with
-  [container-based travis environment](http://docs.travis-ci.com/user/workers/container-based-infrastructure/).
-
 * `ROS_DISTRO` (required)
 
   Specify your target distribution of ROS. Now we support hydro, indigo and jade.
