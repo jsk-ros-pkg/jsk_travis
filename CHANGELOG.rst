@@ -2,6 +2,35 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [API Break] config file name has been changed from .rosinstall to .travis.rosinstall
+
+  * [travis.sh] Avoid error when nothing to remove in .travis.rosinstall
+  * [travis.sh] Install from source with .travis.rosinstall.$ROS_DISTRO
+  * [travis.sh] Rename source dependency filename .rosinstall -> .travis.rosinstall Closes #133
+
+* add documents
+
+  * [README] Add document about how to setup jsk_travis and .travis
+  * [REAMDE] Add document about BEFORE_SCRIPT and EXTRA_DEB
+  * [README] Add documentation about BUILD_PKGS
+  * [README] Describe about USE_DEB and .travis.rosinstall
+  * [README] prettify
+  * [README] Add document about ROS_DISTRO
+  * [README] Add document about USE_JENKINS and NO_SUDO
+
+* [travis.sh] Need to upgrade pip for Ubuntu 12.04 For https://github.com/jsk-ros-pkg/jsk_demos/pull/1065
+* [travis.sh] Remove NO_SUDO: pip is already installed on travis
+* [travis.sh] Add version check of pip and rosdep
+* [travis.sh] Fixed the bug of wstool to resolve depends
+* [travis.sh] Use `--no-deps` to limit packages to tests
+* [travis.sh] Check wstool version before using it
+* [travis.sh] Refactor: robuster regex match and use wstool rm not comment out
+* [travis_jenkins] Try git clone until success on jenkins
+* [travis.sh] Added Gitter badge
+* Contributors: Kentaro Wada, Ryohei Ueda, The Gitter Badger
+
 0.1.0 (2015-08-28)
 ------------------
 * catkin is now 2.0+ http://packages.ros.org/ros/ubuntu/pool/main/p/python-catkin-tools/
