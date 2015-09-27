@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.1 (2015-09-27)
+------------------
 * [API Break] config file name has been changed from .rosinstall to .travis.rosinstall
 
   * [travis.sh] Avoid error when nothing to remove in .travis.rosinstall
