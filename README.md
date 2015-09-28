@@ -60,7 +60,9 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   Force to run test on jenkins. jenkins server is more powerful than travis environment,
   so we can use jenkins to compile pcl-related packages such as
-  [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git).
+  [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git).  
+  This variable needs to be `true` to run test with
+  [container-based travis environment](http://docs.travis-ci.com/user/workers/container-based-infrastructure/).
 
 ## Config Files
 
