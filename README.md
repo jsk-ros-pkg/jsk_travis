@@ -64,6 +64,10 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   This variable needs to be `true` to run test with
   [container-based travis environment](http://docs.travis-ci.com/user/workers/container-based-infrastructure/).
 
+* `USE_TRAVIS` (default: `false`)
+
+  Force test run on travis.
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`

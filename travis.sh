@@ -22,8 +22,10 @@ function travis_time_end {
     set -x
 }
 
+# set default values to env variables
+[ "$USE_TRAVIS" = "" ] && USE_TRAVIS=false
 
-if [ "$ROS_DISTRO" == "indigo" -o "$ROS_DISTRO" == "jade" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
+if [ "$USE_TRAVIS" != "true" -a "$ROS_DISTRO" == "indigo" -o "$ROS_DISTRO" == "jade" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
     pip install --user python-jenkins
     ./.travis/travis_jenkins.py
     exit $?
