@@ -11,10 +11,15 @@ echo -e "FROM ros-ubuntu:14.04\nRUN apt-get update\nRUN apt-get -y upgrade\nEXPO
 
 ----------------------------------------------------------
 
+## Where test runs
 
 jsk_travis is a package to test ROS repositories on travis and jenkins.
-In order to test on hydro, it uses travis and on indigo and jade, it uses jenkins.
+In order to test on hydro, it uses travis and on indigo and jade, it uses jenkins by default.
+Use `USE_TRAVIS` and `USE_JENKINS` to configure them manually.
 The jenkins server is available on [jenkins.jsk.imi.i.u-tokyo.ac.jp](https://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080).
+
+
+## Usage
 
 jsk\_travis expects to be added to .travis as submodule.
 ```
@@ -63,10 +68,11 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git).  
   This variable needs to be `true` to run test with
   [container-based travis environment](http://docs.travis-ci.com/user/workers/container-based-infrastructure/).
+  This overwrites default configuration described [here](#where-test-runs).
 
 * `USE_TRAVIS` (default: `false`)
 
-  Force test run on travis.
+  Force test run on travis. This overwrites default configuration described [here](#where-test-runs).
 
 ## Config Files
 
