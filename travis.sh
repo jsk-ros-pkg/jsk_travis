@@ -196,7 +196,24 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     travis_time_end
     travis_time_start catkin_install_run_tests
 
-    if [ "$BUILDER" == catkin ]; then export EXIT_STATUS=0; for pkg in $TEST_PKGS; do echo "test $pkg..." ;[ "`find install/share/$pkg -iname '*.test'`" == "" ] && echo "[$pkg] No tests were found!!!"  || find install/share/$pkg -iname "*.test" -print0 | xargs -0 -n1 -I{} sh -c 'echo {}; rostest {}' || export EXIT_STATUS=$?; done; [ $EXIT_STATUS == 0 ] || error; fi
+    export EXIT_STATUS=0
+    if [ "$BUILDER" == catkin ]; then
+      for pkg in $TEST_PKGS; do
+        echo "[$pkg] Started testing..."
+        rostest_files=$(find install/share/$pkg -iname '*.test')
+        echo "[$pkg] Found $(echo $rostest_files | wc -w) tests."
+        for test_file in $rostest_files; do
+          echo "[$pkg] Testing $test_file"
+          rostest $test_file || export EXIT_STATUS=$?
+          if [ $? != 0 ]; then
+            echo -e "[$pkg] Testing again the failed test: $test_file.\e[31m>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\e[0m"
+            rostest --text $test_file
+            echo -e "[$pkg] Testing again the failed test: $test_file.\e[31m<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\e[0m"
+          fi
+        done
+      done
+      [ $EXIT_STATUS -eq 0 ] || error  # unless all tests pass, raise error
+    fi
 
     travis_time_end
 
