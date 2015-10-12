@@ -205,7 +205,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
         echo "[$pkg] Found $(echo $rostest_files | wc -w) tests."
         for $test_file in $rostest_files; do
           echo "[$pkg] Testing $test_file"
-          rostest $test_file
+          rostest --text $test_file
           [ $? == 0 ] || error
         done
       done
