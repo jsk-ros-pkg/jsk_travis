@@ -82,7 +82,7 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   You can specify distribution by `.travis.rosinstall.{{ ROS_DISTRO }}` like `.travis.rosinstall.indigo`.
 
 
-## Release Pakcage
+## Release Package
 
 * relesing jsk_travis package is a bit tricky, due to existance of CATKIN_IGNORE file
 
