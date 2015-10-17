@@ -96,3 +96,11 @@ mv CATKIN_IGNORE CATKIN_IGNORE.bak      # do not forget this
 gitk                                    # make sure that what you changed is correct
 git push && git push --tags
 ```
+
+
+## Debug by changing the submodule jsk_travis
+
+If you add jsk\_travis as a submodule,
+it is difficult to make changes to have the travis test pass.  
+So in that case, I recommend you temporarily set your forked jsk\_travis as submodule.
+The sample commmit is [here](https://github.com/jsk-ros-pkg/jsk_common/commit/eb8c2cf76edc01e074451f2028a0bc6a36582805).
