@@ -80,3 +80,19 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   If [`USE_DEB`](#environmental-variables) is `false`, `.travis.rosinstall` is used to generate ROS workspace.
   You can specify distribution by `.travis.rosinstall.{{ ROS_DISTRO }}` like `.travis.rosinstall.indigo`.
+
+
+## Release Pakcage
+
+* relesing jsk_travis package is a bit tricky, due to existance of CATKIN_IGNORE file
+
+```
+mv CATKIN_IGNORE CATKIN_IGNORE.bak
+catkin_generate_changelog --skip-merges
+emacs -nw CHANGELOG.rst                 # prettify CHANGELOG so we can understand what has changed
+git commit -m "update CHANGELOG" CHANGELOG.rst
+catkin_prepare_release --no-push        # please type "Y" to all
+mv CATKIN_IGNORE CATKIN_IGNORE.bak      # do not forget this
+gitk                                    # make sure that what you changed is correct
+git push && git push --tags
+```
