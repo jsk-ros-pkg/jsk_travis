@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.2 (2015-10-19)
+------------------
 * Check version of ros tools
 * Run rostest again with --text option if the test failed  Closes `#165 <https://github.com/jsk-ros-pkg/jsk_travis/issues/165>`_
 * Describe about debugging with change on jsk_travis
