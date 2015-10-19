@@ -97,6 +97,14 @@ sudo apt-get install -y -q -qq ros-$ROS_DISTRO-roslaunch
 
 
 travis_time_end
+
+# Check ROS tool's version
+echo -e "\e[0KROS tool's version"
+source /opt/ros/$ROS_DISTRO/setup.bash
+rosversion roslaunch
+rosversion rospack
+apt-cache show python-rospkg | grep '^Version:' | awk '{print $2}'
+
 travis_time_start setup_rosws
 
 ### install: # Use this to install any prerequisites or dependencies necessary to run your build
