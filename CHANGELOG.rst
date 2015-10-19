@@ -2,6 +2,23 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Check version of ros tools
+* Run rostest again with --text option if the test failed  Closes `#165 <https://github.com/jsk-ros-pkg/jsk_travis/issues/165>`_
+* Describe about debugging with change on jsk_travis
+* typo in README
+* No need wstool rm about self repo
+* Run `rospack profile` to update rospack cache before test
+* Highlight test start and end with >>> & <<<<
+* Source devel/setup.bash before run test to update ROS_PACKAGE_PATH for  rostest
+* Describe about where test runs
+* Summarize result of catkin build with --summarize option  For https://github.com/jsk-ros-pkg/jsk_travis/issues/159
+* env USE_TRAVIS to force test run test on travis
+* Comment about container-based travis env
+* [README.md] add documents to how to release package
+* Contributors: Kei Okada, Kentaro Wada, Ryohei Ueda
+
 0.1.1 (2015-09-27)
 ------------------
 * [API Break] config file name has been changed from .rosinstall to .travis.rosinstall
