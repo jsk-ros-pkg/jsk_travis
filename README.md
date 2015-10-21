@@ -65,7 +65,7 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   Force to run test on jenkins. jenkins server is more powerful than travis environment,
   so we can use jenkins to compile pcl-related packages such as
-  [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git).  
+  [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git).
   This variable needs to be `true` to run test with
   [container-based travis environment](http://docs.travis-ci.com/user/workers/container-based-infrastructure/).
   This overwrites default configuration described [here](#where-test-runs).
@@ -73,6 +73,14 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 * `USE_TRAVIS` (default: `false`)
 
   Force test run on travis. This overwrites default configuration described [here](#where-test-runs).
+
+* `CATKIN_PARALLEL_TEST_JOBS` (default: `-p4`)
+
+  The number of catkin parallel processes in test.
+
+* `ROS_PARALLEL_TEST_JOBS` (default: `-j8`)
+
+  The number of make parallel processes in test.
 
 ## Config Files
 
@@ -101,6 +109,6 @@ git push && git push --tags
 ## Debug by changing the submodule jsk_travis
 
 If you add jsk\_travis as a submodule,
-it is difficult to make changes to have the travis test pass.  
+it is difficult to make changes to have the travis test pass.
 So in that case, I recommend you temporarily set your forked jsk\_travis as submodule.
 The sample commmit is [here](https://github.com/jsk-ros-pkg/jsk_common/commit/eb8c2cf76edc01e074451f2028a0bc6a36582805).
