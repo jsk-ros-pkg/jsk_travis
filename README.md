@@ -41,6 +41,8 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 * `BEFORE_SCRIPT` (default: none)
 
   `BEFORE_SCRIPT` is used to specify shell commands which run before building packages.
+  Some characters won't work without escaping it for xml on Jenkins.
+  (see: [here](https://github.com/jsk-ros-pkg/jsk_travis/issues/171))
 
 * `BUILD_PKGS` (default: none)
 
