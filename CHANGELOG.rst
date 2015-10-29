@@ -2,6 +2,16 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [travis.sh][check_metapackage.py] use parser for detecting metapackage
+* use .travis.rosinstall when USE_DEB != true
+  - refactor `if` condition
+  - use `.travis.rosinstall` when `USE_DEB != true` (before this PR, `.travis.rosinstall` is not used when `USE_DEB = source`)
+* Warn about special chars in BEFORE_SCRIPT closes `#171 <https://github.com/jsk-ros-pkg/jsk_travis/issues/171>`_
+* Add document about CATKIN_PARALLEL_TEST_JOBS
+* Contributors: Yuki Furuta, Kentaro Wada, Ryohei Ueda
+
 0.1.2 (2015-10-19)
 ------------------
 * Check version of ros tools
