@@ -71,8 +71,10 @@ sudo apt-get install -y -q -qq python-rosdep python-wstool python-catkin-tools r
 if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
 dpkg -s mongodb || echo "ok"; export HAVE_MONGO_DB=$?
-if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get remove -q -qq -y mongodb mongodb-10gen || echo "ok"; fi
-if [ $HAVE_MONGO_DB == 0 ]; then sudo apt-get install -q -qq -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"; fi # default actions
+if [ $HAVE_MONGO_DB == 0 ]; then
+    sudo apt-get remove -q -qq -y mongodb mongodb-10gen || echo "ok"
+    sudo apt-get install -q -qq -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"
+fi # default actions
 
 travis_time_end
 travis_time_start setup_rosdep
@@ -111,17 +113,19 @@ travis_time_start setup_rosws
 # Create workspace
 mkdir -p ~/ros/ws_$REPOSITORY_NAME/src
 cd ~/ros/ws_$REPOSITORY_NAME/src
-if [ "$USE_DEB" == false ]; then $ROSWS init .   ; fi
-if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
-  # install (maybe unreleased version) dependencies from source
-  $ROSWS merge file://$CI_SOURCE_PATH/.travis.rosinstall
+if [ "$USE_DEB" != true ]; then
+    $ROSWS init .
+    if [ -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
+        # install (maybe unreleased version) dependencies from source
+        $ROSWS merge file://$CI_SOURCE_PATH/.travis.rosinstall
+    fi
+    if [ -e $CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO ]; then
+        # install (maybe unreleased version) dependencies from source for specific ros version
+        $ROSWS merge file://$CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO
+    fi
+    $ROSWS update
+    $ROSWS set $REPOSITORY_NAME http://github.com/$TRAVIS_REPO_SLUG --git -y
 fi
-if [ "$USE_DEB" == false -a -e $CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO ]; then
-  # install (maybe unreleased version) dependencies from source for specific ros version
-  $ROSWS merge file://$CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO
-fi
-if [ "$USE_DEB" == false ]; then $ROSWS update   ; fi
-if [ "$USE_DEB" == false ]; then $ROSWS set $REPOSITORY_NAME http://github.com/$TRAVIS_REPO_SLUG --git -y        ; fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
 if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $ROSWS init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; $ROSWS update; fi
 # disable hrpsys/doc generation
@@ -183,10 +187,12 @@ if [ "$ROS_DISTRO" == "hydro" ]; then
     (cd /opt/ros/$ROS_DISTRO/share; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/611.diff -O - | sed s@.cmake.em@.cmake@ | sed 's@/${PROJECT_NAME}@@' | sed 's@ DEPENDENCIES ${_rostest_DEPENDENCIES})@)@' | sudo patch -f -p2 || echo "ok")
 fi
 
-if [ "$BUILDER" == catkin ]; then source devel/setup.bash ; rospack profile; fi # force to update ROS_PACKAGE_PATH for rostest
-if [ "$BUILDER" == catkin ]; then catkin run_tests --no-deps --limit-status-rate 0.001 $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --; fi
+if [ "$BUILDER" == catkin ]; then
+    source devel/setup.bash ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
+    catkin run_tests --no-deps --limit-status-rate 0.001 $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
 # it seems catkin run_tests write test result to wrong place, and ceate MISSING...
-if [ "$BUILDER" == catkin ]; then  find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build || error  ; fi
+    find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build || error
+fi
 
 travis_time_end
 
@@ -194,12 +200,14 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
     travis_time_start catkin_install_build
 
-    if [ "$BUILDER" == catkin ]; then catkin clean -a                        ; fi
-    if [ "$BUILDER" == catkin ]; then catkin config --install                ; fi
-    if [ "$BUILDER" == catkin ]; then catkin build -i -v --summarize --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
-    if [ "$BUILDER" == catkin ]; then source install/setup.bash              ; fi
-    if [ "$BUILDER" == catkin ]; then rospack profile                        ; fi
-    if [ "$BUILDER" == catkin ]; then rospack plugins --attrib=plugin nodelet; fi
+    if [ "$BUILDER" == catkin ]; then
+        catkin clean -a
+        catkin config --install
+        catkin build -i -v --summarize --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS
+        source install/setup.bash
+        rospack profile
+        rospack plugins --attrib=plugin nodelet
+    fi
 
     travis_time_end
     travis_time_start catkin_install_run_tests
