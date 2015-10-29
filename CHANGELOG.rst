@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.3 (2015-10-29)
+------------------
 * [travis.sh][check_metapackage.py] use parser for detecting metapackage
 * use .travis.rosinstall when USE_DEB != true
   - refactor `if` condition
