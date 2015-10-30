@@ -189,7 +189,7 @@ fi
 
 if [ "$BUILDER" == catkin ]; then
     source devel/setup.bash ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
-    catkin run_tests --no-deps --limit-status-rate 0.001 $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
+    catkin run_tests -iv --no-deps --limit-status-rate 0.001 $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
 # it seems catkin run_tests write test result to wrong place, and ceate MISSING...
     find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build || error
 fi
