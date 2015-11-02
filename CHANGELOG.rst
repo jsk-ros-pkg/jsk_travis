@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.4 (2015-11-02)
+------------------
 * [travis.sh] check including empty string
 * check if test_pgks is " " this causes catkin run_tests --no-deps without any target name
 * Run tests verbosely & interactively with -iv
