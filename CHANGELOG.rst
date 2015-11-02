@@ -2,6 +2,13 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [travis.sh] check including empty string
+* check if test_pgks is " " this causes catkin run_tests --no-deps without any target name
+* Run tests verbosely & interactively with -iv
+* Contributors: Kei Okada, Kentaro Wada
+
 0.1.3 (2015-10-29)
 ------------------
 * [travis.sh][check_metapackage.py] use parser for detecting metapackage
