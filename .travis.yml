@@ -14,6 +14,7 @@ notifications:
 env:
   - ROS_DISTRO=hydro AFTER_INSTALL=""
   - ROS_DISTRO=hydro USE_CATKIN_MAKE=true BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs" NOT_TEST_INSTALL=true
+  - ROS_DISTRO=hydro AFTER_INSTALL="" TEST_PKGS=" "
   - ROS_DISTRO=hydro AFTER_INSTALL="" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
   - ROS_DISTRO=hydro AFTER_INSTALL="mongodb-clients"
   - ROS_DISTRO=hydro AFTER_INSTALL="ros-hydro-roseus"
