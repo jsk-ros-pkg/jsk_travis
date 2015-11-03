@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.6 (2015-11-03)
+------------------
 * travis.sh: `#180 <https://github.com/jsk-ros-pkg/jsk_travis/issues/180>`_ is NG, USE_DEB can have true, false and source
 * Revert "rosws init . is already done at https://github.com/jsk-ros-pkg/jsk_travis/blob/master/travis.sh#L117"
 * fix typo on README.md
