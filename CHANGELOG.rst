@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.5 (2015-11-03)
+------------------
 * rosws init . is already done at https://github.com/jsk-ros-pkg/jsk_travis/blob/master/travis.sh#L117
 * Contributors: Kei Okada
 
