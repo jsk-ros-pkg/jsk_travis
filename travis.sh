@@ -113,7 +113,7 @@ travis_time_start setup_rosws
 # Create workspace
 mkdir -p ~/ros/ws_$REPOSITORY_NAME/src
 cd ~/ros/ws_$REPOSITORY_NAME/src
-if [ "$USE_DEB" != true ]; then
+if [ "$USE_DEB" == false ]; then
     $ROSWS init .
     if [ -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
         # install (maybe unreleased version) dependencies from source
