@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* rosws init . is already done at https://github.com/jsk-ros-pkg/jsk_travis/blob/master/travis.sh#L117
+* Contributors: Kei Okada
+
 0.1.4 (2015-11-02)
 ------------------
 * [travis.sh] check including empty string
