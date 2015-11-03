@@ -102,7 +102,7 @@ catkin_generate_changelog --skip-merges
 emacs -nw CHANGELOG.rst                 # prettify CHANGELOG so we can understand what has changed
 git commit -m "update CHANGELOG" CHANGELOG.rst
 catkin_prepare_release --no-push        # please type "Y" to all
-mv CATKIN_IGNORE CATKIN_IGNORE.bak      # do not forget this
+mv CATKIN_IGNORE.bak CATKIN_IGNORE      # do not forget this
 gitk                                    # make sure that what you changed is correct
 git push && git push --tags
 ```
