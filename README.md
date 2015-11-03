@@ -58,10 +58,12 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   Specify your target distribution of ROS. Now we support hydro, indigo and jade.
   If you specify indigo or jade, tests automatically run on jenkins.
 
-* `USE_DEB` (value: [`true`|`false`])
+* `USE_DEB` (value: [`true`|`false`|`source`])
 
   If `false`, travis firstly sees [config files](#config-files) to resolve dependencies,
   and then installs left dependencies by apt.
+  If `source`, travis does not sees [config files](#config-files) but runs `setup_upstream.sh` file.
+  See [here](https://github.com/jsk-ros-pkg/jsk_roseus) for example.
 
 * `USE_JENKINS` (default: `false`)
 
