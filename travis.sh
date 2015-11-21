@@ -102,7 +102,7 @@ travis_time_end
 
 # Check ROS tool's version
 echo -e "\e[0KROS tool's version"
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
 rosversion roslaunch
 rosversion rospack
 apt-cache show python-rospkg | grep '^Version:' | awk '{print $2}'
@@ -137,7 +137,7 @@ find -L . -name package.xml -print -exec ${CI_SOURCE_PATH}/.travis/check_metapac
 if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
     ROSDEP_ARGS=>/dev/null
 fi
-source /opt/ros/$ROS_DISTRO/setup.bash # ROS_PACKAGE_PATH is important for rosdep
+source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x # ROS_PACKAGE_PATH is important for rosdep
 
 if [ ! -e .rosinstall ]; then
     echo "- git: {local-name: $REPOSITORY_NAME, uri: 'http://github.com/$TRAVIS_REPO_SLUG'}" >> .rosinstall
@@ -148,7 +148,7 @@ travis_time_end
 travis_time_start before_script
 
 ### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
-source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
+source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x # re-source setup.bash for setting environmet vairable for package installed via rosdep
 if [ "${BEFORE_SCRIPT// }" != "" ]; then sh -c "${BEFORE_SCRIPT}"; fi
 
 travis_time_end
@@ -171,7 +171,7 @@ cd ../
 travis_time_start catkin_build
 
 ### script: # All commands must exit with code 0 on success. Anything else is considered failure.
-source /opt/ros/$ROS_DISTRO/setup.bash # re-source setup.bash for setting environmet vairable for package installed via rosdep
+source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x # re-source setup.bash for setting environmet vairable for package installed via rosdep
 # for catkin
 if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
@@ -188,7 +188,7 @@ if [ "$ROS_DISTRO" == "hydro" ]; then
 fi
 
 if [ "$BUILDER" == catkin ]; then
-    source devel/setup.bash ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
+    source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
     catkin run_tests -iv --no-deps --limit-status-rate 0.001 $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
 # it seems catkin run_tests write test result to wrong place, and ceate MISSING...
     find build -iname MISSING* -print -exec rm {} \;; catkin_test_results build || error
@@ -204,7 +204,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
         catkin clean -a
         catkin config --install
         catkin build -i -v --summarize --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS
-        source install/setup.bash
+        source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
         rospack profile
         rospack plugins --attrib=plugin nodelet
     fi
