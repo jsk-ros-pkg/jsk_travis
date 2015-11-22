@@ -2,6 +2,17 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* more quiet for 4M limit `#194 <https://github.com/jsk-ros-pkg/jsk_travis/pull/194>`_
+
+  * travis.sh: be quiet when source setup.bash
+  * travis.sh: apt-get update with -q
+  * travis.sh: pip install with -q
+
+* Describe about USE_DEB=source for `#180 <https://github.com/jsk-ros-pkg/jsk_travis/issues/180>`_
+* Contributors: Kei Okada, Kentaro Wada
+
 0.1.6 (2015-11-03)
 ------------------
 * travis.sh: `#180 <https://github.com/jsk-ros-pkg/jsk_travis/issues/180>`_ is NG, USE_DEB can have true, false and source
