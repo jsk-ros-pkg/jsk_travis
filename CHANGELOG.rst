@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.7 (2015-11-22)
+------------------
 * more quiet for 4M limit `#194 <https://github.com/jsk-ros-pkg/jsk_travis/pull/194>`_
 
   * travis.sh: be quiet when source setup.bash
