@@ -2,6 +2,12 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* writing result to wrong place seems to be solved? (`#193
+  <https://github.com/jsk-ros-pkg/jsk_travis/issues/193>`_ ) Do not `rm *MISSING` before catkin_test_results
+* Contributors: Kei Okada
+
 0.1.7 (2015-11-22)
 ------------------
 * more quiet for 4M limit `#194 <https://github.com/jsk-ros-pkg/jsk_travis/pull/194>`_
