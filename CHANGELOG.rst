@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2015-11-24)
+------------------
 * writing result to wrong place seems to be solved? (`#193
   <https://github.com/jsk-ros-pkg/jsk_travis/issues/193>`_ ) Do not `rm *MISSING` before catkin_test_results
 * Contributors: Kei Okada
