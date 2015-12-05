@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2015-12-05)
+------------------
 * Use ccache to cache object file (make it faster)
 * Contributors: Kentaro Wada
 
