@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use ccache to cache object file (make it faster)
+* Contributors: Kentaro Wada
+
 0.2.0 (2015-11-24)
 ------------------
 * writing result to wrong place seems to be solved? (`#193
