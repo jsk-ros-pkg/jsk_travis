@@ -26,7 +26,7 @@ function travis_time_end {
 [ "${USE_TRAVIS// }" = "" ] && USE_TRAVIS=false
 
 if [ "$USE_TRAVIS" != "true" -a "$ROS_DISTRO" == "indigo" -o "$ROS_DISTRO" == "jade" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
-    pip install --user python-jenkins
+    pip install --user python-jenkins -q
     ./.travis/travis_jenkins.py
     exit $?
 fi
