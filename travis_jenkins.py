@@ -110,6 +110,8 @@ export ROS_LOG_DIR=\$PWD/log
 apt-get update -qq || echo Ignore error of apt-get update
 apt-get install -qq -y git wget sudo lsb-release ccache
 
+ccache -M 10G                   # set maximum size of ccache to 20G
+
 export SHELL=/bin/bash
 
 `cat .travis/travis.sh`
