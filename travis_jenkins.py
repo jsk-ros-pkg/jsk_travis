@@ -108,10 +108,12 @@ env
 mkdir log
 export ROS_LOG_DIR=\$PWD/log
 apt-get update -qq || echo Ignore error of apt-get update
-apt-get install -qq -y git wget sudo lsb-release ccache
+apt-get install -qq -y git wget sudo lsb-release ccache  apt-cacher-ng
 
 ccache -M 20G                   # set maximum size of ccache to 20G
-
+# Enable apt-cacher-ng to cache apt packages
+echo 'Acquire::http::Proxy "http://172.17.42.1:3142";' > /etc/apt/apt.conf.d/02proxy.conf
+apt-get update -qq || echo Ignore error of apt-get update
 export SHELL=/bin/bash
 
 `cat .travis/travis.sh`
