@@ -26,7 +26,7 @@ function travis_time_end {
 [ "${USE_TRAVIS// }" = "" ] && USE_TRAVIS=false
 
 if [ "$USE_TRAVIS" != "true" -a "$ROS_DISTRO" == "indigo" -o "$ROS_DISTRO" == "jade" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
-    pip install --user python-jenkins
+    pip install --user python-jenkins -q
     ./.travis/travis_jenkins.py
     exit $?
 fi
@@ -66,7 +66,7 @@ sudo pip install -U -q pip setuptools
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 lsb_release -a
-sudo apt-get update -q
+sudo apt-get update -q || echo Ignore error of apt-get update
 sudo apt-get install -y -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack
 if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
