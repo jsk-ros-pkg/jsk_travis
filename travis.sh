@@ -75,6 +75,7 @@ sudo ln -s /usr/bin/ccache /usr/local/bin/gcc
 sudo ln -s /usr/bin/ccache /usr/local/bin/g++
 sudo ln -s /usr/bin/ccache /usr/local/bin/cc
 sudo ln -s /usr/bin/ccache /usr/local/bin/c++
+ccache -s
 
 if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
