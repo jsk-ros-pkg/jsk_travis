@@ -112,10 +112,6 @@ apt-get install -qq -y git wget sudo lsb-release ccache  apt-cacher-ng
 
 # setup ccache
 ccache -M 20G                   # set maximum size of ccache to 20G
-sudo ln -s /usr/bin/ccache /usr/local/bin/gcc
-sudo ln -s /usr/bin/ccache /usr/local/bin/g++
-sudo ln -s /usr/bin/ccache /usr/local/bin/cc
-sudo ln -s /usr/bin/ccache /usr/local/bin/c++
 
 # Enable apt-cacher-ng to cache apt packages
 echo 'Acquire::http::Proxy "http://172.17.42.1:3142";' > /etc/apt/apt.conf.d/02proxy.conf
