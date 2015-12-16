@@ -81,7 +81,7 @@ if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
 dpkg -s mongodb || echo "ok"; export HAVE_MONGO_DB=$?
 if [ $HAVE_MONGO_DB == 0 ]; then
-    sudo apt-get remove -q -qq -y mongodb mongodb-10gen || echo "ok"
+    sudo apt-get remove --purge -q -qq -y mongodb mongodb-10gen || echo "ok"
     sudo apt-get install -q -qq -y mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"
 fi # default actions
 
