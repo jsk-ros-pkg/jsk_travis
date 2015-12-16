@@ -118,6 +118,10 @@ echo 'Acquire::http {proxy "http://172.17.42.1:3142"; };' > /etc/apt/apt.conf.d/
 apt-get update -qq || echo Ignore error of apt-get update
 export SHELL=/bin/bash
 
+# Remove warning about camera module
+# Reference: http://stackoverflow.com/questions/12689304/ctypes-error-libdc1394-error-failed-to-initialize-libdc1394
+sudo ln /dev/null /dev/raw1394
+
 `cat .travis/travis.sh`
 
 EOL
