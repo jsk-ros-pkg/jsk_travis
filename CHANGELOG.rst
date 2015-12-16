@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.2 (2015-12-16)
+------------------
 
 * Add timestamp to jenkins output
 * Install pip==6.0.7 to avoid unexpected error on travis
