@@ -2,6 +2,34 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
+* Add timestamp to jenkins output
+* Install pip==6.0.7 to avoid unexpected error on travis
+* Add system diagram of jsk testing environment
+* Add -q option when installing python-jenkins
+
+* pip/apt cache
+
+  * Cache pip downloaded tgz on jenkins
+  * Fix apt proxy line
+  * Enable apt-cacher-ng on jenkins
+
+* mongodb hack
+
+  * [travis.sh] Purge mongodb setting.
+
+* ccache
+
+  * Show ccache stats
+  * Create symlink to ccache in travis.sh
+  * Symlink to ccache for gcc, g++, cc, c++  https://bugs.launchpad.net/openstack-ci/+bug/989724  For `#207 <https://github.com/jsk-ros-pkg/jsk_travis/issues/207>`_
+  * Use /export/data1 for ccache
+  * Increase ccache cache size to 10G
+
+* Contributors: Kentaro Wada, Ryohei Ueda, Shunichi Nozawa
+
 0.2.1 (2015-12-05)
 ------------------
 * Use ccache to cache object file (make it faster)
