@@ -200,6 +200,7 @@ fi
 # run roslint and report on github's pr page
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   (cd $CI_SOURCE_PATH && .travis/get_roslint_result_xml.py $BUILD_PKGS --repo-slug $TRAVIS_REPO_SLUG --pr-number $TRAVIS_PULL_REQUEST --out-file /tmp/roslint_result.xml)
+  cat /tmp/roslint_result.xml
 fi
 
 if [ "$BUILDER" == catkin ]; then
