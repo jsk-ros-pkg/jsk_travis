@@ -197,6 +197,11 @@ if [ "$ROS_DISTRO" == "hydro" ]; then
     (cd /opt/ros/$ROS_DISTRO/share; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/611.diff -O - | sed s@.cmake.em@.cmake@ | sed 's@/${PROJECT_NAME}@@' | sed 's@ DEPENDENCIES ${_rostest_DEPENDENCIES})@)@' | sudo patch -f -p2 || echo "ok")
 fi
 
+# run roslint and report on github's pr page
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+  (cd $CI_SOURCE_PATH && .travis/get_roslint_result_xml.py $BUILD_PKGS --repo-slug $TRAVIS_REPO_SLUG --pr-number $TRAVIS_PULL_REQUEST --out-file /tmp/roslint_result.xml)
+fi
+
 if [ "$BUILDER" == catkin ]; then
     source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
     catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]

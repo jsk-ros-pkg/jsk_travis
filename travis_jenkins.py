@@ -117,6 +117,7 @@ sudo docker run -t \\
     -e BUILDER='%(BUILDER)s' \\
     -e USE_DEB='%(USE_DEB)s' \\
     -e TRAVIS_REPO_SLUG='%(TRAVIS_REPO_SLUG)s' \\
+    -e TRAVIS_PULL_REQUEST='%(TRAVIS_PULL_REQUEST)s' \\
     -e EXTRA_DEB='%(EXTRA_DEB)s' \\
     -e TARGET_PKGS='%(TARGET_PKGS)s' \\
     -e BEFORE_SCRIPT='%(BEFORE_SCRIPT)s' \\
