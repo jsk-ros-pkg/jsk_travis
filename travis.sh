@@ -199,8 +199,13 @@ fi
 
 # run roslint and report on github's pr page
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  (cd $CI_SOURCE_PATH && .travis/get_roslint_result_xml.py $BUILD_PKGS --repo-slug $TRAVIS_REPO_SLUG --pr-number $TRAVIS_PULL_REQUEST --out-file /tmp/roslint_result.xml)
-  cat /tmp/roslint_result.xml
+    ROSLINT_RESULT_PATH="/tmp/roslint_result.xml"
+  (cd $CI_SOURCE_PATH && .travis/get_roslint_result_xml.py $BUILD_PKGS --repo-slug $TRAVIS_REPO_SLUG --pr-number $TRAVIS_PULL_REQUEST --out-file $ROSLINT_RESULT_PATH)
+  if [ -e $ROSLINT_RESULT_PATH ]; then
+      (cd $CI_SOURCE_PATH && .travis/comment_roslint_result.py -i $ROSLINT_RESULT_PATH -t $GH_TOKEN)
+  else
+      echo "$ROSLINT_RESULT_PATH not found. skipping"
+  fi
 fi
 
 if [ "$BUILDER" == catkin ]; then
