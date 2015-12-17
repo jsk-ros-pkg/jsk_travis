@@ -25,6 +25,8 @@ def get_changed_files_from_origin():
 def get_changed_lines_of_commit(commit, files):
     cmd = 'git blame {}'
     for f in files:
+        if not os.path.isfile(f):
+            continue
         blame = subprocess.check_output(shlex.split(cmd.format(f)))
         for i, line in enumerate(blame.splitlines()):
             line_num = i + 1
