@@ -53,7 +53,7 @@ class CommentLintResult(object):
                               body, commit_id, path, pos)
 
     def send_comment(self, owner, repo, pr_num, body, commit_id, path, position):
-        if position is not int:
+        if type(position) is not int:
             position = int(position)
         # POST /repos/:owner/:repo/pulls/:number/comments
         urlpath = os.path.join("https://api.github.com",
