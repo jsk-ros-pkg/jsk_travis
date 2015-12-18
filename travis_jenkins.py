@@ -91,7 +91,6 @@ else
  git checkout -qf ${TRAVIS_COMMIT}
 fi
 
-sudo apt-get install moreutils -y -qq
 git submodule init
 git submodule update
 
