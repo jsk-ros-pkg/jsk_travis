@@ -22,7 +22,7 @@ def get_changed_files_from_origin():
     return files
 
 
-def get_changed_lines_of_commit(commit, files):
+def get_changed_line_of_commit(commit, files):
     cmd = 'git blame {}'
     for f in files:
         if not os.path.isfile(f):
@@ -83,7 +83,9 @@ def get_roslint_result_xml(packages, repo_slug, pr_num, output):
     files = get_changed_files_from_origin()
     diff_lines = []
     for commit in commits:
-        diff_lines.append(get_changed_lines_of_commit(commit, files))
+        changed_line = get_changed_line_of_commit(commit, files)
+        if changed_line is not None:
+            diff_lines.append(changed_line)
 
     lint_results = []
     for pkg in packages:
