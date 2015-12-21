@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.3 (2015-12-21)
+------------------
 * Do not run apt-get in travis_jenkins.py
 * Estimate docker host IP by ifdata command closes `#221 <https://github.com/jsk-ros-pkg/jsk_travis/issues/221>`_
 * travis_jenkins.py: Cache test_data on jenkins
