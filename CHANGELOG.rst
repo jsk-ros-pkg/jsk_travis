@@ -2,6 +2,12 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [travis_jenkins.py] named docker container
+* [travis_jenkins.py] add hudson.tasks.Logrotator, delete log after 3days/3times
+* Contributors: Yuki Furuta, Kei Okada
+
 0.2.3 (2015-12-21)
 ------------------
 * Do not run apt-get in travis_jenkins.py
