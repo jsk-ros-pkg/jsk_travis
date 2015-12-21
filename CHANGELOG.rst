@@ -2,6 +2,14 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Do not run apt-get in travis_jenkins.py
+* Estimate docker host IP by ifdata command closes `#221 <https://github.com/jsk-ros-pkg/jsk_travis/issues/221>`_
+* travis_jenkins.py: Cache test_data on jenkins
+* Suppress libdc1394 error caused at importing cv2  For https://github.com/jsk-ros-pkg/jsk_travis/issues/187
+* Contributors: Kentaro Wada, Ryohei Ueda
+
 0.2.2 (2015-12-16)
 ------------------
 
