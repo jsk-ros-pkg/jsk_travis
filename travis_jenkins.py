@@ -102,6 +102,7 @@ fi
 
 git submodule init
 git submodule update
+cp ~/.token $WORKSPACE/${BUILD_TAG}/.token  # copy file which has GitHub token to use in docker
 
 # remove containers created/exited more than 48 hours ago
 for container in `sudo docker ps -a | egrep '^.*days ago' | awk '{print $1}'`; do
