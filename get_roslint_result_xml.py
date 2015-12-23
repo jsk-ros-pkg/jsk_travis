@@ -102,7 +102,7 @@ def get_roslint_result_xml(packages, repo_slug, pr_num, output):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('packages', nargs='*')
+    parser.add_argument('packages', nargs='+')
     parser.add_argument('--repo-slug', required=True)
     parser.add_argument('--pr-number', required=True)
     parser.add_argument('--out-file', required=True)
