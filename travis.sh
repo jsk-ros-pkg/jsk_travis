@@ -201,7 +201,7 @@ fi
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for roslint
   ROSLINT_RESULT_PATH="/tmp/roslint_result.xml"
-  (cd $CI_SOURCE_PATH && .travis/get_roslint_result_xml.py $BUILD_PKGS --repo-slug $TRAVIS_REPO_SLUG --pr-number $TRAVIS_PULL_REQUEST --out-file $ROSLINT_RESULT_PATH || true)
+  (cd $CI_SOURCE_PATH && .travis/get_roslint_result_xml.py $TARGET_PKGS --repo-slug $TRAVIS_REPO_SLUG --pr-number $TRAVIS_PULL_REQUEST --out-file $ROSLINT_RESULT_PATH || true)
   if [ -e $ROSLINT_RESULT_PATH ]; then
     if source $HOME/.token; then  # get GH_TOKEN that is GitHub API Token
       (cd $CI_SOURCE_PATH && .travis/comment_roslint_result.py -i $ROSLINT_RESULT_PATH -t $GH_TOKEN || true)
