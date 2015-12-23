@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import re
 import os
+import re
 import shlex
 import subprocess
-from subprocess import Popen, PIPE
+from subprocess import Popen
+from subprocess import PIPE
 
 
 def get_commits_from_origin():
@@ -42,6 +43,10 @@ def get_buildspace():
 
 def get_roslint_results(pkg):
     cwd = os.path.join(get_buildspace(), pkg)
+    if not os.path.exists(cwd):
+        print("[{pkg}] buildspace '{space}' does not exist"
+              .format(pkg=pkg, space=cwd))
+        return []
     cmd = 'make roslint'
     p = Popen(shlex.split(cmd), cwd=cwd,
               stdin=None, stdout=None, stderr=PIPE, close_fds=True)
