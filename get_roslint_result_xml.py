@@ -36,8 +36,8 @@ def get_changed_line_of_commit(commit, files):
 
 
 def get_buildspace():
-    cmd = "catkin --no-color config | grep '^Build Space' | awk '{print $4}'"
-    buildspace = subprocess.check_output(cmd, shell=True).strip()
+    pref_path = os.getenv('CMAKE_PREFIX_PATH').split(':')[0]
+    buildspace = os.path.join(os.path.dirname(pref_path), 'build')
     return buildspace
 
 
