@@ -99,6 +99,7 @@ def get_roslint_result_xml(packages, repo_dir, repo_slug, pr_num, output):
     lint_reports = []
     for commit, fname0, line_num0 in diff_lines:
         for fname1, line_num1, message in lint_results:
+            print(commit, fname0, fname1, line_num0, line_num1)
             if fname0 == fname1 and line_num0 == line_num1:
                 lint_reports.append((fname0, commit, line_num0, message))
     xml = compose_report_xml(lint_reports, repo_slug, pr_num)
