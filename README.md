@@ -88,6 +88,10 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   The number of make parallel processes in test.
 
+* `ROSDEP_ADDITIONAL_OPTIONS` (default: `-n -q -r --ignore-src`)
+
+  The options passed when rosdep install.
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`
