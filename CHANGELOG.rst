@@ -2,6 +2,13 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add --force-yes to apt-get install
+* add support for kinetic
+* Customize options for rosdep with env
+* Contributors: Kei Okada, Kentaro Wada
+
 0.2.4 (2015-12-21)
 ------------------
 * [travis_jenkins.py] named docker container
