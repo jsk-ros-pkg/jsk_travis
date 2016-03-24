@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2016-03-24)
+------------------
 * add --force-yes to apt-get install
 * add support for kinetic
 * Customize options for rosdep with env
