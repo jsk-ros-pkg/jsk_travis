@@ -271,6 +271,12 @@ DOCKER_CONTAINER_NAME   = %(DOCKER_CONTAINER_NAME)s
 
 if env.get('ROS_DISTRO') == 'hydro':
     LSB_RELEASE = '12.04'
+elif env.get('ROS_DISTRO') == 'indigo':
+    LSB_RELEASE = '14.04'
+elif env.get('ROS_DISTRO') == 'jade':
+    LSB_RELEASE = '14.04'
+elif env.get('ROS_DISTRO') == 'kinetic':
+    LSB_RELEASE = '16.04'
 else:
     LSB_RELEASE = '14.04'
 
