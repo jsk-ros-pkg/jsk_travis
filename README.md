@@ -40,9 +40,9 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
 ## Environmental Variables
 
-* `BEFORE_SCRIPT` (default: none)
+* `BEFORE_SCRIPT` `AFTER_SCRIPT` (default: none)
 
-  `BEFORE_SCRIPT` is used to specify shell commands which run before building packages.
+  `BEFORE_SCRIPT` and `AFTER_SCRIPT` are used to specify shell commands which run before/after building packages.
   Some characters won't work without escaping it for xml on Jenkins.
   (see: [here](https://github.com/jsk-ros-pkg/jsk_travis/issues/171))
 
