@@ -123,21 +123,25 @@ travis_time_start setup_rosws
 # Create workspace
 mkdir -p ~/ros/ws_$REPOSITORY_NAME/src
 cd ~/ros/ws_$REPOSITORY_NAME/src
+$ROSWS init .
 if [ "$USE_DEB" == false ]; then
-    $ROSWS init .
-    if [ -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
-        # install (maybe unreleased version) dependencies from source
-        $ROSWS merge file://$CI_SOURCE_PATH/.travis.rosinstall
-    fi
-    if [ -e $CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO ]; then
-        # install (maybe unreleased version) dependencies from source for specific ros version
-        $ROSWS merge file://$CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO
-    fi
-    $ROSWS update
-    $ROSWS set $REPOSITORY_NAME http://github.com/$TRAVIS_REPO_SLUG --git -y
+    # install (maybe unreleased version) dependencies from source
+    # install (maybe unreleased version) dependencies from source for specific ros version
+    ROSINSTALL_FILES=".travis.rosinstall .travis.rosinstall.$ROS_DISTRO $ROSINSTALL_FILES"
 fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
-if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $ROSWS init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; $ROSWS update; fi
+if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then
+    $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME
+fi
+if [ "$ROSINSTALL_FILES" != "" ]; then
+    for f in $ROSINSTALL_FILES; do
+	if [ -e $CI_SOURCE_PATH/$f ]; then
+	    $ROSWS merge file://$CI_SOURCE_PATH/$f
+	fi
+    done
+fi
+$ROSWS update
+
 # disable hrpsys/doc generation
 find . -ipath "*/hrpsys/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
 # disable metapackage

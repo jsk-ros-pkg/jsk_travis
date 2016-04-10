@@ -67,6 +67,11 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   If `source`, travis does not sees [config files](#config-files) but runs `setup_upstream.sh` file.
   See [here](https://github.com/jsk-ros-pkg/jsk_roseus) for example.
 
+* `ROSINSTALL_FILES` (default: none)
+
+  You can define additional `.rosinstall` files which is merged before building packages.
+  Note that if `USE_DEB` option is `false`, `.travis.rosinstall` and `.travis.rosinstall.$ROS_DISTRO` are automatically appended beforehand.
+
 * `USE_JENKINS` (default: `false`)
 
   Force to run test on jenkins. jenkins server is more powerful than travis environment,
