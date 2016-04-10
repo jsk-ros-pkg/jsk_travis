@@ -187,6 +187,11 @@ if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_or
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
 if [ "$BUILDER" == catkin ]; then catkin build -i -v --summarize  --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
 
+# force ~/ros/$ROS_DISTRO/devel/.catkin and ROS_PACKAGE_PATH be correct
+# FIXME: https://github.com/catkin/catkin_tools/issues/283
+$CI_SOURCE_PATH/.travis/force_to_set_dotcatkin.py --packages $TARGET_PKGS --workspace $HOME/ros/ws_$REPOSITORY_NAME || echo ok
+source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
+
 travis_time_end
 travis_time_start catkin_run_tests
 
@@ -198,7 +203,6 @@ if [ "$ROS_DISTRO" == "hydro" ]; then
 fi
 
 if [ "$BUILDER" == catkin ]; then
-    source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
     catkin run_tests -iv --no-deps --limit-status-rate 0.001 $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
     catkin_test_results build || error
 fi
