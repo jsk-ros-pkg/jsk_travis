@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.1 (2016-04-11)
+------------------
 * stop canceled jobs before re-run docker
 * keep containers for a while
 * Contributors: Furushchev
