@@ -2,6 +2,12 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* stop canceled jobs before re-run docker
+* keep containers for a while
+* Contributors: Furushchev
+
 0.3.0 (2016-03-24)
 ------------------
 * add --force-yes to apt-get install
