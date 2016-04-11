@@ -107,6 +107,8 @@ for container in `sudo docker ps -a | egrep '^.*days ago' | awk '{print $1}'`; d
      sudo docker rm $container || echo ok
 done
 
+sudo docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
+sudo docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
 sudo docker run -t --name %(DOCKER_CONTAINER_NAME)s -e ROS_DISTRO='%(ROS_DISTRO)s' -e ROSWS='%(ROSWS)s' -e BUILDER='%(BUILDER)s' -e USE_DEB='%(USE_DEB)s' -e TRAVIS_REPO_SLUG='%(TRAVIS_REPO_SLUG)s' -e EXTRA_DEB='%(EXTRA_DEB)s' -e TARGET_PKGS='%(TARGET_PKGS)s' -e BEFORE_SCRIPT='%(BEFORE_SCRIPT)s' -e TEST_PKGS='%(TEST_PKGS)s' -e NOT_TEST_INSTALL='%(NOT_TEST_INSTALL)s' -e ROS_PARALLEL_JOBS='%(ROS_PARALLEL_JOBS)s' -e CATKIN_PARALLEL_JOBS='%(CATKIN_PARALLEL_JOBS)s' -e ROS_PARALLEL_TEST_JOBS='%(ROS_PARALLEL_TEST_JOBS)s' -e CATKIN_PARALLEL_TEST_JOBS='%(CATKIN_PARALLEL_TEST_JOBS)s' -e BUILD_PKGS='%(BUILD_PKGS)s'  -e HOME=/workspace -v $WORKSPACE/${BUILD_TAG}:/workspace -v /export/data1/ccache:/workspace/.ccache -v /export/data1/pip-cache:/workspace/.cache/pip -v /export/data1/ros_test_data:/workspace/.ros/test_data -w /workspace ros-ubuntu:%(LSB_RELEASE)s /bin/bash -c "$(cat &lt;&lt;EOL
 
 cd %(TRAVIS_REPO_SLUG)s
@@ -242,7 +244,7 @@ CATKIN_PARALLEL_JOBS    = env.get('CATKIN_PARALLEL_JOBS') or ''
 ROS_PARALLEL_TEST_JOBS  = env.get('ROS_PARALLEL_TEST_JOBS') or ''
 CATKIN_PARALLEL_TEST_JOBS = env.get('CATKIN_PARALLEL_TEST_JOBS') or ''
 BUILD_PKGS       = env.get('BUILD_PKGS') or ''
-DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_ID])
+DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER])
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
