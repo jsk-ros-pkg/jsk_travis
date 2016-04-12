@@ -9,6 +9,8 @@ import json
 import time
 import os
 import sys
+from xml.sax.saxutils import escape
+from xml.sax.saxutils import unescape
 
 from os import environ as env
 
@@ -221,30 +223,43 @@ def wait_for_building(name, number):
         time.sleep(sleep)
         loop += 1
 
+
+def escape_1depth(string):
+    """Escape with assumption of 1 depth recursiveness.
+
+    >>> escape_1depth('&amp;')
+    &amp;
+    >>> escape_1depth('&')
+    &amp;
+
+    """
+    return escape(unescape(string))
+
+
 ##
-TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH')
-TRAVIS_COMMIT   = env.get('TRAVIS_COMMIT', 'HEAD')
-TRAVIS_PULL_REQUEST     = env.get('TRAVIS_PULL_REQUEST', 'false')
-TRAVIS_REPO_SLUG        = env.get('TRAVIS_REPO_SLUG', 'jsk-ros-pkg/jsk_travis')
-TRAVIS_BUILD_ID         = env.get('TRAVIS_BUILD_ID')
-TRAVIS_BUILD_NUMBER     = env.get('TRAVIS_BUILD_NUMBER')
-TRAVIS_JOB_ID           = env.get('TRAVIS_JOB_ID')
-TRAVIS_JOB_NUMBER       = env.get('TRAVIS_JOB_NUMBER')
-ROS_DISTRO      = env.get('ROS_DISTRO', 'indigo')
-ROSWS           = env.get('ROSWS', 'wstool')
-BUILDER         = env.get('BUILDER', 'catkin')
-USE_DEB         = env.get('USE_DEB', 'true')
-EXTRA_DEB       = env.get('EXTRA_DEB', '')
-TEST_PKGS       = env.get('TEST_PKGS', '')
-TARGET_PKGS     = env.get('TARGET_PKGS', '')
-BEFORE_SCRIPT   = env.get('BEFORE_SCRIPT', '')
-NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL', '')
-ROS_PARALLEL_JOBS       = env.get('ROS_PARALLEL_JOBS', '')
-CATKIN_PARALLEL_JOBS    = env.get('CATKIN_PARALLEL_JOBS', '')
-ROS_PARALLEL_TEST_JOBS  = env.get('ROS_PARALLEL_TEST_JOBS', '')
-CATKIN_PARALLEL_TEST_JOBS = env.get('CATKIN_PARALLEL_TEST_JOBS', '')
-BUILD_PKGS       = env.get('BUILD_PKGS', '')
-DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER])
+TRAVIS_BRANCH   = escape_1depth(env.get('TRAVIS_BRANCH'))
+TRAVIS_COMMIT   = escape_1depth(env.get('TRAVIS_COMMIT', 'HEAD'))
+TRAVIS_PULL_REQUEST     = escape_1depth(env.get('TRAVIS_PULL_REQUEST', 'false'))
+TRAVIS_REPO_SLUG        = escape_1depth(env.get('TRAVIS_REPO_SLUG', 'jsk-ros-pkg/jsk_travis'))
+TRAVIS_BUILD_ID         = escape_1depth(env.get('TRAVIS_BUILD_ID')
+TRAVIS_BUILD_NUMBER     = escape_1depth(env.get('TRAVIS_BUILD_NUMBER'))
+TRAVIS_JOB_ID           = escape_1depth(env.get('TRAVIS_JOB_ID'))
+TRAVIS_JOB_NUMBER       = escape_1depth(env.get('TRAVIS_JOB_NUMBER'))
+ROS_DISTRO      = escape_1depth(env.get('ROS_DISTRO', 'indigo'))
+ROSWS           = escape_1depth(env.get('ROSWS', 'wstool'))
+BUILDER         = escape_1depth(env.get('BUILDER', 'catkin'))
+USE_DEB         = escape_1depth(env.get('USE_DEB', 'true'))
+EXTRA_DEB       = escape_1depth(env.get('EXTRA_DEB', ''))
+TEST_PKGS       = escape_1depth(env.get('TEST_PKGS', ''))
+TARGET_PKGS     = escape_1depth(env.get('TARGET_PKGS', ''))
+BEFORE_SCRIPT   = escape_1depth(env.get('BEFORE_SCRIPT', ''))
+NOT_TEST_INSTALL        = escape_1depth(unescape(env.get('NOT_TEST_INSTALL', '')))
+ROS_PARALLEL_JOBS       = escape_1depth(env.get('ROS_PARALLEL_JOBS', ''))
+CATKIN_PARALLEL_JOBS    = escape_1depth(env.get('CATKIN_PARALLEL_JOBS', ''))
+ROS_PARALLEL_TEST_JOBS  = escape_1depth(env.get('ROS_PARALLEL_TEST_JOBS', ''))
+CATKIN_PARALLEL_TEST_JOBS = escape_1depth(env.get('CATKIN_PARALLEL_TEST_JOBS', ''))
+BUILD_PKGS       = escape_1depth(env.get('BUILD_PKGS', ''))
+DOCKER_CONTAINER_NAME = escape_1depth('_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER]))
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
