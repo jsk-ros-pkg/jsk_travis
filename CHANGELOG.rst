@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.0 (2016-04-19)
+------------------
 * rosdep-install.sh: try 3 times
 * order of --from-paths was not correct
 
