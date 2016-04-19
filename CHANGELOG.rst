@@ -2,6 +2,20 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* rosdep-install.sh: try 3 times
+* order of --from-paths was not correct
+
+* Fix for catkin_tools 0.4.x
+
+  * travis.sh: catkin build -i -v is too verbose, use -v @wkentaro
+  * use 0.1 (wait at most 10 sec) for limit-status-rate, see https://github.com/catkin/catkin_tools/issues/337 for problem
+  * setup.sh : catkin clean -a is no longer supported
+  * travis.sh : could not install catkin-tools from apt, use pip instaed
+
+* Contributors: Kei Okada
+
 0.3.1 (2016-04-11)
 ------------------
 * stop canceled jobs before re-run docker
