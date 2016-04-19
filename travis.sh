@@ -70,7 +70,12 @@ sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 lsb_release -a
 sudo apt-get update -q || echo Ignore error of apt-get update
-sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache
+if [ "$ROS_DISTRO" == "hydro" ]; then # https://github.com/catkin/catkin_tools/issues/336
+    sudo pip install catkin-tools
+else
+    sudo apt-get install -y python-catkin-tools
+fi
+sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache
 # setup ccache
 sudo ln -s /usr/bin/ccache /usr/local/bin/gcc
 sudo ln -s /usr/bin/ccache /usr/local/bin/g++
@@ -185,7 +190,7 @@ source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/
 # for catkin
 if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
-if [ "$BUILDER" == catkin ]; then catkin build -i -v --summarize  --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
+if [ "$BUILDER" == catkin ]; then catkin build -i --summarize  --limit-status-rate 0.1 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
 
 travis_time_end
 travis_time_start catkin_run_tests
@@ -199,7 +204,7 @@ fi
 
 if [ "$BUILDER" == catkin ]; then
     source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
-    catkin run_tests -iv --no-deps --limit-status-rate 0.001 $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
+    catkin run_tests -iv --no-deps --limit-status-rate 0.1 $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
     catkin_test_results build || error
 fi
 
@@ -210,9 +215,9 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     travis_time_start catkin_install_build
 
     if [ "$BUILDER" == catkin ]; then
-        catkin clean -a
+        catkin clean --yes
         catkin config --install
-        catkin build -i -v --summarize --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS
+        catkin build -i --summarize --limit-status-rate 0.1 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS
         source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
         rospack profile
         rospack plugins --attrib=plugin nodelet
