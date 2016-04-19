@@ -46,6 +46,10 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   Some characters won't work without escaping it for xml on Jenkins.
   (see: [here](https://github.com/jsk-ros-pkg/jsk_travis/issues/171))
 
+* `BEFORE_RUNTESTS` (default: none)
+
+  `BEFORE_RUNTESTS` is used to specify shell commands which run before testing packages.
+
 * `BUILD_PKGS` (default: none)
 
   You can specify the packages to build and test. If your repository has some troubles about several packages,

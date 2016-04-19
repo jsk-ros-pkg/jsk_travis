@@ -193,6 +193,13 @@ if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" ==
 if [ "$BUILDER" == catkin ]; then catkin build -i --summarize  --limit-status-rate 0.1 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
 
 travis_time_end
+
+
+travis_time_start before_script
+if [ "${BEFORE_RUNTESTS// }" != "" ]; then sh -c "${BEFORE_RUNTESTS}"; fi
+travis_time_end
+
+
 travis_time_start catkin_run_tests
 
 # patch for rostest
