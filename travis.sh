@@ -215,7 +215,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     travis_time_start catkin_install_build
 
     if [ "$BUILDER" == catkin ]; then
-        catkin clean -a
+        catkin clean --yes
         catkin config --install
         catkin build -i -v --summarize --limit-status-rate 0.001 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS
         source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
