@@ -217,7 +217,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     if [ "$BUILDER" == catkin ]; then
         catkin clean --yes
         catkin config --install
-        catkin build -i --summarize --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS
+        catkin build --summarize --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS
         source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
         rospack profile
         rospack plugins --attrib=plugin nodelet
