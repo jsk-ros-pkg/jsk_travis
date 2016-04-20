@@ -71,7 +71,7 @@ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 lsb_release -a
 sudo apt-get update -q || echo Ignore error of apt-get update
 if [ "$ROS_DISTRO" == "hydro" ]; then # https://github.com/catkin/catkin_tools/issues/336
-    sudo pip install catkin-tools
+    sudo pip install -U -q catkin-tools
 else
     sudo apt-get install -y python-catkin-tools
 fi
@@ -190,7 +190,7 @@ source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/
 # for catkin
 if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
-if [ "$BUILDER" == catkin ]; then catkin build -i --summarize  --limit-status-rate 0.1 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS            ; fi
+if [ "$BUILDER" == catkin ]; then catkin build -i --summarize  --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked ; fi
 
 travis_time_end
 travis_time_start catkin_run_tests
@@ -204,7 +204,7 @@ fi
 
 if [ "$BUILDER" == catkin ]; then
     source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
-    catkin run_tests -iv --no-deps --limit-status-rate 0.1 $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
+    catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS | grep -v -e Symlinking -e Linked
     catkin_test_results build || error
 fi
 
@@ -217,7 +217,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     if [ "$BUILDER" == catkin ]; then
         catkin clean --yes
         catkin config --install
-        catkin build -i --summarize --limit-status-rate 0.1 $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS
+        catkin build --summarize --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked
         source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
         rospack profile
         rospack plugins --attrib=plugin nodelet
