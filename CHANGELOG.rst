@@ -2,6 +2,18 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* travis_jenkins.py: pass ROS_REPOSITORY_PATH
+* remove Symlinking. and Linkid.. from output
+* rosdep-install.sh : remove debug code
+* quiet intall catkin-tools
+* travis.sh : catkin run_tests -iv -> catkin run_tests -i to reduce output message
+* remove -i option for install configuraiton to supress Installing... output
+* rosdep-install.sh : use -q for rosdep install
+* use --no-status: if there are code that needs to compile more than 10 sec, this would becoume problem
+* Contributors: Kei Okada
+
 0.4.0 (2016-04-19)
 ------------------
 * rosdep-install.sh: try 3 times
