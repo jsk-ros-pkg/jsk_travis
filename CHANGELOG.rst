@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.1 (2016-04-20)
+------------------
 * travis_jenkins.py: pass ROS_REPOSITORY_PATH
 * remove Symlinking. and Linkid.. from output
 * rosdep-install.sh : remove debug code
