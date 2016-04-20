@@ -204,7 +204,7 @@ fi
 
 if [ "$BUILDER" == catkin ]; then
     source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
-    catkin run_tests -iv --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
+    catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
     catkin_test_results build || error
 fi
 
