@@ -70,12 +70,7 @@ sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 lsb_release -a
 sudo apt-get update -q || echo Ignore error of apt-get update
-if [ "$ROS_DISTRO" == "hydro" ]; then # https://github.com/catkin/catkin_tools/issues/336
-    sudo pip install -U -q catkin-tools
-else
-    sudo apt-get install -y python-catkin-tools
-fi
-sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache
+sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache
 # setup ccache
 sudo ln -s /usr/bin/ccache /usr/local/bin/gcc
 sudo ln -s /usr/bin/ccache /usr/local/bin/g++
@@ -215,7 +210,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     travis_time_start catkin_install_build
 
     if [ "$BUILDER" == catkin ]; then
-        catkin clean --yes
+        catkin clean --yes || catkin clean -a # 0.3.1 uses -a, 0.4.0 uses --yes
         catkin config --install
         catkin build --summarize --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked
         source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
