@@ -2,6 +2,12 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* now hydro/deb uses 0.3.1
+* 0.3.1 for hydro
+* Contributors: Kei Okada
+
 0.4.1 (2016-04-20)
 ------------------
 * travis_jenkins.py: pass ROS_REPOSITORY_PATH
