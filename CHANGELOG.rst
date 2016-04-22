@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* do not print out :install] message
+* Contributors: Kei Okada
+
 0.4.2 (2016-04-21)
 ------------------
 * now hydro/deb uses 0.3.1
