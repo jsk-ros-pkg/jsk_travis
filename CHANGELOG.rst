@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.3 (2016-04-23)
+------------------
 * do not print out :install] message
 * Contributors: Kei Okada
 
