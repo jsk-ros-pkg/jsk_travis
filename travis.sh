@@ -215,7 +215,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
         catkin build --summarize --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
         source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
         rospack profile
-        rospack plugins --attrib=plugin nodelet
+        rospack plugins --attrib=plugin nodelet || echo "ok"
     fi
 
     travis_time_end
