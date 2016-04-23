@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* on some environment, nedoelet is not installed
+* Contributors: Kei Okada
+
 0.4.3 (2016-04-23)
 ------------------
 * do not print out :install] message
