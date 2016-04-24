@@ -22,10 +22,10 @@ env:
   - ROS_DISTRO=hydro USE_JENKINS="true" NO_SUDO="true"
   - ROS_DISTRO=indigo BUILDER='not-compile'
   - ROS_DISTRO=indigo BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-  - ROS_DISTRO=indigo BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT=''  TRAVIS_PULL_REQUEST=''
+  - ROS_DISTRO=indigo BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
   - ROS_DISTRO=jade BUILDER='not-compile'
   - ROS_DISTRO=jade BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-  - ROS_DISTRO=jade BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT=''  TRAVIS_PULL_REQUEST=''
+  - ROS_DISTRO=jade BUILDER='not-compile' TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
   - ROS_DISTRO=kinetic BUILDER='not-compile'
 before_script:
   - mkdir .travis; cp * .travis # need to copy, since directory starting from . is ignoreed by catkin build
