@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.5 (2016-04-24)
+------------------
 * support DOCKER_RUN_OPTION and set default to --rm
 * Refactoring docker run in 'travis_jenkins.py'
 * Contributors: Kei Okada, Kentaro Wada
