@@ -36,6 +36,7 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
        CATKIN_PARALLEL_TEST_JOBS = %(CATKIN_PARALLEL_TEST_JOBS)s&lt;br&gt;
        BUILDING_PKG = %(BUILD_PKGS)s&lt;br&gt;
        ROS_REPOSITORY_PATH = %(ROS_REPOSITORY_PATH)s&lt;br&gt;
+       DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s&lt;br&gt;
   </description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -110,7 +111,7 @@ done
 
 sudo docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
 sudo docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
-sudo docker run -t \\
+sudo docker run %(DOCKER_RUN_OPTION)s -t \\
     --name %(DOCKER_CONTAINER_NAME)s \\
     -e ROS_DISTRO='%(ROS_DISTRO)s' \\
     -e ROSWS='%(ROSWS)s' \\
@@ -128,6 +129,7 @@ sudo docker run -t \\
     -e CATKIN_PARALLEL_TEST_JOBS='%(CATKIN_PARALLEL_TEST_JOBS)s' \\
     -e BUILD_PKGS='%(BUILD_PKGS)s' \\
     -e ROS_REPOSITORY_PATH='%(ROS_REPOSITORY_PATH)s'  \\
+    -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
     -e HOME=/workspace \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
     -v /export/data1/ccache:/workspace/.ccache \\
@@ -271,6 +273,7 @@ CATKIN_PARALLEL_TEST_JOBS = env.get('CATKIN_PARALLEL_TEST_JOBS') or ''
 BUILD_PKGS       = env.get('BUILD_PKGS') or ''
 ROS_REPOSITORY_PATH = env.get('ROS_REPOSITORY_PATH') or ''
 DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER])
+DOCKER_RUN_OPTION = env.get('DOCKER_RUN_OPTION') or '--rm'
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
@@ -298,6 +301,7 @@ CATKIN_PARALLEL_TEST_JOBS = %(CATKIN_PARALLEL_TEST_JOBS)s
 BUILD_PKGS       = %(BUILD_PKGS)s
 ROS_REPOSITORY_PATH = %(ROS_REPOSITORY_PATH)s
 DOCKER_CONTAINER_NAME   = %(DOCKER_CONTAINER_NAME)s
+DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s
 ''' % locals())
 
 if env.get('ROS_DISTRO') == 'hydro':
