@@ -2,6 +2,12 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* support DOCKER_RUN_OPTION and set default to --rm
+* Refactoring docker run in 'travis_jenkins.py'
+* Contributors: Kei Okada, Kentaro Wada
+
 0.4.4 (2016-04-23)
 ------------------
 * on some environment, nedoelet is not installed
