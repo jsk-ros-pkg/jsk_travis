@@ -249,31 +249,31 @@ def wait_for_building(name, number):
         loop += 1
 
 ##
-TRAVIS_BRANCH   = env.get('TRAVIS_BRANCH')
-TRAVIS_COMMIT   = env.get('TRAVIS_COMMIT') or 'HEAD'
-TRAVIS_PULL_REQUEST     = env.get('TRAVIS_PULL_REQUEST') or 'false'
-TRAVIS_REPO_SLUG        = env.get('TRAVIS_REPO_SLUG') or 'jsk-ros-pkg/jsk_travis'
-TRAVIS_BUILD_ID         = env.get('TRAVIS_BUILD_ID')
-TRAVIS_BUILD_NUMBER     = env.get('TRAVIS_BUILD_NUMBER')
-TRAVIS_JOB_ID           = env.get('TRAVIS_JOB_ID')
-TRAVIS_JOB_NUMBER       = env.get('TRAVIS_JOB_NUMBER')
-ROS_DISTRO      = env.get('ROS_DISTRO') or 'indigo'
-ROSWS           = env.get('ROSWS') or 'wstool'
-BUILDER         = env.get('BUILDER') or 'catkin'
-USE_DEB         = env.get('USE_DEB') or 'true'
-EXTRA_DEB       = env.get('EXTRA_DEB') or ''
-TEST_PKGS       = env.get('TEST_PKGS') or ''
-TARGET_PKGS     = env.get('TARGET_PKGS') or ''
-BEFORE_SCRIPT   = env.get('BEFORE_SCRIPT') or ''
-NOT_TEST_INSTALL        = env.get('NOT_TEST_INSTALL') or ''
-ROS_PARALLEL_JOBS       = env.get('ROS_PARALLEL_JOBS') or ''
-CATKIN_PARALLEL_JOBS    = env.get('CATKIN_PARALLEL_JOBS') or ''
-ROS_PARALLEL_TEST_JOBS  = env.get('ROS_PARALLEL_TEST_JOBS') or ''
-CATKIN_PARALLEL_TEST_JOBS = env.get('CATKIN_PARALLEL_TEST_JOBS') or ''
-BUILD_PKGS       = env.get('BUILD_PKGS') or ''
-ROS_REPOSITORY_PATH = env.get('ROS_REPOSITORY_PATH') or ''
+TRAVIS_BRANCH = env.get('TRAVIS_BRANCH')
+TRAVIS_COMMIT = env.get('TRAVIS_COMMIT', 'HEAD')
+TRAVIS_PULL_REQUEST = env.get('TRAVIS_PULL_REQUEST', 'false')
+TRAVIS_REPO_SLUG = env.get('TRAVIS_REPO_SLUG', 'jsk-ros-pkg/jsk_travis')
+TRAVIS_BUILD_ID = env.get('TRAVIS_BUILD_ID')
+TRAVIS_BUILD_NUMBER = env.get('TRAVIS_BUILD_NUMBER')
+TRAVIS_JOB_ID = env.get('TRAVIS_JOB_ID')
+TRAVIS_JOB_NUMBER = env.get('TRAVIS_JOB_NUMBER')
+ROS_DISTRO = env.get('ROS_DISTRO', 'indigo')
+ROSWS = env.get('ROSWS', 'wstool')
+BUILDER = env.get('BUILDER', 'catkin')
+USE_DEB = env.get('USE_DEB', 'true')
+EXTRA_DEB = env.get('EXTRA_DEB', '')
+TEST_PKGS = env.get('TEST_PKGS', '')
+TARGET_PKGS = env.get('TARGET_PKGS', '')
+BEFORE_SCRIPT = env.get('BEFORE_SCRIPT', '')
+NOT_TEST_INSTALL = env.get('NOT_TEST_INSTALL', '')
+ROS_PARALLEL_JOBS = env.get('ROS_PARALLEL_JOBS', '')
+CATKIN_PARALLEL_JOBS = env.get('CATKIN_PARALLEL_JOBS', '')
+ROS_PARALLEL_TEST_JOBS = env.get('ROS_PARALLEL_TEST_JOBS', '')
+CATKIN_PARALLEL_TEST_JOBS = env.get('CATKIN_PARALLEL_TEST_JOBS', '')
+BUILD_PKGS = env.get('BUILD_PKGS', '')
+ROS_REPOSITORY_PATH = env.get('ROS_REPOSITORY_PATH', '')
 DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER])
-DOCKER_RUN_OPTION = env.get('DOCKER_RUN_OPTION') or '--rm'
+DOCKER_RUN_OPTION = env.get('DOCKER_RUN_OPTION', '--rm')
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
