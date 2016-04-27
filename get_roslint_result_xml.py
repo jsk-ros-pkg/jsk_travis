@@ -10,25 +10,26 @@ from subprocess import Popen
 from subprocess import PIPE
 
 
-def get_commits_from_origin():
+def get_commits_from_origin(repo_dir):
     cmd = 'git log --format="%h" origin/master..'
-    commits = subprocess.check_output(shlex.split(cmd)).splitlines()
+    commits = subprocess.check_output(
+        shlex.split(cmd), cwd=repo_dir).splitlines()
     return commits
 
 
-def get_changed_files_from_origin():
+def get_changed_files_from_origin(repo_dir):
     cmd = r"git log --name-status origin/master.. | grep -E '^[A-Z]\b'"
-    files = subprocess.check_output(cmd, shell=True).splitlines()
-    files = [f.split('\t')[-1] for f in files]
+    files = subprocess.check_output(cmd, shell=True, cwd=repo_dir).splitlines()
+    files = [os.path.join(repo_dir, f.split('\t')[-1]) for f in files]
     return files
 
 
-def get_changed_line_of_commit(commit, files):
+def get_changed_line_of_commit(repo_dir, commit, files):
     cmd = 'git blame {}'
     for f in files:
         if not os.path.isfile(f):
             continue
-        blame = subprocess.check_output(shlex.split(cmd.format(f)))
+        blame = subprocess.check_output(shlex.split(cmd.format(f)), cwd=repo_dir)
         for i, line in enumerate(blame.splitlines()):
             line_num = i + 1
             if re.search('^' + commit, line):
@@ -83,12 +84,12 @@ def compose_report_xml(reports, repo_slug, pr_num):
     return xml
 
 
-def get_roslint_result_xml(packages, repo_slug, pr_num, output):
-    commits = get_commits_from_origin()
-    files = get_changed_files_from_origin()
+def get_roslint_result_xml(packages, repo_dir, repo_slug, pr_num, output):
+    commits = get_commits_from_origin(repo_dir)
+    files = get_changed_files_from_origin(repo_dir)
     diff_lines = []
     for commit in commits:
-        changed_line = get_changed_line_of_commit(commit, files)
+        changed_line = get_changed_line_of_commit(repo_dir, commit, files)
         if changed_line is not None:
             diff_lines.append(changed_line)
 
@@ -98,7 +99,7 @@ def get_roslint_result_xml(packages, repo_slug, pr_num, output):
     lint_reports = []
     for commit, fname0, line_num0 in diff_lines:
         for fname1, line_num1, message in lint_results:
-            if os.path.abspath(fname0) == fname1 and line_num0 == line_num1:
+            if fname0 == fname1 and line_num0 == line_num1:
                 lint_reports.append((fname0, commit, line_num0, message))
     xml = compose_report_xml(lint_reports, repo_slug, pr_num)
     with open(output, 'w') as f:
@@ -108,12 +109,13 @@ def get_roslint_result_xml(packages, repo_slug, pr_num, output):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('packages', nargs='+')
+    parser.add_argument('--repo-dir', required=True)
     parser.add_argument('--repo-slug', required=True)
     parser.add_argument('--pr-number', required=True)
     parser.add_argument('--out-file', required=True)
     args = parser.parse_args()
-    get_roslint_result_xml(
-        args.packages, args.repo_slug, args.pr_number, output=args.out_file)
+    get_roslint_result_xml(args.packages, args.repo_dir, args.repo_slug,
+                           args.pr_number, output=args.out_file)
 
 
 if __name__ == '__main__':
