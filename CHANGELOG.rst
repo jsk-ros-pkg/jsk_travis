@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.6 (2016-05-01)
+------------------
 * Fix `#253 <https://github.com/jsk-ros-pkg/jsk_travis/issues/253>`_ `#254 <https://github.com/jsk-ros-pkg/jsk_travis/issues/254>`_: Pipe failed return status on grepping (`#255 <https://github.com/jsk-ros-pkg/jsk_travis/issues/255>`_)
   * Fix `#254 <https://github.com/jsk-ros-pkg/jsk_travis/issues/254>`_: Pipe failed return status on grepping
   Closes `#254 <https://github.com/jsk-ros-pkg/jsk_travis/issues/254>`_
