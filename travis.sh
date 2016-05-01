@@ -203,7 +203,7 @@ fi
 if [ "$BUILDER" == catkin ]; then
     source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
     set -o pipefail  # this is necessary to pipe fail status on grepping
-    catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
+    catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS -- | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
     set +o pipefail
     catkin_test_results build || error
 fi
