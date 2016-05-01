@@ -2,6 +2,16 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix `#253 <https://github.com/jsk-ros-pkg/jsk_travis/issues/253>`_ `#254 <https://github.com/jsk-ros-pkg/jsk_travis/issues/254>`_: Pipe failed return status on grepping (`#255 <https://github.com/jsk-ros-pkg/jsk_travis/issues/255>`_)
+  * Fix `#254 <https://github.com/jsk-ros-pkg/jsk_travis/issues/254>`_: Pipe failed return status on grepping
+  Closes `#254 <https://github.com/jsk-ros-pkg/jsk_travis/issues/254>`_
+  * catkin 0.3.1 fails without tailing -- (`#3 <https://github.com/jsk-ros-pkg/jsk_travis/issues/3>`_)
+* Stop setting testing repository in wstool workspace
+* Refactoring with env.get('key', 'default_value') in 'travis_jenkins.py'
+* Contributors: Kentaro Wada
+
 0.4.5 (2016-04-24)
 ------------------
 * support DOCKER_RUN_OPTION and set default to --rm
