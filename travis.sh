@@ -205,7 +205,7 @@ if [ "$BUILDER" == catkin ]; then
     set -o pipefail  # this is necessary to pipe fail status on grepping
     catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS -- | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
     set +o pipefail
-    catkin_test_results build || error
+    catkin_test_results --verbose --all build || error
 fi
 
 travis_time_end
