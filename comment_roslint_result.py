@@ -93,7 +93,11 @@ if __name__ == '__main__':
         p.error("file %s not exists" % o.input_path)
         sys.exit(1)
 
-    c = CommentLintResult(cache_dir=o.cache_dir, github_token=o.token)
+    try:
+        token = os.environ['GITHUB_ACCESS_TOKEN']
+    except KeyError:
+        print('Please set GITHUB_ACCESS_TOKEN environmental variable')
+    c = CommentLintResult(cache_dir=o.cache_dir, github_token=token)
     if c.run(input_path=o.input_path):
         sys.exit(0)
     else:

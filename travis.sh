@@ -204,11 +204,8 @@ if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
   $CI_SOURCE_PATH/.travis/get_roslint_result_xml.py $TARGET_PKGS --repo-dir $CI_SOURCE_PATH --repo-slug $TRAVIS_REPO_SLUG --pr-number $TRAVIS_PULL_REQUEST --out-file $ROSLINT_RESULT_PATH || true
   if [ -e $ROSLINT_RESULT_PATH ]; then
     cat $ROSLINT_RESULT_PATH  # TODO(wkentaro): DEBUGGING
-    if source $HOME/.token; then  # get GH_TOKEN that is GitHub API Token
-      (cd $CI_SOURCE_PATH && .travis/comment_roslint_result.py -i $ROSLINT_RESULT_PATH -t $GH_TOKEN || true)
-    else
-      echo "GitHub Token not found. skipping"
-    fi
+    # this script requires GITHUB_ACCESS_TOKEN environmental variable
+    (cd $CI_SOURCE_PATH && .travis/comment_roslint_result.py -i $ROSLINT_RESULT_PATH || true)
   else
     echo "$ROSLINT_RESULT_PATH not found. skipping"
   fi
