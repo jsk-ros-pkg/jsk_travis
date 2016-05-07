@@ -200,6 +200,20 @@ if [ "$ROS_DISTRO" == "hydro" ]; then
     (cd /opt/ros/$ROS_DISTRO/share; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/611.diff -O - | sed s@.cmake.em@.cmake@ | sed 's@/${PROJECT_NAME}@@' | sed 's@ DEPENDENCIES ${_rostest_DEPENDENCIES})@)@' | sudo patch -f -p2 || echo "ok")
 fi
 
+# run roslint and report on github's pr page
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+  source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for roslint
+  ROSLINT_RESULT_PATH="/tmp/roslint_result.xml"
+  $CI_SOURCE_PATH/.travis/get_roslint_result_xml.py $TARGET_PKGS --repo-dir $CI_SOURCE_PATH --repo-slug $TRAVIS_REPO_SLUG --pr-number $TRAVIS_PULL_REQUEST --out-file $ROSLINT_RESULT_PATH || true
+  if [ -e $ROSLINT_RESULT_PATH ]; then
+    cat $ROSLINT_RESULT_PATH  # TODO(wkentaro): DEBUGGING
+    # this script requires GITHUB_ACCESS_TOKEN environmental variable
+    (cd $CI_SOURCE_PATH && .travis/comment_roslint_result.py -i $ROSLINT_RESULT_PATH || true)
+  else
+    echo "$ROSLINT_RESULT_PATH not found. skipping"
+  fi
+fi
+
 if [ "$BUILDER" == catkin ]; then
     source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
     set -o pipefail  # this is necessary to pipe fail status on grepping
