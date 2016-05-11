@@ -122,6 +122,9 @@ travis_time_start setup_rosws
 ### install: # Use this to install any prerequisites or dependencies necessary to run your build
 # Create workspace
 mkdir -p ~/ros/ws_$REPOSITORY_NAME/src
+cd ~/ros/ws_$REPOSITORY_NAME
+catkin init
+catkin config $CATKIN_TOOLS_CONFIG_OPTIONS
 cd ~/ros/ws_$REPOSITORY_NAME/src
 if [ "$USE_DEB" == false ]; then
     $ROSWS init .
@@ -216,7 +219,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
     if [ "$BUILDER" == catkin ]; then
         catkin clean --yes || catkin clean -a # 0.3.1 uses -a, 0.4.0 uses --yes
-        catkin config --install
+        catkin config --install $CATKIN_TOOLS_CONFIG_OPTIONS
         set -o pipefail  # this is necessary to pipe fail status on grepping
         catkin build --summarize --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
         set +o pipefail
