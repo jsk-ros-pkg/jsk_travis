@@ -136,6 +136,7 @@ sudo docker run %(DOCKER_RUN_OPTION)s -t \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
     -v /export/data1/ccache:/workspace/.ccache \\
     -v /export/data1/pip-cache:/workspace/.cache/pip \\
+    -v /export/data1/ros_data:/workspace/.ros/data \\
     -v /export/data1/ros_test_data:/workspace/.ros/test_data \\
     -w /workspace ros-ubuntu:%(LSB_RELEASE)s /bin/bash \\
     -c "$(cat &lt;&lt;EOL
