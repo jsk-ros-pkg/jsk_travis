@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.7 (2016-05-19)
+------------------
 * Cache ~/.ros/data dir in jenkins (#259)
 * Env CATKIN_TOOLS_CONFIG_OPTIONS for --blacklist/--whitelist options (#258)
 * Add --verbose --all options for catkin_test_results (#257)
