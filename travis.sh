@@ -128,19 +128,19 @@ catkin init
 catkin config $CATKIN_TOOLS_CONFIG_OPTIONS
 cd ~/ros/ws_$REPOSITORY_NAME/src
 if [ "$USE_DEB" == false ]; then
-    $ROSWS init .
+    wstool init .
     if [ -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
         # install (maybe unreleased version) dependencies from source
-        $ROSWS merge file://$CI_SOURCE_PATH/.travis.rosinstall
+        wstool merge file://$CI_SOURCE_PATH/.travis.rosinstall
     fi
     if [ -e $CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO ]; then
         # install (maybe unreleased version) dependencies from source for specific ros version
-        $ROSWS merge file://$CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO
+        wstool merge file://$CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO
     fi
-    $ROSWS update
+    wstool update
 fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
-if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $ROSWS init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; $ROSWS update; fi
+if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then wstool init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; wstool update; fi
 # disable hrpsys/doc generation
 find . -ipath "*/hrpsys/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
 # disable metapackage
@@ -177,8 +177,8 @@ fi
 
 travis_time_end
 
-$ROSWS --version
-$ROSWS info -t .
+wstool --version
+wstool info -t .
 cd ../
 
 travis_time_start catkin_build
@@ -188,11 +188,9 @@ source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/
 # for catkin
 if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
-if [ "$BUILDER" == catkin ]; then
-  set -o pipefail  # this is necessary to pipe fail status on grepping
-  catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked
-  set +o pipefail
-fi
+set -o pipefail  # this is necessary to pipe fail status on grepping
+catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked
+set +o pipefail
 
 travis_time_end
 travis_time_start catkin_run_tests
@@ -204,13 +202,11 @@ if [ "$ROS_DISTRO" == "hydro" ]; then
     (cd /opt/ros/$ROS_DISTRO/share; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/611.diff -O - | sed s@.cmake.em@.cmake@ | sed 's@/${PROJECT_NAME}@@' | sed 's@ DEPENDENCIES ${_rostest_DEPENDENCIES})@)@' | sudo patch -f -p2 || echo "ok")
 fi
 
-if [ "$BUILDER" == catkin ]; then
-    source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
-    set -o pipefail  # this is necessary to pipe fail status on grepping
-    catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS -- | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
-    set +o pipefail
-    catkin_test_results --verbose --all build || error
-fi
+source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
+set -o pipefail  # this is necessary to pipe fail status on grepping
+catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS -- | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
+set +o pipefail
+catkin_test_results --verbose --all build || error
 
 travis_time_end
 
@@ -218,38 +214,34 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
     travis_time_start catkin_install_build
 
-    if [ "$BUILDER" == catkin ]; then
-        catkin clean --yes || catkin clean -a # 0.3.1 uses -a, 0.4.0 uses --yes
-        catkin config --install $CATKIN_TOOLS_CONFIG_OPTIONS
-        set -o pipefail  # this is necessary to pipe fail status on grepping
-        catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
-        set +o pipefail
-        source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
-        rospack profile
-        rospack plugins --attrib=plugin nodelet || echo "ok"
-    fi
+    catkin clean --yes || catkin clean -a # 0.3.1 uses -a, 0.4.0 uses --yes
+    catkin config --install $CATKIN_TOOLS_CONFIG_OPTIONS
+    set -o pipefail  # this is necessary to pipe fail status on grepping
+    catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
+    set +o pipefail
+    source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
+    rospack profile
+    rospack plugins --attrib=plugin nodelet || echo "ok"
 
     travis_time_end
     travis_time_start catkin_install_run_tests
 
     export EXIT_STATUS=0
-    if [ "$BUILDER" == catkin ]; then
-      for pkg in $TEST_PKGS; do
-        echo "[$pkg] Started testing..."
-        rostest_files=$(find install/share/$pkg -iname '*.test')
-        echo "[$pkg] Found $(echo $rostest_files | wc -w) tests."
-        for test_file in $rostest_files; do
-          echo "[$pkg] Testing $test_file"
-          rostest $test_file || export EXIT_STATUS=$?
-          if [ $? != 0 ]; then
-            echo -e "[$pkg] Testing again the failed test: $test_file.\e[31m>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\e[0m"
-            rostest --text $test_file
-            echo -e "[$pkg] Testing again the failed test: $test_file.\e[31m<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\e[0m"
-          fi
-        done
+    for pkg in $TEST_PKGS; do
+      echo "[$pkg] Started testing..."
+      rostest_files=$(find install/share/$pkg -iname '*.test')
+      echo "[$pkg] Found $(echo $rostest_files | wc -w) tests."
+      for test_file in $rostest_files; do
+        echo "[$pkg] Testing $test_file"
+        rostest $test_file || export EXIT_STATUS=$?
+        if [ $? != 0 ]; then
+          echo -e "[$pkg] Testing again the failed test: $test_file.\e[31m>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\e[0m"
+          rostest --text $test_file
+          echo -e "[$pkg] Testing again the failed test: $test_file.\e[31m<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\e[0m"
+        fi
       done
-      [ $EXIT_STATUS -eq 0 ] || error  # unless all tests pass, raise error
-    fi
+    done
+    [ $EXIT_STATUS -eq 0 ] || error  # unless all tests pass, raise error
 
     travis_time_end
 
@@ -261,8 +253,8 @@ travis_time_start after_script
 PATH=/usr/local/bin:$PATH  # for installed catkin_test_results
 PYTHONPATH=/usr/local/lib/python2.7/dist-packages:$PYTHONPATH
 if [ "${ROS_LOG_DIR// }" == "" ]; then export ROS_LOG_DIR=~/.ros/test_results; fi # http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LOG_DIR
-if [ "$BUILDER" == catkin -a -e $ROS_LOG_DIR ]; then catkin_test_results --verbose --all $ROS_LOG_DIR || error; fi
-if [ "$BUILDER" == catkin -a -e ~/ros/ws_$REPOSITORY_NAME/build/ ]; then catkin_test_results --verbose --all ~/ros/ws_$REPOSITORY_NAME/build/ || error; fi
-if [ "$BUILDER" == catkin -a -e ~/.ros/test_results/ ]; then catkin_test_results --verbose --all ~/.ros/test_results/ || error; fi
+if [ -e $ROS_LOG_DIR ]; then catkin_test_results --verbose --all $ROS_LOG_DIR || error; fi
+if [ -e ~/ros/ws_$REPOSITORY_NAME/build/ ]; then catkin_test_results --verbose --all ~/ros/ws_$REPOSITORY_NAME/build/ || error; fi
+if [ -e ~/.ros/test_results/ ]; then catkin_test_results --verbose --all ~/.ros/test_results/ || error; fi
 
 travis_time_end
