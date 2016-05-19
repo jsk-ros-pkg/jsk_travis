@@ -25,6 +25,10 @@ function travis_time_end {
 # set default values to env variables
 [ "${USE_TRAVIS// }" = "" ] && USE_TRAVIS=false
 
+# Deprecated environmental variables
+[ ! -z $BUILDER -a "$BUILDER" != catkin ] && ( echo "ERROR: $BUILDER is not supported. BUILDER env is deprecated and only 'catkin' is supported for the build."; exit 1; )
+[ ! -z $ROSWS -a "$ROSWS" != wstool ] && ( echo "ERROR: $ROSWS is not supported. ROSWS env is deprecated and only 'wstool' is supported for workspace management."; exit 1; )
+
 if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" == "indigo" -o "$ROS_DISTRO" == "jade" -o "$ROS_DISTRO" == "kinetic" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
     pip install --user python-jenkins -q
     ./.travis/travis_jenkins.py
@@ -36,11 +40,6 @@ function error {
     trap - ERR
     exit 1
 }
-
-[ "$BUILDER" == rosbuild ] && ( echo "$BUILDER is no longer supported"; exit 1; )
-[ "$ROSWS" == rosws ] && ( echo "$ROSWS is no longer supported"; exit 1; )
-BUILDER=catkin
-ROSWS=wstool
 
 trap error ERR
 

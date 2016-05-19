@@ -22,8 +22,6 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
      &lt;/h4&gt;
      Parameters are&lt;br&gt;
        ROS_DISTRO = %(ROS_DISTRO)s&lt;br&gt;
-       ROSWS      = %(ROSWS)s&lt;br&gt;
-       BUILDIER   = %(BUILDER)s&lt;br&gt;
        USE_DEB    = %(USE_DEB)s&lt;br&gt;
        EXTRA_DEB  = %(EXTRA_DEB)s&lt;br&gt;
        TARGET_PKGS = %(TARGET_PKGS)s&lt;br&gt;
@@ -116,8 +114,6 @@ sudo docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_
 sudo docker run %(DOCKER_RUN_OPTION)s -t \\
     --name %(DOCKER_CONTAINER_NAME)s \\
     -e ROS_DISTRO='%(ROS_DISTRO)s' \\
-    -e ROSWS='%(ROSWS)s' \\
-    -e BUILDER='%(BUILDER)s' \\
     -e USE_DEB='%(USE_DEB)s' \\
     -e TRAVIS_REPO_SLUG='%(TRAVIS_REPO_SLUG)s' \\
     -e EXTRA_DEB='%(EXTRA_DEB)s' \\
@@ -263,8 +259,6 @@ TRAVIS_BUILD_NUMBER = env.get('TRAVIS_BUILD_NUMBER')
 TRAVIS_JOB_ID = env.get('TRAVIS_JOB_ID')
 TRAVIS_JOB_NUMBER = env.get('TRAVIS_JOB_NUMBER')
 ROS_DISTRO = env.get('ROS_DISTRO', 'indigo')
-ROSWS = env.get('ROSWS', 'wstool')
-BUILDER = env.get('BUILDER', 'catkin')
 USE_DEB = env.get('USE_DEB', 'true')
 EXTRA_DEB = env.get('EXTRA_DEB', '')
 TEST_PKGS = env.get('TEST_PKGS', '')
@@ -293,8 +287,6 @@ TRAVIS_JOB_ID        = %(TRAVIS_JOB_ID)s
 TRAVIS_JOB_NUMBER    = %(TRAVIS_JOB_NUMBER)s
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
 ROS_DISTRO       = %(ROS_DISTRO)s
-ROSWS            = %(ROSWS)s
-BUILDER          = %(BUILDER)s
 USE_DEB          = %(USE_DEB)s
 EXTRA_DEB        = %(EXTRA_DEB)s
 TEST_PKGS        = %(TEST_PKGS)s
