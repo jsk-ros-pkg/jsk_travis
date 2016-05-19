@@ -2,6 +2,13 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Cache ~/.ros/data dir in jenkins (#259)
+* Env CATKIN_TOOLS_CONFIG_OPTIONS for --blacklist/--whitelist options (#258)
+* Add --verbose --all options for catkin_test_results (#257)
+* Contributors: Kentaro Wada
+
 0.4.6 (2016-05-01)
 ------------------
 * Fix `#253 <https://github.com/jsk-ros-pkg/jsk_travis/issues/253>`_ `#254 <https://github.com/jsk-ros-pkg/jsk_travis/issues/254>`_: Pipe failed return status on grepping (`#255 <https://github.com/jsk-ros-pkg/jsk_travis/issues/255>`_)
