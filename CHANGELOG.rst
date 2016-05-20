@@ -2,6 +2,17 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Refactor: Abolish ROSWS and BUILDER environmental variables (`#261 <https://github.com/jsk-ros-pkg/jsk_travis/issues/261>`_)
+  * Does not use meaninglessly ROSWS and BUILDER env
+  * Remove deprecated ROSWS and BUILDER env
+  * Remove meaningless BUILDER env in 'travis.yml'
+* Fix ignored rosdep option in 'rosdep-install.sh' (`#266 <https://github.com/jsk-ros-pkg/jsk_travis/issues/266>`_)
+* Move image and dia files for README to _media directory (`#262 <https://github.com/jsk-ros-pkg/jsk_travis/issues/262>`_)
+* Add CATKIN_TOOLS_BUILD_OPTIONS env (`#263 <https://github.com/jsk-ros-pkg/jsk_travis/issues/263>`_)
+* Contributors: Kentaro Wada
+
 0.4.7 (2016-05-19)
 ------------------
 * Cache ~/.ros/data dir in jenkins (#259)
