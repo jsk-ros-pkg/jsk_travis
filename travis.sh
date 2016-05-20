@@ -59,6 +59,7 @@ if [ ! "$ROS_PARALLEL_TEST_JOBS" ]; then export ROS_PARALLEL_TEST_JOBS="$ROS_PAR
 if [ ! "$CATKIN_PARALLEL_TEST_JOBS" ]; then export CATKIN_PARALLEL_TEST_JOBS="$CATKIN_PARALLEL_JOBS";  fi
 if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://packages.ros.org/ros-shadow-fixed/ubuntu"; fi
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
+if [ ! "$CATKIN_TOOLS_CONFIG_OPTIONS" ]; then export CATKIN_TOOLS_CONFIG_OPTIONS="--merge-devel"; fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 # Setup pip
 # FIXME: need to specify pip version to 6.0.7 to avoid unexpected error
@@ -188,9 +189,7 @@ source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/
 if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
 if [ "$BUILDER" == catkin ]; then
-  set -o pipefail  # this is necessary to pipe fail status on grepping
-  catkin build -i --summarize  --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked
-  set +o pipefail
+  catkin build -i --summarize  --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS
 fi
 
 travis_time_end
@@ -205,9 +204,7 @@ fi
 
 if [ "$BUILDER" == catkin ]; then
     source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
-    set -o pipefail  # this is necessary to pipe fail status on grepping
-    catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS -- | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
-    set +o pipefail
+    catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
     catkin_test_results --verbose --all build || error
 fi
 
@@ -220,9 +217,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     if [ "$BUILDER" == catkin ]; then
         catkin clean --yes || catkin clean -a # 0.3.1 uses -a, 0.4.0 uses --yes
         catkin config --install $CATKIN_TOOLS_CONFIG_OPTIONS
-        set -o pipefail  # this is necessary to pipe fail status on grepping
-        catkin build --summarize --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS | grep -v -e Symlinking -e Linked -e :[^\s]*install[^\s]*\]
-        set +o pipefail
+        catkin build --summarize --no-status $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS
         source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
         rospack profile
         rospack plugins --attrib=plugin nodelet || echo "ok"

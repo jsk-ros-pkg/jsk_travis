@@ -84,7 +84,7 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   The number of catkin parallel processes in test.
 
-* `CATKIN_TOOLS_CONFIG_OPTIONS` (default: none)
+* `CATKIN_TOOLS_CONFIG_OPTIONS` (default: `--merge-devel`)
 
   Options to be passed like `catkin config $CATKIN_TOOLS_CONFIG_OPTIONS`.
 
