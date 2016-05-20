@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.8 (2016-05-21)
+------------------
 * Refactor: Abolish ROSWS and BUILDER environmental variables (`#261 <https://github.com/jsk-ros-pkg/jsk_travis/issues/261>`_)
   * Does not use meaninglessly ROSWS and BUILDER env
   * Remove deprecated ROSWS and BUILDER env
