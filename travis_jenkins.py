@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # need pip installed version of python-jenkins > 0.4.0
+# need pip installed version of progressbar2 > 0.3.2
 
 import jenkins
 import urllib
@@ -9,6 +10,7 @@ import json
 import time
 import os
 import sys
+import progressbar
 
 from os import environ as env
 
@@ -220,25 +222,35 @@ def wait_for_finished(name, number):
     sleep = 30
     display = 300
     loop = 0
+    result = None
+    pbar = progressbar.ProgressBar(0, 1, redirect_stdout=True)
     while True :
+        now = time.time() * 1000
         try:
             info = j.get_build_info(name, number)
-            if info['building'] is False: return info['result']
         except jenkins.NotFoundException, e:
             print('ERROR: Jenkins job name={0}, number={1} in server={2}'
                   'not found.'.format(name, number, j.server))
-            return
+            break
         except jenkins.JenkinsException, e:
             print('ERROR: Maybe Jenkins server is down. Please visit {0}'
                   .format(j.server))
-            return
+            break
         except Exception, e:
             print('ERROR: Unexpected error: {0}'.format(e))
-            return
+            break
+        if not info['building']:
+            result = info['result']
+            break
+        # update progressbar
+        progress = (now - info['timestamp']) / info['estimatedDuration']
+        pbar.update(min(progress, 1))  # in case of longer than estimatation
         if loop % (display/sleep) == 0:
             print info['url'], "building..", info['building'], "result...", info['result']
         time.sleep(sleep)
         loop += 1
+    pbar.finish()
+    return result
 
 def wait_for_building(name, number):
     global j
