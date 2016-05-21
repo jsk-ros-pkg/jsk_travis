@@ -233,7 +233,8 @@ def wait_for_finished(name, number):
                   .format(j.server))
             return
         except Exception, e:
-            print(e)
+            print('ERROR: Unexpected error: {0}'.format(e))
+            return
         if loop % (display/sleep) == 0:
             print info['url'], "building..", info['building'], "result...", info['result']
         time.sleep(sleep)
