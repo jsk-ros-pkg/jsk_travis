@@ -224,6 +224,10 @@ def wait_for_finished(name, number):
         try:
             info = j.get_build_info(name, number)
             if info['building'] is False: return info['result']
+        except jenkins.NotFoundException, e:
+            print('ERROR: Jenkins job name={0}, number={1} in server={2}'
+                  'not found.'.format(name, number, j.server))
+            return
         except Exception, e:
             print(e)
         if loop % (display/sleep) == 0:
