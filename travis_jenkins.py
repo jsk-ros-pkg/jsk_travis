@@ -228,8 +228,13 @@ def wait_for_finished(name, number):
             print('ERROR: Jenkins job name={0}, number={1} in server={2}'
                   'not found.'.format(name, number, j.server))
             return
+        except jenkins.JenkinsException, e:
+            print('ERROR: Maybe Jenkins server is down. Please visit {0}'
+                  .format(j.server))
+            return
         except Exception, e:
-            print(e)
+            print('ERROR: Unexpected error: {0}'.format(e))
+            return
         if loop % (display/sleep) == 0:
             print info['url'], "building..", info['building'], "result...", info['result']
         time.sleep(sleep)
