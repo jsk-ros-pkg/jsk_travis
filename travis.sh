@@ -31,6 +31,7 @@ function travis_time_end {
 
 if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" == "indigo" -o "$ROS_DISTRO" == "jade" -o "$ROS_DISTRO" == "kinetic" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
     pip install --user python-jenkins -q
+    pip install --user 'progressbar2>=0.3.2' -q
     ./.travis/travis_jenkins.py
     exit $?
 fi
