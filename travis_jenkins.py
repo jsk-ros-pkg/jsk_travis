@@ -107,7 +107,8 @@ git submodule init
 git submodule update
 
 # remove containers created/exited more than 48 hours ago
-for container in `sudo docker ps -a | egrep '^.*days ago' | awk '{print $1}'`; do
+timeout 10s sudo docker ps -a > /tmp/$$.docker_ps_a.txt || exit 1  # check docker isn't held up
+for container in `cat $$.docker_ps_a.txt | egrep '^.*days ago' | awk '{print $1}'`; do
      sudo docker rm $container || echo ok
 done
 
