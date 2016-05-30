@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.9 (2016-05-30)
+------------------
 * Fix `#275 <https://github.com/jsk-ros-pkg/jsk_travis/issues/275>`_ Set timeout for sudo docker ps -a command (`#276 <https://github.com/jsk-ros-pkg/jsk_travis/issues/276>`_)
 * Show progressbar for Jenkins job (`#270 <https://github.com/jsk-ros-pkg/jsk_travis/issues/270>`_)
 * Exit soon when Jenkins server is down (`#269 <https://github.com/jsk-ros-pkg/jsk_travis/issues/269>`_)
