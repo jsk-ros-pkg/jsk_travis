@@ -2,6 +2,21 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix `#275 <https://github.com/jsk-ros-pkg/jsk_travis/issues/275>`_ Set timeout for sudo docker ps -a command (`#276 <https://github.com/jsk-ros-pkg/jsk_travis/issues/276>`_)
+* Show progressbar for Jenkins job (`#270 <https://github.com/jsk-ros-pkg/jsk_travis/issues/270>`_)
+* Exit soon when Jenkins server is down (`#269 <https://github.com/jsk-ros-pkg/jsk_travis/issues/269>`_)
+* Exit soon when having unexpected error on jenkins job (`#271 <https://github.com/jsk-ros-pkg/jsk_travis/issues/271>`_)
+  * Exit soon when Jenkins server is down
+  * Exit soon when having unexpected error on jenkins job
+* Fetch origin quietly via git in 'travis_jenkins.py' (`#273 <https://github.com/jsk-ros-pkg/jsk_travis/issues/273>`_)
+* Stable testing with retry=3 in example.test (`#272 <https://github.com/jsk-ros-pkg/jsk_travis/issues/272>`_)
+* Exit soon when jenkins url is not found (404) (`#268 <https://github.com/jsk-ros-pkg/jsk_travis/issues/268>`_)
+  This lets us more productive by shorten the waiting time for 2h when
+  Jenkins is dead.
+* Contributors: Kentaro Wada
+
 0.4.8 (2016-05-21)
 ------------------
 * Refactor: Abolish ROSWS and BUILDER environmental variables (`#261 <https://github.com/jsk-ros-pkg/jsk_travis/issues/261>`_)
