@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.10 (2016-06-02)
+-------------------
 * Option for how many logs are kept: NUMBER_OF_LOGS_TO_KEEP (`#278 <https://github.com/jsk-ros-pkg/jsk_travis/issues/278>`_)
 * Contributors: Kentaro Wada
 
