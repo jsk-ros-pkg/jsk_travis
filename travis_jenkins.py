@@ -45,7 +45,7 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <jenkins.model.BuildDiscarderProperty>
       <strategy class="hudson.tasks.LogRotator">
         <daysToKeep>3</daysToKeep>
-        <numToKeep>%(NUMBER_OF_LOGS_TO_KEEP)d</numToKeep>
+        <numToKeep>%(NUMBER_OF_LOGS_TO_KEEP)s</numToKeep>
         <artifactDaysToKeep>-1</artifactDaysToKeep>
         <artifactNumToKeep>-1</artifactNumToKeep>
       </strategy>
@@ -297,7 +297,7 @@ BUILD_PKGS = env.get('BUILD_PKGS', '')
 ROS_REPOSITORY_PATH = env.get('ROS_REPOSITORY_PATH', '')
 DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER])
 DOCKER_RUN_OPTION = env.get('DOCKER_RUN_OPTION', '--rm')
-NUMBER_OF_LOGS_TO_KEEP = env.get('NUMBER_OF_LOGS_TO_KEEP', 3)
+NUMBER_OF_LOGS_TO_KEEP = env.get('NUMBER_OF_LOGS_TO_KEEP', '3')
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
@@ -326,7 +326,7 @@ BUILD_PKGS       = %(BUILD_PKGS)s
 ROS_REPOSITORY_PATH = %(ROS_REPOSITORY_PATH)s
 DOCKER_CONTAINER_NAME   = %(DOCKER_CONTAINER_NAME)s
 DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s
-NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)d
+NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s
 ''' % locals())
 
 if env.get('ROS_DISTRO') == 'hydro':
