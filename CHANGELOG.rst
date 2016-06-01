@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Option for how many logs are kept: NUMBER_OF_LOGS_TO_KEEP (`#278 <https://github.com/jsk-ros-pkg/jsk_travis/issues/278>`_)
+* Contributors: Kentaro Wada
+
 0.4.9 (2016-05-30)
 ------------------
 * Fix `#275 <https://github.com/jsk-ros-pkg/jsk_travis/issues/275>`_ Set timeout for sudo docker ps -a command (`#276 <https://github.com/jsk-ros-pkg/jsk_travis/issues/276>`_)
