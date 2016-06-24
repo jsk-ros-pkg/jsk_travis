@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.11 (2016-06-24)
+-------------------
 * Stop using progressbar in testing on Jenkins (`#281 <https://github.com/jsk-ros-pkg/jsk_travis/issues/281>`_)
 * Contributors: Kentaro Wada
 
