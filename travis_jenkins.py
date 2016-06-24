@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 # need pip installed version of python-jenkins > 0.4.0
-# need pip installed version of progressbar2 > 0.3.2
 
 import jenkins
 import urllib
@@ -10,7 +9,6 @@ import json
 import time
 import os
 import sys
-import progressbar
 
 from os import environ as env
 
@@ -224,7 +222,6 @@ def wait_for_finished(name, number):
     display = 300
     loop = 0
     result = None
-    pbar = progressbar.ProgressBar(0, 1, redirect_stdout=True)
     while True :
         now = time.time() * 1000
         try:
@@ -245,12 +242,10 @@ def wait_for_finished(name, number):
             break
         # update progressbar
         progress = (now - info['timestamp']) / info['estimatedDuration']
-        pbar.update(min(progress, 1))  # in case of longer than estimatation
         if loop % (display/sleep) == 0:
-            print info['url'], "building..", info['building'], "result...", info['result']
+            print info['url'], "building: ", info['building'], "result: ", info['result'], "progress: ", progress
         time.sleep(sleep)
         loop += 1
-    pbar.finish()
     return result
 
 def wait_for_building(name, number):
