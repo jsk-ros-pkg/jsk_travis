@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Stop using HEAD version catkin on non hydro distros (`#284 <https://github.com/jsk-ros-pkg/jsk_travis/issues/284>`_)
+* Contributors: Kentaro Wada
+
 0.4.11 (2016-06-24)
 -------------------
 * Stop using progressbar in testing on Jenkins (`#281 <https://github.com/jsk-ros-pkg/jsk_travis/issues/281>`_)
