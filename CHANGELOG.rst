@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.13 (2016-07-21)
+-------------------
 * Stop using HEAD version catkin on hydro (`#285 <https://github.com/jsk-ros-pkg/jsk_travis/issues/285>`_)
 * Contributors: Kentaro Wada
 
