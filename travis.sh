@@ -100,10 +100,9 @@ travis_time_end
 travis_time_start setup_catkin
 
 ### before_install: # Use this to prepare the system to install prerequisites or dependencies
-### https://github.com/ros/catkin/pull/705
 if [ "$ROS_DISTRO" == "hydro" ]; then
   [ ! -e /tmp/catkin ] && (cd /tmp/; git clone -q https://github.com/ros/catkin)
-  (cd /tmp/catkin; git checkout 1b5f6fb2f0a3460c45885e26e7fa9ca1e52f1b87; cmake . -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO/ ; make; sudo make install)
+  (cd /tmp/catkin; git checkout 0.6.12; cmake . -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO/ ; make; sudo make install)
 else
   sudo apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-catkin
 fi
