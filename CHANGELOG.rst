@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use catkin 0.6.12 to fix `#286 <https://github.com/jsk-ros-pkg/jsk_travis/issues/286>`_ (`#287 <https://github.com/jsk-ros-pkg/jsk_travis/issues/287>`_)
+* Contributors: Kentaro Wada
+
 0.4.13 (2016-07-21)
 -------------------
 * Stop using HEAD version catkin on hydro (`#285 <https://github.com/jsk-ros-pkg/jsk_travis/issues/285>`_)
