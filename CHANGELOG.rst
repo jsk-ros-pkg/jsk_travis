@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.14 (2016-07-29)
+-------------------
 * Use catkin 0.6.12 to fix `#286 <https://github.com/jsk-ros-pkg/jsk_travis/issues/286>`_ (`#287 <https://github.com/jsk-ros-pkg/jsk_travis/issues/287>`_)
 * Contributors: Kentaro Wada
 
