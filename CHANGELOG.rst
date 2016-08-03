@@ -2,6 +2,12 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Remove no need grepping with the default CATKIN_TOOLS_BUILD_OPTIONS (`#289 <https://github.com/jsk-ros-pkg/jsk_travis/issues/289>`_)
+  The default option is `--summarize --no-status` so there is no  `Symlinking..` output, so we can remove this line.
+* Contributors: Kentaro Wada
+
 0.4.14 (2016-07-29)
 -------------------
 * Use catkin 0.6.12 to fix `#286 <https://github.com/jsk-ros-pkg/jsk_travis/issues/286>`_ (`#287 <https://github.com/jsk-ros-pkg/jsk_travis/issues/287>`_)
