@@ -8,6 +8,7 @@ import urllib2
 import json
 import time
 import os
+import re
 import sys
 
 from os import environ as env
@@ -349,7 +350,24 @@ if j.get_plugin_info('build-timeout'):
 else:
     print('you need to install build_timeout plugin')
 # set job_name
-job_name = '-'.join(filter(bool, ['trusty-travis',TRAVIS_REPO_SLUG, ROS_DISTRO, 'deb', USE_DEB, EXTRA_DEB, NOT_TEST_INSTALL, BUILD_PKGS])).replace('/','-').replace(' ','-')
+job_name = '-'.join(
+    filter(
+        bool,
+        [
+            'trusty-travis',
+            TRAVIS_REPO_SLUG,
+            ROS_DISTRO,
+            'deb',
+            USE_DEB,
+            EXTRA_DEB,
+            NOT_TEST_INSTALL,
+            BUILD_PKGS,
+            BEFORE_SCRIPT,
+            ROS_REPOSITORY_PATH,
+        ]
+    )
+)
+job_name = re.sub(r'[^0-9A-Fa-f]+', '-', job_name)
 if j.job_exists(job_name) is None:
     j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
 
