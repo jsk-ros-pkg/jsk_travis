@@ -327,14 +327,19 @@ NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s
 
 if env.get('ROS_DISTRO') == 'hydro':
     LSB_RELEASE = '12.04'
+    UBUNTU_DISTRO = 'precise'
 elif env.get('ROS_DISTRO') == 'indigo':
     LSB_RELEASE = '14.04'
+    UBUNTU_DISTRO = 'trusty'
 elif env.get('ROS_DISTRO') == 'jade':
     LSB_RELEASE = '14.04'
+    UBUNTU_DISTRO = 'trusty'
 elif env.get('ROS_DISTRO') == 'kinetic':
     LSB_RELEASE = '16.04'
+    UBUNTU_DISTRO = 'xenial'
 else:
     LSB_RELEASE = '14.04'
+    UBUNTU_DISTRO = 'trusty'
 
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
@@ -354,7 +359,8 @@ job_name = '-'.join(
     filter(
         bool,
         [
-            'trusty-travis',
+            UBUNTU_DISTRO,
+            'travis',
             TRAVIS_REPO_SLUG,
             ROS_DISTRO,
             'deb',
