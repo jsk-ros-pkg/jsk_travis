@@ -2,6 +2,14 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix ubuntu distro name in job_name (`#292 <https://github.com/jsk-ros-pkg/jsk_travis/issues/292>`_)
+  * Set identical job name with BEFORE_SCRIPT & ROS_REPOSITORY_PATH
+  * Fix ubuntu distro name in job_name
+* Refactor travis.sh with newline in if block (`#291 <https://github.com/jsk-ros-pkg/jsk_travis/issues/291>`_)
+* Contributors: Kentaro Wada
+
 0.4.15 (2016-08-03)
 -------------------
 * Remove no need grepping with the default CATKIN_TOOLS_BUILD_OPTIONS (`#289 <https://github.com/jsk-ros-pkg/jsk_travis/issues/289>`_)
