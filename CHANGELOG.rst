@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.16 (2016-08-07)
+-------------------
 * Fix ubuntu distro name in job_name (`#292 <https://github.com/jsk-ros-pkg/jsk_travis/issues/292>`_)
   * Set identical job name with BEFORE_SCRIPT & ROS_REPOSITORY_PATH
   * Fix ubuntu distro name in job_name
