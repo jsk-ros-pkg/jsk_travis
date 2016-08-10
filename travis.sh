@@ -64,10 +64,11 @@ if [ ! "$CATKIN_PARALLEL_TEST_JOBS" ]; then export CATKIN_PARALLEL_TEST_JOBS="$C
 if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://packages.ros.org/ros-shadow-fixed/ubuntu"; fi
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
 if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
-  if [ "$ROS_DISTRO" = "hydro" ]; then
-    export CATKIN_TOOLS_BUILD_OPTIONS="-iv --summarize --limit-status-rate 0.002"
+  if [[ "$(pip show catkin-tools | grep '^Version:' | awk '{print $2}')" =~ 0.3.[0-9]+ ]]; then
+    # For catkin-tools==0.3.X, '-iv' option is required to get the stderr output.
+    export CATKIN_TOOLS_BUILD_OPTIONS="-iv --summarize --no-status"
   else
-    export CATKIN_TOOLS_BUILD_OPTIONS="--summarize --limit-status-rate 0.002"
+    export CATKIN_TOOLS_BUILD_OPTIONS="--summarize --no-status"
   fi
 fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
