@@ -63,7 +63,13 @@ if [ ! "$ROS_PARALLEL_TEST_JOBS" ]; then export ROS_PARALLEL_TEST_JOBS="$ROS_PAR
 if [ ! "$CATKIN_PARALLEL_TEST_JOBS" ]; then export CATKIN_PARALLEL_TEST_JOBS="$CATKIN_PARALLEL_JOBS";  fi
 if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://packages.ros.org/ros-shadow-fixed/ubuntu"; fi
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
-if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then export CATKIN_TOOLS_BUILD_OPTIONS="--summarize --no-status"; fi
+if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
+  if [ "ROS_DISTRO" = "hydro" ]; then
+    export CATKIN_TOOLS_BUILD_OPTIONS="-iv --summarize --limit-status-rate 0.002"
+  else
+    export CATKIN_TOOLS_BUILD_OPTIONS="--summarize --limit-status-rate 0.002"
+  fi
+fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 # Setup pip
 # FIXME: need to specify pip version to 6.0.7 to avoid unexpected error
