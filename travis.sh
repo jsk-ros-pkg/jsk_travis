@@ -201,7 +201,13 @@ source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/
 # for catkin
 if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
-catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
+if [ -z $TRAVIS_JOB_ID ]; then
+  # on Jenkins
+  catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
+else
+  # on Travis, the command must outputs log within 10 min to avoid failures, so the `travis_wait` is necessary.
+  travis_wait 60 catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
+fi
 
 travis_time_end
 travis_time_start catkin_run_tests
@@ -214,7 +220,13 @@ if [ "$ROS_DISTRO" == "hydro" ]; then
 fi
 
 source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
-catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
+if [ -z $TRAVIS_JOB_ID ]; then
+  # on Jenkins
+  catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
+else
+  # on Travis
+  travis_wait 60 catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS --
+fi
 catkin_test_results --verbose --all build || error
 
 travis_time_end
@@ -225,7 +237,13 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
     catkin clean --yes || catkin clean -a # 0.3.1 uses -a, 0.4.0 uses --yes
     catkin config --install $CATKIN_TOOLS_CONFIG_OPTIONS
-    catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
+    if [ -z $TRAVIS_JOB_ID ]; then
+      # on Jenkins
+      catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
+    else
+      # on Travis
+      travis_wait 60 catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
+    fi
     source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
     rospack profile
     rospack plugins --attrib=plugin nodelet || echo "ok"
