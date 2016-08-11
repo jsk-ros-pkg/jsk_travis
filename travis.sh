@@ -64,7 +64,7 @@ if [ ! "$CATKIN_PARALLEL_TEST_JOBS" ]; then export CATKIN_PARALLEL_TEST_JOBS="$C
 if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://packages.ros.org/ros-shadow-fixed/ubuntu"; fi
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
 if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
-  if [ "ROS_DISTRO" = "hydro" ]; then
+  if [ "$ROS_DISTRO" = "hydro" ]; then
     export CATKIN_TOOLS_BUILD_OPTIONS="-iv --summarize --limit-status-rate 0.002"
   else
     export CATKIN_TOOLS_BUILD_OPTIONS="--summarize --limit-status-rate 0.002"
