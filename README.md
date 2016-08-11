@@ -84,7 +84,9 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   The number of catkin parallel processes in test.
 
-* `CATKIN_TOOLS_BUILD_OPTIONS` (default: `--summarize --no-status`)
+* `CATKIN_TOOLS_BUILD_OPTIONS`
+  (default: `-iv --summarize --no-status` for `catkin-tools==0.3.X`
+   and `--summarize --no-status` for `catkin-tools` of other version.)
 
   Options to be passed like `catkin build $CATKIN_TOOLS_BUILD_OPTIONS`.
 
