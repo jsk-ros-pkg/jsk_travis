@@ -71,13 +71,20 @@ if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
     export CATKIN_TOOLS_BUILD_OPTIONS="--summarize --no-status"
   fi
 fi
-if [ "$SUDO_PIP" = false ]; then export SUDO_PIP=""; else export SUDO_PIP="sudo -H"; fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 # Setup pip
 # FIXME: need to specify pip version to 6.0.7 to avoid unexpected error
 # https://github.com/jsk-ros-pkg/jsk_robot/pull/523#issuecomment-164699366
-$SUDO_PIP easy_install 'pip==6.0.7'
-$SUDO_PIP pip install -U -q pip setuptools
+if [ "$SUDO_PIP" != false ]; then
+  # FIXME: on Travis, pip caching can not be enabled with `sudo` command, so we need to run `pip install`
+  # without `sudo` here with assumption the virtualenv is enabled.
+  # https://github.com/jsk-ros-pkg/jsk_travis/pull/295#issuecomment-239059842
+  easy_install 'pip==6.0.7'
+  pip install -U -q pip setuptools
+else
+  sudo -H easy_install 'pip==6.0.7'
+  sudo -H pip install -U -q pip setuptools
+fi
 # Setup apt
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
