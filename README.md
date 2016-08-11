@@ -100,6 +100,11 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   The options passed when rosdep install.
 
+* `SUDO_PIP` (boolean, default: `true`)
+
+  If this is `true`, command `easy_install` and `pip` is executed with `sudo -H`.
+  This variable has value of `sudo -H` or empty for internal use.
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`
