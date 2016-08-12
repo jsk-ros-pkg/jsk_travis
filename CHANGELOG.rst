@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.17 (2016-08-12)
+-------------------
 * Use travis_wait for catkin_build which does not outputs more than 10min (`#298 <https://github.com/jsk-ros-pkg/jsk_travis/issues/298>`_) This is enough for #296
 * [travis.sh] add -iv for hydro, --limit-status-rate 0.002 to avoid no output 10min (`#296 <https://github.com/jsk-ros-pkg/jsk_travis/issues/296>`_)
 * Describe about CATKIN_TOOLS_BUILD_OPTIONS for change in `#297 <https://github.com/jsk-ros-pkg/jsk_travis/issues/297>`_ (`#301 <https://github.com/jsk-ros-pkg/jsk_travis/issues/301>`_)
