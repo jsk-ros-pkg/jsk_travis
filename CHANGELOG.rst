@@ -2,6 +2,22 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use travis_wait for catkin_build which does not outputs more than 10min (`#298 <https://github.com/jsk-ros-pkg/jsk_travis/issues/298>`_) This is enough for #296
+* [travis.sh] add -iv for hydro, --limit-status-rate 0.002 to avoid no output 10min (`#296 <https://github.com/jsk-ros-pkg/jsk_travis/issues/296>`_)
+* Describe about CATKIN_TOOLS_BUILD_OPTIONS for change in `#297 <https://github.com/jsk-ros-pkg/jsk_travis/issues/297>`_ (`#301 <https://github.com/jsk-ros-pkg/jsk_travis/issues/301>`_)
+* Set default --no-status to CATKIN_TOOLS_BUILD_OPTIONS (`#297 <https://github.com/jsk-ros-pkg/jsk_travis/issues/297>`_)
+  This commit fixes belows:
+  - Typo "ROS_DISTRO" should be "$ROS_DISTRO", but checking catkin-tools
+  version is better.
+  - Replace `--limit-status 0.002` with `--no-status` the status limit
+  should be specified in .travis.yml like
+  `export CATKIN_TOOLS_BUILD_OPTIONS="-iv --summarize --limit-status 0.001"`.
+* [travis.sh] fix typo (`#299 <https://github.com/jsk-ros-pkg/jsk_travis/issues/299>`_)
+  - Fix typo in generating job name: a-f -> a-z (`#294 <https://github.com/jsk-ros-pkg/jsk_travis/issues/294>`_)
+* Contributors: Yuki Furuta, Kentaro Wada
+
 0.4.16 (2016-08-07)
 -------------------
 * Fix ubuntu distro name in job_name (`#292 <https://github.com/jsk-ros-pkg/jsk_travis/issues/292>`_)
