@@ -109,6 +109,10 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   Note that this option does nothing for installation by `rosdep`, so user need to use `--as-root pip:no`
   with `ROSDEP_ADDITIONAL_OPTIONS` to change the `sudo` command prefix for the `pip install` command by `rosdep`.
 
+* `USE_PYTHON_VIRTUALENV` (boolean, default: `true`)
+
+  If this is `true`, virtual python environment is created on `$HOME/.virtualenv` with `--system-site-packages` option (inherits system python packages) and activated before python package installation.
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`

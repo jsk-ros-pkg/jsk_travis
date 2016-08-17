@@ -98,6 +98,13 @@ sudo ln -s /usr/bin/ccache /usr/local/bin/cc
 sudo ln -s /usr/bin/ccache /usr/local/bin/c++
 ccache -s
 
+# setup python virtualenv
+if [ "$USE_PYTHON_VIRTUALENV" = true ]; then
+  sudo apt-get install -y -qq python-virtualenv
+  virtualenv --system-site-packages $HOME/.virtualenv
+  source $HOME/.virtualenv/bin/activate
+fi
+
 if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
 dpkg -s mongodb || echo "ok"; export HAVE_MONGO_DB=$?
