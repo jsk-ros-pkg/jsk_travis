@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Set CATKIN_TOOLS_BUILD_OPTIONS after the installation of catkin-tools (`#302 <https://github.com/jsk-ros-pkg/jsk_travis/issues/302>`_)
+* Contributors: Kentaro Wada
+
 0.4.17 (2016-08-12)
 -------------------
 * Use travis_wait for catkin_build which does not outputs more than 10min (`#298 <https://github.com/jsk-ros-pkg/jsk_travis/issues/298>`_) This is enough for #296
