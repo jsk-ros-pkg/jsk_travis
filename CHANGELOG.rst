@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.18 (2016-08-17)
+-------------------
 * Set CATKIN_TOOLS_BUILD_OPTIONS after the installation of catkin-tools (`#302 <https://github.com/jsk-ros-pkg/jsk_travis/issues/302>`_)
 * Contributors: Kentaro Wada
 
