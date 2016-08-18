@@ -75,7 +75,7 @@ echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 # Setup pip
 # FIXME: need to specify pip version to 6.0.7 to avoid unexpected error
 # https://github.com/jsk-ros-pkg/jsk_robot/pull/523#issuecomment-164699366
-if [ "$SUDO_PIP" != false ]; then
+if [ "$SUDO_PIP" = false ]; then
   # FIXME: on Travis, pip caching can not be enabled with `sudo` command, so we need to run `pip install`
   # without `sudo` here with assumption the virtualenv is enabled.
   # https://github.com/jsk-ros-pkg/jsk_travis/pull/295#issuecomment-239059842
