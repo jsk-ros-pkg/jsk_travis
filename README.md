@@ -32,6 +32,8 @@ And each project needs to setup .travis.yml for the travis.
 [jsk_common's .travis.yml](https://github.com/jsk-ros-pkg/jsk_common/blob/master/.travis.yml) is a good example to setup
 .travis.yml.
 
+Note that jsk\_travis only supports being upgraded and PRs that downgrades jsk\_travis result in test fails.
+
 
 ## Restarting tests
 
