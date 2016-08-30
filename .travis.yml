@@ -2,32 +2,53 @@
 #   Generic MoveIt Travis Continuous Integration Configuration File
 #   Works with all MoveIt! repositories/branches
 #   Author: Dave Coleman, Jonathan Bohren
-language:
-  - cpp
-  - python
-python:
-  - "2.7"
-compiler:
-  - gcc
+language: generic
+cache:
+  apt: true
+  pip: true
+  directories:
+    - $HOME/.ccache
+sudo: required
+dist: trusty
+services:
+  - docker
+matrix:
+  fast_finish: true
 notifications:
   slack: jsk-robotics:Av7tc8wj3IWkLYvlTzHE7x2g
 env:
-  - ROS_DISTRO=hydro AFTER_INSTALL=""
-  - ROS_DISTRO=hydro USE_CATKIN_MAKE=true BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs" NOT_TEST_INSTALL=true
-  - ROS_DISTRO=hydro AFTER_INSTALL="" TEST_PKGS=" "
-  - ROS_DISTRO=hydro AFTER_INSTALL="" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
-  - ROS_DISTRO=hydro AFTER_INSTALL="mongodb-clients"
-  - ROS_DISTRO=hydro AFTER_INSTALL="ros-hydro-roseus"
-  - ROS_DISTRO=hydro BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs"
-  - ROS_DISTRO=hydro USE_JENKINS="true" NO_SUDO="true"
-  - ROS_DISTRO=indigo
-  - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-  - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-  - ROS_DISTRO=indigo NUMBER_OF_LOGS_TO_KEEP=4
-  - ROS_DISTRO=jade
-  - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-  - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-  - ROS_DISTRO=kinetic
+  matrix:
+    # travis + jsk jenkins
+    - ROS_DISTRO=hydro USE_JENKINS="true" NO_SUDO="true"
+    - ROS_DISTRO=indigo
+    - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    - ROS_DISTRO=indigo NUMBER_OF_LOGS_TO_KEEP=4
+    - ROS_DISTRO=jade
+    - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    # travis
+    - USE_TRAVIS=true ROS_DISTRO=indigo
+    - USE_TRAVIS=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    - USE_TRAVIS=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    - USE_TRAVIS=true ROS_DISTRO=indigo NUMBER_OF_LOGS_TO_KEEP=4
+    - USE_TRAVIS=true ROS_DISTRO=jade
+    - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    # travis + docker
+    - USE_DOCKER=true ROS_DISTRO=hydro
+    - USE_DOCKER=true ROS_DISTRO=hydro USE_CATKIN_MAKE=true BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs" NOT_TEST_INSTALL=true
+    - USE_DOCKER=true ROS_DISTRO=hydro TEST_PKGS=" "
+    - USE_DOCKER=true ROS_DISTRO=hydro ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
+    - USE_DOCKER=true ROS_DISTRO=hydro BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs"
+    - USE_DOCKER=true ROS_DISTRO=indigo
+    - USE_DOCKER=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    - USE_DOCKER=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    - USE_DOCKER=true ROS_DISTRO=indigo NUMBER_OF_LOGS_TO_KEEP=4
+    - USE_DOCKER=true ROS_DISTRO=jade
+    - USE_DOCKER=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    - USE_DOCKER=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    - USE_DOCKER=true ROS_DISTRO=kinetic
 before_script:
   - mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
   - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; ${BEFORE_SCRIPT}"
@@ -35,6 +56,4 @@ before_script:
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin run_tests --no-deps --limit-status-rate 0.001@catkin_make run_tests@' .travis/travis.sh; fi
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then export CATKIN_PARALLEL_JOBS="--no-color" ; fi
 script:
-  - if [ "${ROS_DISTRO}" = "indigo" -o "${ROS_DISTRO}" = "jade" -o "${ROS_DISTRO}" = "kinetic" -o "${USE_JENKINS}" = "true" ] ; then sed -i 's@cat .travis/travis.sh@cat travis.sh@' .travis/travis_jenkins.py; fi
   - source .travis/travis.sh
-  - if [ "${AFTER_INSTALL}" != "" ] ; then sudo apt-get install -f ${AFTER_INSTALL}; fi
