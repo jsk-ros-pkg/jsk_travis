@@ -43,6 +43,10 @@ function error {
 
 trap error ERR
 
+
+echo "Running jsk_travis/travis.sh whose version is $(cd .travis && git describe --all)."
+
+
 git branch --all
 if [ "`git diff origin/master FETCH_HEAD .travis`" != "" ] ; then
   DIFF=`git diff origin/master FETCH_HEAD .travis | grep .*Subproject | sed s'@.*Subproject commit @@' | sed 'N;s/\n/.../'`;
