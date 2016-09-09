@@ -2,6 +2,15 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* support docker on travis (`#307 <https://github.com/jsk-ros-pkg/jsk_travis/issues/307>`_)
+* Prettify the logging output at checking jsk_travis version (`#306 <https://github.com/jsk-ros-pkg/jsk_travis/issues/306>`_)
+  * Prettify the logging output at checking jsk_travis version
+  * Describe about not supported downgrading jsk_travis in README
+* Add version information about jsk_travis (`#305 <https://github.com/jsk-ros-pkg/jsk_travis/issues/305>`_)
+* Contributors: Kei Okada, Kentaro Wada, Yuki Furuta
+
 0.4.18 (2016-08-17)
 -------------------
 * Set CATKIN_TOOLS_BUILD_OPTIONS after the installation of catkin-tools (`#302 <https://github.com/jsk-ros-pkg/jsk_travis/issues/302>`_)
