@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.19 (2016-09-10)
+-------------------
 * support docker on travis (`#307 <https://github.com/jsk-ros-pkg/jsk_travis/issues/307>`_)
 * Prettify the logging output at checking jsk_travis version (`#306 <https://github.com/jsk-ros-pkg/jsk_travis/issues/306>`_)
   * Prettify the logging output at checking jsk_travis version
