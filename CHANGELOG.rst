@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* check if install/share/pkg exists (`#310 <https://github.com/jsk-ros-pkg/jsk_travis/issues/310>`_)
+* Contributors: Kei Okada
+
 0.4.19 (2016-09-10)
 -------------------
 * support docker on travis (`#307 <https://github.com/jsk-ros-pkg/jsk_travis/issues/307>`_)
