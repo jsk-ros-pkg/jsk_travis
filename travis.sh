@@ -309,7 +309,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     export EXIT_STATUS=0
     for pkg in $TEST_PKGS; do
       echo "[$pkg] Started testing..."
-      rostest_files=$(find install/share/$pkg -iname '*.test')
+      rostest_files=$(test ! -d install/share/$pkg  || find install/share/$pkg -iname '*.test')
       echo "[$pkg] Found $(echo $rostest_files | wc -w) tests."
       for test_file in $rostest_files; do
         echo "[$pkg] Testing $test_file"
