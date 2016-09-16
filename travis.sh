@@ -31,6 +31,32 @@ function travis_time_end {
     set -x
 }
 
+
+echo "Running jsk_travis/travis.sh whose version is $(cd $CI_SOURCE_PATH/.travis && git describe --all)."
+
+
+travis_time_start is_jsk_travis_upgraded
+
+# Check if jsk_travis is upgraded, because downgrading jsk_travis is not supported.
+if [ "$(git diff origin/master HEAD $CI_SOURCE_PATH/.travis)" != "" ] ; then
+  # HASH_TO_HASH represents: "jsk_travis version commited to origin/master" .. "jsk_travis to be commited with this PR"
+  # ex. 5f047fd5a8c0714c091b965b80b1f3719697c36a...0417ddc12c0b8ca4d10a86844745dd1279534845
+  HASH_TO_HASH=$(git diff origin/master HEAD $CI_SOURCE_PATH/.travis | grep .*Subproject | sed s'@.*Subproject commit @@' | sed 'N;s/\n/.../')
+  COMMITS=$(cd $CI_SOURCE_PATH/.travis/; git log --oneline --graph --left-right --first-parent --decorate $HASH_TO_HASH)
+  if [ $(echo "$COMMITS" | grep -c '^<' ) -eq 0 ]; then
+    echo INFO: jsk_travis is successfully upgraded comparing the version commited to origin/master.
+    echo It is $(echo "$COMMITS" | grep -c '^>') commits ahead.
+  else
+    echo ERROR: jsk_travis is downgraded comparing the version commited to origin/master, and this is not supported.
+    echo It is $(echo "$COMMITS" | grep -c '^<') commits behind, and the commits are below:
+    echo "$COMMITS" | grep -c '^<'
+    error
+  fi
+fi
+
+travis_time_end is_jsk_travis_upgraded
+
+
 # set default values to env variables
 [ "${USE_TRAVIS// }" = "" ] && USE_TRAVIS=false
 
@@ -80,30 +106,6 @@ function error {
 
 trap error ERR
 
-
-echo "Running jsk_travis/travis.sh whose version is $(cd .travis && git describe --all)."
-
-
-travis_time_start is_jsk_travis_upgraded
-
-# Check if jsk_travis is upgraded, because downgrading jsk_travis is not supported.
-if [ "$(git diff origin/master HEAD .travis)" != "" ] ; then
-  # HASH_TO_HASH represents: "jsk_travis version commited to origin/master" .. "jsk_travis to be commited with this PR"
-  # ex. 5f047fd5a8c0714c091b965b80b1f3719697c36a...0417ddc12c0b8ca4d10a86844745dd1279534845
-  HASH_TO_HASH=$(git diff origin/master HEAD .travis | grep .*Subproject | sed s'@.*Subproject commit @@' | sed 'N;s/\n/.../')
-  COMMITS=$(cd .travis/; git log --oneline --graph --left-right --first-parent --decorate $HASH_TO_HASH)
-  if [ $(echo "$COMMITS" | grep -c '^<' ) -eq 0 ]; then
-    echo INFO: jsk_travis is successfully upgraded comparing the version commited to origin/master.
-    echo It is $(echo "$COMMITS" | grep -c '^>') commits ahead.
-  else
-    echo ERROR: jsk_travis is downgraded comparing the version commited to origin/master, and this is not supported.
-    echo It is $(echo "$COMMITS" | grep -c '^<') commits behind, and the commits are below:
-    echo "$COMMITS" | grep -c '^<'
-    error
-  fi
-fi
-
-travis_time_end is_jsk_travis_upgraded
 
 travis_time_start setup_ros
 
