@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.21 (2016-09-21)
+-------------------
 * Check jsk_travis version on Travis
 * Contributors: Kentaro Wada
 
