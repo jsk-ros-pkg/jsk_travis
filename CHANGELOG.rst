@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Check jsk_travis version on Travis
+* Contributors: Kentaro Wada
+
 0.4.20 (2016-09-14)
 -------------------
 * check if install/share/pkg exists (`#310 <https://github.com/jsk-ros-pkg/jsk_travis/issues/310>`_)
