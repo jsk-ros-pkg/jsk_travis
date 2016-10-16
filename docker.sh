@@ -31,6 +31,7 @@ function travis_time_end {
 export -f travis_time_end
 
 function travis_wait {
+  set +x
   local timeout=$1
 
   if [[ $timeout =~ ^[0-9]+$ ]]; then
@@ -66,6 +67,7 @@ function travis_wait {
   echo -e "\n${ANSI_GREEN}Log:${ANSI_RESET}\n"
   cat $log_file
 
+  set -x
   return $result
 }
 export -f travis_wait
