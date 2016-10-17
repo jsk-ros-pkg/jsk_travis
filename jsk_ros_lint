@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import os.path as osp
+import subprocess
+import sys
+
+import catkin_pkg.packages
+
+sys.path.insert(0, osp.join(osp.dirname(__file__), 'python'))
+from jsk_ros_lint.linters import lint_packages
+
+
+def main():
+    is_local = False
+    src_path = os.environ.get('CI_SOURCE_PATH')
+    if src_path is None:
+        # Assume as running on Local PC not Travis/Jenkins
+        print('INFO: Env CI_SOURCE_PATH does not exist, '
+              'then we assume this is running on Local PC.')
+        is_local = True
+        src_path = os.curdir
+    else:
+        print('INFO: Env CI_SOURCE_PATH exists, '
+              'then we assume this is running on Travis/Jenkins.')
+
+    target_pkgs = os.environ.get('JSK_ROS_LINT_PKGS', '')
+    if not target_pkgs and is_local:
+        target_pkgs = None
+    else:
+        target_pkgs = target_pkgs.split(',')
+
+    pkg_paths = []
+    for pkg_path in catkin_pkg.packages.find_package_paths(src_path):
+        package_xml = osp.join(src_path, pkg_path, 'package.xml')
+        pkg_name = catkin_pkg.packages.parse_package(package_xml).name
+        if target_pkgs is not None and pkg_name not in target_pkgs:
+            continue
+        pkg_paths.append(osp.join(src_path, pkg_path))
+
+    lint_packages(pkg_paths)
+
+
+if __name__ == '__main__':
+    main()

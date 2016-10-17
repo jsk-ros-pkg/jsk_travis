@@ -109,6 +109,13 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   The options passed when rosdep install.
 
+* `JSK_ROS_LINT_PKGS` (default: none)
+
+  PKGs to be tested with [`jsk_ros_lint`](jsk_ros_lint/jsk_ros_lint)
+  like `JSK_ROS_LINT_PKGS="jsk_perception,jsk_pcl_ros"`.
+  See [here](#jsk_ros_lint) for more detail.
+
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`
@@ -139,3 +146,16 @@ If you add jsk\_travis as a submodule,
 it is difficult to make changes to have the travis test pass.
 So in that case, I recommend you temporarily set your forked jsk\_travis as submodule.
 The sample commmit is [here](https://github.com/jsk-ros-pkg/jsk_common/commit/eb8c2cf76edc01e074451f2028a0bc6a36582805).
+
+
+## jsk_ros_lint
+
+`jsk_ros_lint` is inspired by [`catkin_lint`](https://github.com/fkie/catkin_lint),
+and enabled on Travis/Jenkins by `JSK_ROS_LINT_PKGS` environment variable.
+We adds/removes some functionalities for simplicity and demand in JSK Lab.
+Currently it has below features:
+
+- Check the order of depends in package.xml. It should be sorted in alphabetical order.
+- Check the duplication of depends in package.xml.
+
+To execute the linter in local PC, you can run `.travis/jsk_ros_lint`.

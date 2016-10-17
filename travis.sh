@@ -228,6 +228,10 @@ fi
 
 travis_time_end
 
+travis_time_start jsk_ros_lint
+${CI_SOURCE_PATH}/.travis/jsk_ros_lint
+travis_time_end
+
 travis_time_start before_script
 
 ### before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
