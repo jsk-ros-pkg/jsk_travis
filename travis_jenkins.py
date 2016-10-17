@@ -132,6 +132,7 @@ sudo docker run %(DOCKER_RUN_OPTION)s -t \\
     -e BUILD_PKGS='%(BUILD_PKGS)s' \\
     -e ROS_REPOSITORY_PATH='%(ROS_REPOSITORY_PATH)s'  \\
     -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
+    -e JSK_ROS_LINT_PKGS='%(JSK_ROS_LINT_PKGS)s' \\
     -e HOME=/workspace \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
     -v /export/data1/ccache:/workspace/.ccache \\
@@ -294,6 +295,7 @@ ROS_REPOSITORY_PATH = env.get('ROS_REPOSITORY_PATH', '')
 DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER])
 DOCKER_RUN_OPTION = env.get('DOCKER_RUN_OPTION', '--rm')
 NUMBER_OF_LOGS_TO_KEEP = env.get('NUMBER_OF_LOGS_TO_KEEP', '3')
+JSK_ROS_LINT_PKGS = env.get('JSK_ROS_LINT_PKGS', '')
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
@@ -323,6 +325,7 @@ ROS_REPOSITORY_PATH = %(ROS_REPOSITORY_PATH)s
 DOCKER_CONTAINER_NAME   = %(DOCKER_CONTAINER_NAME)s
 DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s
 NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s
+JSK_ROS_LINT_PKGS = %(JSK_ROS_LINT_PKGS)s
 ''' % locals())
 
 if env.get('ROS_DISTRO') == 'hydro':
