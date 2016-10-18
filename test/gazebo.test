@@ -1,0 +1,14 @@
+<launch>
+  <include file="$(find gazebo_ros)/launch/shapes_world.launch" />
+
+  <test test-name="gazebo_sanity_checker" pkg="rostest" type="hztest"
+        retry="3" time-limit="180">
+    <rosparam>
+      topic: /gazebo/model_states
+      hz: 1000.0
+      hzerror: 500.0
+      test_duration: 10.0
+      wait_time: 180.0
+    </rosparam>
+  </test>
+</launch>
