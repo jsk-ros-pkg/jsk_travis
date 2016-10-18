@@ -105,6 +105,10 @@ fi
 git submodule init
 git submodule update
 
+if [ "%(REPOSITORY_NAME)s" = "jsk_travis" ]; then
+  mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
+fi
+
 # remove containers created/exited more than 48 hours ago
 timeout 10s sudo docker ps -a > /tmp/$$.docker_ps_a.txt || exit 1  # check docker isn't held up
 for container in `cat $$.docker_ps_a.txt | egrep '^.*days ago' | awk '{print $1}'`; do
@@ -163,6 +167,7 @@ export SHELL=/bin/bash
 # Reference: http://stackoverflow.com/questions/12689304/ctypes-error-libdc1394-error-failed-to-initialize-libdc1394
 sudo ln /dev/null /dev/raw1394
 
+# start testing
 `cat .travis/travis.sh`
 
 EOL
@@ -294,6 +299,7 @@ ROS_REPOSITORY_PATH = env.get('ROS_REPOSITORY_PATH', '')
 DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER])
 DOCKER_RUN_OPTION = env.get('DOCKER_RUN_OPTION', '--rm')
 NUMBER_OF_LOGS_TO_KEEP = env.get('NUMBER_OF_LOGS_TO_KEEP', '3')
+REPOSITORY_NAME = env.get('REPOSITORY_NAME', '')
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
@@ -323,6 +329,7 @@ ROS_REPOSITORY_PATH = %(ROS_REPOSITORY_PATH)s
 DOCKER_CONTAINER_NAME   = %(DOCKER_CONTAINER_NAME)s
 DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s
 NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s
+REPOSITORY_NAME = %(REPOSITORY_NAME)s
 ''' % locals())
 
 if env.get('ROS_DISTRO') == 'hydro':
