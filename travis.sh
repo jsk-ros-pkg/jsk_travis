@@ -61,8 +61,8 @@ travis_time_end is_jsk_travis_upgraded
 [ "${USE_TRAVIS// }" = "" ] && USE_TRAVIS=false
 
 # Deprecated environmental variables
-[ ! -z $BUILDER -a "$BUILDER" != catkin ] && ( echo "ERROR: $BUILDER is not supported. BUILDER env is deprecated and only 'catkin' is supported for the build."; exit 1; )
-[ ! -z $ROSWS -a "$ROSWS" != wstool ] && ( echo "ERROR: $ROSWS is not supported. ROSWS env is deprecated and only 'wstool' is supported for workspace management."; exit 1; )
+[ ! -z $BUILDER ] && [ "$BUILDER" != catkin ] && ( echo "ERROR: $BUILDER is not supported. BUILDER env is deprecated and only 'catkin' is supported for the build."; exit 1; )
+[ ! -z $ROSWS ] && [ "$ROSWS" != wstool ] && ( echo "ERROR: $ROSWS is not supported. ROSWS env is deprecated and only 'wstool' is supported for workspace management."; exit 1; )
 
 # docker on travis
 if [ "$USE_DOCKER" = true ]; then
