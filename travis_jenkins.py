@@ -115,6 +115,9 @@ for container in `cat $$.docker_ps_a.txt | egrep '^.*days ago' | awk '{print $1}
      sudo docker rm $container || echo ok
 done
 
+# run watchdog for kill orphan docker container
+.travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s --sudo &amp;
+
 sudo docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
 sudo docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
 sudo docker run %(DOCKER_RUN_OPTION)s -t \\
