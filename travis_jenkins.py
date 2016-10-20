@@ -145,6 +145,7 @@ sudo docker run %(DOCKER_RUN_OPTION)s -t \\
     -v /export/data1/pip-cache:/workspace/.cache/pip \\
     -v /export/data1/ros_data:/workspace/.ros/data \\
     -v /export/data1/ros_test_data:/workspace/.ros/test_data \\
+    -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
     -w /workspace ros-ubuntu:%(LSB_RELEASE)s /bin/bash \\
     -c "$(cat &lt;&lt;EOL
 
@@ -169,6 +170,13 @@ export SHELL=/bin/bash
 # Remove warning about camera module
 # Reference: http://stackoverflow.com/questions/12689304/ctypes-error-libdc1394-error-failed-to-initialize-libdc1394
 sudo ln /dev/null /dev/raw1394
+
+# setup virtual display for GUI testing
+# based on http://wiki.ros.org/docker/Tutorials/GUI
+export QT_X11_NO_MITSHM=1
+export DISPLAY=:0
+apt-get install -qq -y mesa-utils
+glxinfo | grep GLX
 
 # start testing
 `cat .travis/travis.sh`

@@ -120,6 +120,7 @@ export DISPLAY=:0
 sudo -E Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /tmp/xorg.log -config dummy.xorg.conf $DISPLAY &
 sleep 3
 glxinfo | grep GLX
+export QT_X11_NO_MITSHM=1 # see http://wiki.ros.org/docker/Tutorials/GUI
 
 # ensure setting testing environment same as travis
 export USE_JENKINS=false

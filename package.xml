@@ -12,6 +12,7 @@
   <build_depend>catkin</build_depend>
   <build_depend>rostest</build_depend>
   <test_depend>rospy_tutorials</test_depend>
+  <test_depend>gazebo_ros</test_depend>
 
   <export/>
 </package>
