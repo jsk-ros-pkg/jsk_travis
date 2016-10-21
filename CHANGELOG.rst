@@ -2,6 +2,20 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix too many logs caused in travis_jenkins.py (`#319 <https://github.com/jsk-ros-pkg/jsk_travis/issues/319>`_ from wkentaro/docker-ps-a)
+
+  * https://github.com/jsk-ros-pkg/jsk_travis/commit/be5a632999c069e107773b6a0347bee51bae0d89
+
+* Enable gazebo test (`#316 <https://github.com/jsk-ros-pkg/jsk_travis/issues/316>`_)
+* [travis_watchdog.py] add watchdog for travis and kill orphan docker container on jenkins (`#317 <https://github.com/jsk-ros-pkg/jsk_travis/issues/317>`_)
+* [travis_jenkins.py] enable testing jsk_travis repository on jenkins (`#315 <https://github.com/jsk-ros-pkg/jsk_travis/issues/315>`_)
+* [travis.sh] fix error "too many arguments" at line 64-65 (`#314 <https://github.com/jsk-ros-pkg/jsk_travis/issues/314>`_)
+* [docker.sh] set +x while executing travis_wait function on docker (`#312 <https://github.com/jsk-ros-pkg/jsk_travis/issues/312>`_)
+
+* Contributors: Kei Okada, Kentaro Wada, Yuki Furuta
+
 0.4.21 (2016-09-21)
 -------------------
 * Check jsk_travis version on Travis
