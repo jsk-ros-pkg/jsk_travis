@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.22 (2016-10-21)
+-------------------
 * Fix too many logs caused in travis_jenkins.py (`#319 <https://github.com/jsk-ros-pkg/jsk_travis/issues/319>`_ from wkentaro/docker-ps-a)
 
   * https://github.com/jsk-ros-pkg/jsk_travis/commit/be5a632999c069e107773b6a0347bee51bae0d89
