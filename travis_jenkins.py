@@ -111,9 +111,10 @@ fi
 
 # remove containers created/exited more than 48 hours ago
 timeout 10s sudo docker ps -a > /tmp/$$.docker_ps_a.txt || exit 1  # check docker isn't held up
-for container in `cat $$.docker_ps_a.txt | egrep '^.*days ago' | awk '{print $1}'`; do
+for container in `cat /tmp/$$.docker_ps_a.txt | egrep '^.*days ago' | awk '{print $1}'`; do
      sudo docker rm $container || echo ok
 done
+rm -f /tmp/$$.docker_ps_a.txt
 
 # run watchdog for kill orphan docker container
 .travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s --sudo &amp;
