@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.23 (2017-02-08)
+-------------------
 * [dummy.xorg.conf] update for supporting GLX
 * Contributors: Yuki Furuta
 
