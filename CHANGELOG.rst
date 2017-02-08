@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [dummy.xorg.conf] update for supporting GLX
+* Contributors: Yuki Furuta
+
 0.4.22 (2016-10-21)
 -------------------
 * Fix too many logs caused in travis_jenkins.py (`#319 <https://github.com/jsk-ros-pkg/jsk_travis/issues/319>`_ from wkentaro/docker-ps-a)
