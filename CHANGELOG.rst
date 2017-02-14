@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.24 (2017-02-14)
+-------------------
 * [travis.sh] fix typo EXTRA_DEBS -> EXTRA_DEBS
 * Contributors: Yuki Furuta
 
