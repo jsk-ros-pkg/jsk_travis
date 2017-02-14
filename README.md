@@ -73,6 +73,11 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 * `USE_DOCKER` (default: `false`)
 
   Force to use docker on travis.
+  
+* `DOCKER_RUN_OPTION` (default: `--rm`)
+
+  Options passed to `docker run` if `USE_DOCKER` is `true`. Ignored otherwise.  
+  **NOTE** If `--rm` is not set, the container remains even after job is finished. You must be responsible for removing it.
 
 * `USE_JENKINS` (default: `false`)
 
