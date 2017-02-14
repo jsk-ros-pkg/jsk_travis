@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [travis.sh] fix typo EXTRA_DEBS -> EXTRA_DEBS
+* Contributors: Yuki Furuta
+
 0.4.23 (2017-02-08)
 -------------------
 * [dummy.xorg.conf] update for supporting GLX
