@@ -2,6 +2,17 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use X server of travis node (`#323 <https://github.com/jsk-ros-pkg/jsk_travis/issues/323>`_)
+  * [.travis.yml] allow failures on jade / kinetic gazebo test
+  * enable gazebo camera test
+  * Use host X11 server for docker
+* [travis_jenkins.py] delete: remove containers more than 48 hours ago (`#324 <https://github.com/jsk-ros-pkg/jsk_travis/issues/324>`_)
+  * [README.md] add description of DOCKER_RUN_OPTION
+  * [travis_jenkins.py] delete: remove containers more than 48 hours ago
+* Contributors: Kei Okada, Yuki Furuta
+
 0.4.24 (2017-02-14)
 -------------------
 * [travis.sh] fix typo EXTRA_DEBS -> EXTRA_DEBS
