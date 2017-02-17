@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.25 (2017-02-17)
+-------------------
 * Use X server of travis node (`#323 <https://github.com/jsk-ros-pkg/jsk_travis/issues/323>`_)
   * [.travis.yml] allow failures on jade / kinetic gazebo test
   * enable gazebo camera test
