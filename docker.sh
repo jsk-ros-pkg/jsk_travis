@@ -114,13 +114,9 @@ adduser travis sudo
 chown -R travis:travis $HOME
 echo "travis ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
 
-# setup virtual display
-sudo -E apt-get -y -qq install mesa-utils xserver-xorg-video-dummy xvfb
-export DISPLAY=:0
-sudo -E Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /tmp/xorg.log -config dummy.xorg.conf $DISPLAY &
-sleep 3
+# check display
+sudo -E apt-get -y -qq install mesa-utils
 glxinfo | grep GLX
-export QT_X11_NO_MITSHM=1 # see http://wiki.ros.org/docker/Tutorials/GUI
 
 # ensure setting testing environment same as travis
 export USE_JENKINS=false

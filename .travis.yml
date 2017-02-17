@@ -12,8 +12,6 @@ sudo: required
 dist: trusty
 services:
   - docker
-matrix:
-  fast_finish: true
 notifications:
   slack: jsk-robotics:Av7tc8wj3IWkLYvlTzHE7x2g
 env:
@@ -56,6 +54,13 @@ env:
     - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=indigo
     - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=jade
     - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=kinetic
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=jade
+    - env: USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=kinetic
+    - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=jade
+    - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=kinetic
 before_script:
   - mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
   - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; ${BEFORE_SCRIPT}"

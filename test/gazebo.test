@@ -1,14 +1,29 @@
 <launch>
-  <include file="$(find gazebo_ros)/launch/shapes_world.launch" />
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="gui" value="false" />
+    <arg name="headless" value="true"/>
+  </include>
+  <node name="$(anon spawn_camera)" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-sdf -file $(find jsk_travis)/test/camera.sdf -model cam"/>
 
   <test test-name="gazebo_sanity_checker" pkg="rostest" type="hztest"
-        retry="3" time-limit="180">
+        retry="3" time-limit="300">
     <rosparam>
       topic: /gazebo/model_states
       hz: 1000.0
-      hzerror: 500.0
+      hzerror: 800.0
       test_duration: 10.0
-      wait_time: 180.0
+      wait_time: 300.0
+    </rosparam>
+  </test>
+  <test test-name="gazebo_camera_sanity_checker" pkg="rostest" type="hztest"
+        retry="3" time-limit="300">
+    <rosparam>
+      topic: /camera/image_raw
+      hz: 15.0
+      hzerror: 15.0
+      test_duration: 10.0
+      wait_time: 300.0
     </rosparam>
   </test>
 </launch>
