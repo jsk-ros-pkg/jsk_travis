@@ -114,6 +114,15 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   The options passed when rosdep install.
 
+* `SUDO_PIP` (boolean, default: `true`)
+
+  If this is `true`, command `easy_install` and `pip install` is executed with `sudo -H`.
+  Setting `SUDO_PIP=false` is required to enable pip caching on Travis, because running `pip install` as root
+  disables caching because of a permission problem of `$HOME/.cache/pip` directory.
+  (See discussion [here](https://github.com/jsk-ros-pkg/jsk_travis/pull/295))
+  Note that this option does nothing for installation by `rosdep`, so user need to use `--as-root pip:no`
+  with `ROSDEP_ADDITIONAL_OPTIONS` to change the `sudo` command prefix for the `pip install` command by `rosdep`.
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`

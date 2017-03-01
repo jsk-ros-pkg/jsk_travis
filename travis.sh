@@ -135,8 +135,16 @@ echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 # Setup pip
 # FIXME: need to specify pip version to 6.0.7 to avoid unexpected error
 # https://github.com/jsk-ros-pkg/jsk_robot/pull/523#issuecomment-164699366
-sudo easy_install 'pip==6.0.7'
-sudo pip install -U -q pip setuptools
+if [ "$SUDO_PIP" = false ]; then
+  # FIXME: on Travis, pip caching can not be enabled with `sudo` command, so we need to run `pip install`
+  # without `sudo` here with assumption the virtualenv is enabled.
+  # https://github.com/jsk-ros-pkg/jsk_travis/pull/295#issuecomment-239059842
+  easy_install 'pip==6.0.7'
+  pip install -U -q pip setuptools
+else
+  sudo -H easy_install 'pip==6.0.7'
+  sudo -H pip install -U -q pip setuptools
+fi
 # Setup apt
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
