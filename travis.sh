@@ -120,6 +120,7 @@ function error {
 trap error ERR
 
 
+[ -f $CI_SOURCE_PATH/.travis.before_setup_ros.sh ] && source $CI_SOURCE_PATH/.travis.before_setup_ros.sh
 travis_time_start setup_ros
 
 # Define some config vars
@@ -168,6 +169,8 @@ if [ $HAVE_MONGO_DB == 0 ]; then
 fi # default actions
 
 travis_time_end
+
+[ -f $CI_SOURCE_PATH/.travis.before_setup_rosdep.sh ] && source $CI_SOURCE_PATH/.travis.before_setup_rosdep.sh
 travis_time_start setup_rosdep
 
 # Setup rosdep
@@ -178,6 +181,8 @@ ret=1
 rosdep update || while [ $ret != 0 ]; do sleep 1; rosdep update && ret=0 || echo "failed"; done
 
 travis_time_end
+
+[ -f $CI_SOURCE_PATH/.travis.before_setup_catkin.sh ] && source $CI_SOURCE_PATH/.travis.before_setup_catkin.sh
 travis_time_start setup_catkin
 
 ### before_install: # Use this to prepare the system to install prerequisites or dependencies
@@ -201,6 +206,7 @@ rosversion roslaunch
 rosversion rospack
 apt-cache show python-rospkg | grep '^Version:' | awk '{print $2}'
 
+[ -f $CI_SOURCE_PATH/.travis.before_setup_rosws.sh ] && source $CI_SOURCE_PATH/.travis.before_setup_rosws.sh
 travis_time_start setup_rosws
 
 ### install: # Use this to install any prerequisites or dependencies necessary to run your build
@@ -249,6 +255,7 @@ if [ "${BEFORE_SCRIPT// }" != "" ]; then sh -c "${BEFORE_SCRIPT}"; fi
 
 travis_time_end
 
+[ -f $CI_SOURCE_PATH/.travis.before_rosdep_install.sh ] && source $CI_SOURCE_PATH/.travis.before_rosdep_install.sh
 travis_time_start rosdep_install
 
 if [ -e ${CI_SOURCE_PATH}/.travis/rosdep-install.sh ]; then ## this is mainly for jsk_travis itself
@@ -264,6 +271,7 @@ wstool --version
 wstool info -t .
 cd ../
 
+[ -f $CI_SOURCE_PATH/.travis.before_catkin_build.sh ] && source $CI_SOURCE_PATH/.travis.before_catkin_build.sh
 travis_time_start catkin_build
 
 ### script: # All commands must exit with code 0 on success. Anything else is considered failure.
@@ -280,6 +288,8 @@ else
 fi
 
 travis_time_end
+
+[ -f $CI_SOURCE_PATH/.travis.before_catkin_run_tests.sh ] && source $CI_SOURCE_PATH/.travis.before_catkin_run_tests.sh
 travis_time_start catkin_run_tests
 
 # patch for rostest
@@ -303,6 +313,7 @@ travis_time_end
 
 if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
+    [ -f $CI_SOURCE_PATH/.travis.before_catkin_install_build.sh ] && source $CI_SOURCE_PATH/.travis.before_catkin_install_build.sh
     travis_time_start catkin_install_build
 
     catkin clean --yes || catkin clean -a # 0.3.1 uses -a, 0.4.0 uses --yes
@@ -319,6 +330,8 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
     rospack plugins --attrib=plugin nodelet || echo "ok"
 
     travis_time_end
+
+    [ -f $CI_SOURCE_PATH/.travis.before_catkin_install_run_tests.sh ] && source $CI_SOURCE_PATH/.travis.before_catkin_install_run_tests.sh
     travis_time_start catkin_install_run_tests
 
     export EXIT_STATUS=0
@@ -342,6 +355,7 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
 fi
 
+[ -f $CI_SOURCE_PATH/.travis.before_after_script.sh ] && source $CI_SOURCE_PATH/.travis.before_after_script.sh
 travis_time_start after_script
 
 ## after_script
