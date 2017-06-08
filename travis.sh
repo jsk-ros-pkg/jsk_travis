@@ -173,7 +173,9 @@ travis_time_start setup_rosdep
 # Setup rosdep
 pip --version
 rosdep --version
-sudo rosdep init
+if [ ! -e /etc/ros/rosdep/sources.list.d/20-default.list ]; then
+    sudo rosdep init
+fi
 ret=1
 rosdep update || while [ $ret != 0 ]; do sleep 1; rosdep update && ret=0 || echo "failed"; done
 
