@@ -272,6 +272,7 @@ travis_time_start catkin_build
 source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x # re-source setup.bash for setting environmet vairable for package installed via rosdep
 # for catkin
 if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
+if [ "${BUILD_PKGS// }" == "TARGET_PKGS" ]; then export BUILD_PKGS="$TARGET_PKGS"; fi
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
 if [ -z $TRAVIS_JOB_ID ]; then
   # on Jenkins

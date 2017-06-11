@@ -49,10 +49,18 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   Some characters won't work without escaping it for xml on Jenkins.
   (see: [here](https://github.com/jsk-ros-pkg/jsk_travis/issues/171))
 
+* `TARGET_PKGS` (default: none)
+
+  If none, it is set by `catkin_topological_order ${CI_SOURCE_PATH} --only-names`, and used to set
+   - `TEST_PKGS` that is used at `catkin run_tests`
+   - `BUILD_PKGS` if its value is `TARGET_PKGS`
+
 * `BUILD_PKGS` (default: none)
 
   You can specify the packages to build and test. If your repository has some troubles about several packages,
   you can ignore them by this option like `BUILD_PKGS="jsk_pcl_ros jsk_recognition_msgs"`.
+  Default value is none and all packages in the workspace will be built,
+  and if it is `"TARGET_PKGS"`, `$TARGET_PKGS` will be set to `BUILD_PKGS`.
 
 * `EXTRA_DEB` (default: none)
 
