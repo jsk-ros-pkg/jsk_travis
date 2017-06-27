@@ -140,7 +140,7 @@ sudo docker run %(DOCKER_RUN_OPTION)s -t \\
     -v /export/data1/ros_data:/workspace/.ros/data \\
     -v /export/data1/ros_test_data:/workspace/.ros/test_data \\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
-    -w /workspace ros-ubuntu:%(LSB_RELEASE)s /bin/bash \\
+    -w /workspace %(DOCKER_IMAGE_JENKINS)s /bin/bash \\
     -c "$(cat &lt;&lt;EOL
 
 cd %(TRAVIS_REPO_SLUG)s
@@ -352,6 +352,8 @@ elif env.get('ROS_DISTRO') == 'kinetic':
 else:
     LSB_RELEASE = '14.04'
     UBUNTU_DISTRO = 'trusty'
+
+DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s' % LSB_RELEASE)
 
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
