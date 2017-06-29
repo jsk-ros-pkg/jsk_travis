@@ -13,7 +13,11 @@ while [ $EXIT_STATUS == 1 -a $COUNT -lt 3 ] ; do  # try 3 times with "Continue i
     EXIT_STATUS=$?
     [ $EXIT_STATUS == 0 ] || sleep 30
 done
-[ $EXIT_STATUS == 0 ] || rosdep install -q -y --rosdistro $ROS_DISTRO $ROSDEP_ADDITIONAL_OPTIONS --from-paths ${ROS_PACKAGE_PATH_REVERSED} .
+if [ $EXIT_STATUS != 0 ]; then
+    rosdep install -q -y --rosdistro $ROS_DISTRO $ROSDEP_ADDITIONAL_OPTIONS --from-paths ${ROS_PACKAGE_PATH_REVERSED} .
+    EXIT_STATUS=$?
+fi
 
 find -L . -name manifest.xml.deprecated | xargs -n 1 -i dirname {} | xargs -n 1 -i mv `pwd`/{}/manifest.xml.deprecated `pwd`/{}/manifest.xml
 
+exit $EXIT_STATUS
