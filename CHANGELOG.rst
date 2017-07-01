@@ -2,6 +2,18 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Correct exit status in rosdep-install.sh (`#331 <https://github.com/jsk-ros-pkg/jsk_travis/issues/331>`_ )
+* Add option to use custom docker image in Jenkins job (`#330 <https://github.com/jsk-ros-pkg/jsk_travis/issues/330>`_ )
+  * Update README for DOCKER_IMAGE_JENKINS env
+  * Add DOCKER_IMAGE_JENKINS option
+
+* Run rosdep init when required (`#327 <https://github.com/jsk-ros-pkg/jsk_travis/issues/327>`_)
+  * This is necessary to use ros:indigo docker image by DOCKER_IMAGE env,
+     because rosdep init has already been called.
+* Contributors: Kentaro Wada
+
 0.4.25 (2017-02-17)
 -------------------
 * Use X server of travis node (`#323 <https://github.com/jsk-ros-pkg/jsk_travis/issues/323>`_)
