@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.26 (2017-07-01)
+-------------------
 * Correct exit status in rosdep-install.sh (`#331 <https://github.com/jsk-ros-pkg/jsk_travis/issues/331>`_ )
 * Add option to use custom docker image in Jenkins job (`#330 <https://github.com/jsk-ros-pkg/jsk_travis/issues/330>`_ )
   * Update README for DOCKER_IMAGE_JENKINS env
