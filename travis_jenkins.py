@@ -153,7 +153,7 @@ env
 mkdir log
 export ROS_LOG_DIR=\$PWD/log
 apt-get update -qq || echo Ignore error of apt-get update
-apt-get install -qq -y git wget sudo lsb-release ccache  apt-cacher-ng
+apt-get install -qq -y git wget sudo lsb-release ccache apt-cacher-ng patch
 
 # setup ccache
 ccache -M 20G                   # set maximum size of ccache to 20G
