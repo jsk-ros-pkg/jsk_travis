@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.27 (2017-07-18)
+-------------------
 * apt-get install patch command (`#332 <https://github.com/jsk-ros-pkg/jsk_travis/issues/332>`_ )
 * Support ROSDEP_ADDITIONAL_OPTIONS on Jenkins (`#333 <https://github.com/jsk-ros-pkg/jsk_travis/issues/333>`_)
 * use language: c++ , to avoid custom python (`#334 <https://github.com/jsk-ros-pkg/jsk_travis/issues/334>`_)
