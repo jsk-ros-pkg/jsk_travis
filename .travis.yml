@@ -62,6 +62,7 @@ matrix:
     - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=jade
     - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=kinetic
 before_script:
+  - export ROSDEP_ADDITIONAL_OPTIONS='-n -q --ignore-src' # run rosdep without -r
   - mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
   - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; ${BEFORE_SCRIPT}"
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin build -i -v --limit-status-rate 0.001@catkin_make@' .travis/travis.sh; fi
