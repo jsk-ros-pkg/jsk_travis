@@ -86,7 +86,7 @@ if [ "$USE_DOCKER" = true ]; then
   export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
   xhost +local:root
 
-  docker run -it -v $HOME:$HOME \
+  docker run -v $HOME:$HOME \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e QT_X11_NO_MITSHM -e DISPLAY \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
