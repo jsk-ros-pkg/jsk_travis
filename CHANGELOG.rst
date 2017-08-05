@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* filename must be less than 255 length (`#339 <https://github.com/jsk-ros-pkg/jsk_travis/issues/339>`_)
+* Contributors: Kei Okada
+
 0.4.28 (2017-08-05)
 -------------------
 * run travis without rosdep -r (`#337 <https://github.com/jsk-ros-pkg/jsk_travis/issues/337>`_)
