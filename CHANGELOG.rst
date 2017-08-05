@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.29 (2017-08-05)
+-------------------
 * filename must be less than 255 length (`#339 <https://github.com/jsk-ros-pkg/jsk_travis/issues/339>`_)
 * Contributors: Kei Okada
 
