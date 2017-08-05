@@ -2,6 +2,18 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* run travis without rosdep -r (`#337 <https://github.com/jsk-ros-pkg/jsk_travis/issues/337>`_)
+  * add -v rosdep options
+  * add ros_tutorials to workspece for test
+  * run travis without rosdep -r
+
+* to run docker, we do not need -ti option (`#338 <https://github.com/jsk-ros-pkg/jsk_travis/issues/338>`_)
+  -i, --interactive             Keep STDIN open even if not attached
+  -t, --tty                     Allocate a pseudo-TTY
+* Contributors: Kei Okada
+
 0.4.27 (2017-07-18)
 -------------------
 * apt-get install patch command (`#332 <https://github.com/jsk-ros-pkg/jsk_travis/issues/332>`_ )
