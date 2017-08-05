@@ -392,6 +392,13 @@ job_name = '-'.join(
     )
 )
 job_name = re.sub(r'[^0-9A-Za-z]+', '-', job_name)
+# filename must be within 255
+if len(job_name) >= 255 :
+    import hashlib
+    m = hashlib.md5()
+    m.update(job_name)
+    job_name=job_name[:200]+'-'+m.hexdigest()
+
 if j.job_exists(job_name) is None:
     j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
 
