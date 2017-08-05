@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.28 (2017-08-05)
+-------------------
 * run travis without rosdep -r (`#337 <https://github.com/jsk-ros-pkg/jsk_travis/issues/337>`_)
   * add -v rosdep options
   * add ros_tutorials to workspece for test
