@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.30 (2017-08-06)
+-------------------
 * job_name = 'jenkins+ job_name + TRAVIS_REPO_SLUG' (`#340 <https://github.com/jsk-ros-pkg/jsk_travis/issues/340>`_)
 * Contributors: Kei Okada
 
