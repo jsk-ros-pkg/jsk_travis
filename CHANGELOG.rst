@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use http instaed of https (`#341 <https://github.com/jsk-ros-pkg/jsk_travis/issues/341>`_)
+* Contributors: Kei Okada
+
 0.4.30 (2017-08-06)
 -------------------
 * job_name = 'jenkins+ job_name + TRAVIS_REPO_SLUG' (`#340 <https://github.com/jsk-ros-pkg/jsk_travis/issues/340>`_)
