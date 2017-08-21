@@ -76,19 +76,22 @@ if [ "$USE_DOCKER" = true ]; then
     export DOCKER_IMAGE=ubuntu:$DISTRO
   fi
 
-  # use host xserver
-  sudo apt-get update -q || echo Ignore error of apt-get update
-  sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
-  export DISPLAY=:0
-  sudo Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /tmp/xorg.log -config $CI_SOURCE_PATH/.travis/dummy.xorg.conf $DISPLAY &
-  sleep 3 # wait x server up
-  glxinfo | grep GLX
-  export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
-  xhost +local:root
+  DOCKER_XSERVER_OPTIONS=''
+  if [ "$TRAVIS_SUDO" = true ]; then
+    # use host xserver
+    sudo apt-get update -q || echo Ignore error of apt-get update
+    sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
+    export DISPLAY=:0
+    sudo Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /tmp/xorg.log -config $CI_SOURCE_PATH/.travis/dummy.xorg.conf $DISPLAY &
+    sleep 3 # wait x server up
+    glxinfo | grep GLX
+    export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
+    xhost +local:root
+    DOCKER_XSERVER_OPTIONS='-v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM -e DISPLAY'
+  fi
 
   docker run -v $HOME:$HOME \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -e QT_X11_NO_MITSHM -e DISPLAY \
+    $DOCKER_XSERVER_OPTIONS \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
     -e BUILD_PKGS -e TARGET_PKGS -e TEST_PKGS \
