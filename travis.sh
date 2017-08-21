@@ -70,7 +70,7 @@ if [ "$USE_DOCKER" = true ]; then
     case $ROS_DISTRO in
       hydro) DISTRO=precise;;
       indigo|jade) DISTRO=trusty;;
-      kinetic) DISTRO=xenial;;
+      kinetic|lunar) DISTRO=xenial;;
       *) DISTRO=trusty;;
     esac
     export DOCKER_IMAGE=ubuntu:$DISTRO
@@ -105,7 +105,7 @@ if [ "$USE_DOCKER" = true ]; then
   exit $DOCKER_EXIT_CODE
 fi
 
-if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" == "indigo" -o "$ROS_DISTRO" == "jade" -o "$ROS_DISTRO" == "kinetic" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
+if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
     pip install --user python-jenkins -q
     ./.travis/travis_jenkins.py
     exit $?
