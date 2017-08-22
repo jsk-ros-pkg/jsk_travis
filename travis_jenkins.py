@@ -344,13 +344,10 @@ REPOSITORY_NAME = %(REPOSITORY_NAME)s
 if env.get('ROS_DISTRO') == 'hydro':
     LSB_RELEASE = '12.04'
     UBUNTU_DISTRO = 'precise'
-elif env.get('ROS_DISTRO') == 'indigo':
+elif env.get('ROS_DISTRO') in ['indigo', 'jade']:
     LSB_RELEASE = '14.04'
     UBUNTU_DISTRO = 'trusty'
-elif env.get('ROS_DISTRO') == 'jade':
-    LSB_RELEASE = '14.04'
-    UBUNTU_DISTRO = 'trusty'
-elif env.get('ROS_DISTRO') == 'kinetic':
+elif env.get('ROS_DISTRO') in ['kinetic', 'lunar']:
     LSB_RELEASE = '16.04'
     UBUNTU_DISTRO = 'xenial'
 else:
