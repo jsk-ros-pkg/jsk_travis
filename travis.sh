@@ -86,6 +86,7 @@ if [ "$USE_DOCKER" = true ]; then
   export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
   xhost +local:root
 
+  docker pull $DOCKER_IMAGE || true
   docker run -v $HOME:$HOME \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e QT_X11_NO_MITSHM -e DISPLAY \
