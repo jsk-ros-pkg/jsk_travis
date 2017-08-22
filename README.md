@@ -118,6 +118,10 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   The options passed when rosdep install.
 
+* `NOT_TEST_INSTALL` (none or `true`, default: none)
+
+  Flag to skip testing catkin install in addition to devel build.
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`
