@@ -62,6 +62,11 @@ matrix:
     - env: USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=kinetic
     - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=jade
     - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=kinetic
+  include:
+    - env:
+        - USE_DOCKER=true
+        - ROS_DISTRO=kinetic
+      sudo: false
 before_script:
   - export ROSDEP_ADDITIONAL_OPTIONS='-n -v --ignore-src' # run rosdep without -r and -v
   - mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
