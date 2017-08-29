@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.32 (2017-08-29)
+-------------------
 * Run docker pull to get latest docker image if possible (`#345 <https://github.com/jsk-ros-pkg/jsk_travis/issues/345>`_)
 * Support sudo: false of Travis option (`#344 <https://github.com/jsk-ros-pkg/jsk_travis/issues/344>`_)
 * Documentize NOT_TEST_INSTALL (`#343 <https://github.com/jsk-ros-pkg/jsk_travis/issues/343>`_)
