@@ -2,6 +2,14 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Run docker pull to get latest docker image if possible (`#345 <https://github.com/jsk-ros-pkg/jsk_travis/issues/345>`_)
+* Support sudo: false of Travis option (`#344 <https://github.com/jsk-ros-pkg/jsk_travis/issues/344>`_)
+* Documentize NOT_TEST_INSTALL (`#343 <https://github.com/jsk-ros-pkg/jsk_travis/issues/343>`_)
+* Support testing on lunar (`#342 <https://github.com/jsk-ros-pkg/jsk_travis/issues/342>`_)
+* Contributors: Kentaro Wada
+
 0.4.31 (2017-08-19)
 -------------------
 * use http instaed of https (`#341 <https://github.com/jsk-ros-pkg/jsk_travis/issues/341>`_)
