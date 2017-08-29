@@ -115,7 +115,7 @@ fi
 
 sudo docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
 sudo docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
-sudo docker pull %(DOCKER_CONTAINER_NAME)s || true
+sudo docker pull %(DOCKER_IMAGE_JENKINS)s || true
 sudo docker run %(DOCKER_RUN_OPTION)s \\
     --name %(DOCKER_CONTAINER_NAME)s \\
     -e ROS_DISTRO='%(ROS_DISTRO)s' \\
