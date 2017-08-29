@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.33 (2017-08-30)
+-------------------
 * Fix typo about docker pulling DOCKER_IMAGE_JENKINS (`#346 <https://github.com/jsk-ros-pkg/jsk_travis/issues/346>`_)
 * Contributors: Kentaro Wada
 
