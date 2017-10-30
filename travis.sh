@@ -139,8 +139,8 @@ echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 # Setup pip
 # FIXME: need to specify pip version to 6.0.7 to avoid unexpected error
 # https://github.com/jsk-ros-pkg/jsk_robot/pull/523#issuecomment-164699366
-sudo easy_install 'pip==6.0.7'
-sudo pip install -U -q pip setuptools
+curl https://bootstrap.pypa.io/get-pip.py | sudo python - 'pip==6.0.7'
+sudo -E pip install -U -q pip setuptools
 # Setup apt
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
