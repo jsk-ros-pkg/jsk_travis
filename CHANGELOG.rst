@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.34 (2017-11-01)
+-------------------
 * travis.sh: use get-pip.py to get pipt (`#349 <https://github.com/jsk-ros-pkg/jsk_travis/issues/349>`_)
 * Contributors: Yuki Furuta
 
