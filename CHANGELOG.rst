@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* travis.sh: use get-pip.py to get pipt (`#349 <https://github.com/jsk-ros-pkg/jsk_travis/issues/349>`_)
+* Contributors: Yuki Furuta
+
 0.4.33 (2017-08-30)
 -------------------
 * Fix typo about docker pulling DOCKER_IMAGE_JENKINS (`#346 <https://github.com/jsk-ros-pkg/jsk_travis/issues/346>`_)
