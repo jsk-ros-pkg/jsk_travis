@@ -216,8 +216,8 @@ cd ~/ros/ws_$REPOSITORY_NAME
 catkin init
 catkin config $CATKIN_TOOLS_CONFIG_OPTIONS
 cd ~/ros/ws_$REPOSITORY_NAME/src
+wstool init
 if [ "$USE_DEB" == false ]; then
-    wstool init .
     if [ -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
         # install (maybe unreleased version) dependencies from source
         wstool merge file://$CI_SOURCE_PATH/.travis.rosinstall
@@ -229,7 +229,7 @@ if [ "$USE_DEB" == false ]; then
     wstool update
 fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
-if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then wstool init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; wstool update; fi
+if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; wstool update; fi
 # disable hrpsys/doc generation
 find . -ipath "*/hrpsys/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
 # disable metapackage
@@ -240,10 +240,6 @@ if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
     ROSDEP_ARGS=>/dev/null
 fi
 source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x # ROS_PACKAGE_PATH is important for rosdep
-
-if [ ! -e .rosinstall ]; then
-    echo "- git: {local-name: $REPOSITORY_NAME, uri: 'http://github.com/$TRAVIS_REPO_SLUG'}" >> .rosinstall
-fi
 
 travis_time_end
 
