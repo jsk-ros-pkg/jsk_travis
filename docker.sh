@@ -109,10 +109,13 @@ sudo -E apt-get -y -qq update
 sudo -E apt-get -y -qq install apt-utils build-essential curl git lsb-release python-pip python-setuptools wget
 
 # add user for testing
-adduser --disabled-password --gecos "" travis
-adduser travis sudo
-chown -R travis:travis $HOME
-echo "travis ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
+id travis 1>/dev/null 2>&1
+if [ $? -ne 0 ]; then
+    sudo -E adduser --disabled-password --gecos "" travis
+    sudo -E adduser travis sudo
+    sudo -E chown -R travis:travis $HOME
+fi
+echo "travis ALL=(ALL) NOPASSWD:ALL" | sudo -E tee -a /etc/sudoers
 
 # check display
 sudo -E apt-get -y -qq install mesa-utils
@@ -125,4 +128,4 @@ export USE_TRAVIS=true
 travis_time_end
 
 # run tests
-su travis -c 'cd $CI_SOURCE_PATH; source .travis/travis.sh'
+sudo -E su travis -c 'cd $CI_SOURCE_PATH; source .travis/travis.sh'
