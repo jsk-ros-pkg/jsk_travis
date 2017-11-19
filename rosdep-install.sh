@@ -20,4 +20,7 @@ fi
 
 find -L . -name manifest.xml.deprecated | xargs -n 1 -i dirname {} | xargs -n 1 -i mv `pwd`/{}/manifest.xml.deprecated `pwd`/{}/manifest.xml
 
+#if -r is included in ROSDEP_ADDITIONAL_OPTIONS, always returns true
+[[ "$ROSDEP_ADDITIONAL_OPTIONS" =~ " -r " ]] && exit 0
+
 exit $EXIT_STATUS
