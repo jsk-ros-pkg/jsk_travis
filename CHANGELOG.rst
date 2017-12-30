@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.35 (2017-12-30)
+-------------------
 * Merge pull request `#353 <https://github.com/jsk-ros-pkg/jsk_travis/issues/353>`_ from k-okada/exit_rosdep
   when rosdep install is called with -r, do not exit with 1
 * when rosdep install is called with -r, do not exit with 1
