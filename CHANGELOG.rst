@@ -2,6 +2,16 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#353 <https://github.com/jsk-ros-pkg/jsk_travis/issues/353>`_ from k-okada/exit_rosdep
+  when rosdep install is called with -r, do not exit with 1
+* when rosdep install is called with -r, do not exit with 1
+* Merge pull request `#351 <https://github.com/jsk-ros-pkg/jsk_travis/issues/351>`_ from furushchev/fix-eof-error
+  travis.sh: fix EOFError
+* travis.sh: fix EOFError
+* Contributors: Furushchev, Kei Okada
+
 0.4.34 (2017-11-01)
 -------------------
 * travis.sh: use get-pip.py to get pipt (`#349 <https://github.com/jsk-ros-pkg/jsk_travis/issues/349>`_)
