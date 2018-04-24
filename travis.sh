@@ -110,7 +110,7 @@ if [ "$USE_DOCKER" = true ]; then
 fi
 
 if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
-    pip install --user python-jenkins -q
+    pip install --user -U python-jenkins==0.4.16 -q
     ./.travis/travis_jenkins.py
     exit $?
 fi
@@ -139,7 +139,6 @@ echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 
 # Install pip
 curl https://bootstrap.pypa.io/get-pip.py | sudo python -
-sudo -E pip install -U -q pip setuptools
 
 # Setup apt
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
