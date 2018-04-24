@@ -110,7 +110,7 @@ if [ "$USE_DOCKER" = true ]; then
 fi
 
 if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
-    pip install --user python-jenkins -q
+    pip install --user -U python-jenkins -q
     ./.travis/travis_jenkins.py
     exit $?
 fi
