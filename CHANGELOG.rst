@@ -2,6 +2,15 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#354 <https://github.com/jsk-ros-pkg/jsk_travis/issues/354>`_ from k-okada/fix_jenkins
+  need to upgrade when install python-jenkins
+* get-pip.py installs pip, so we do not need pip install pip
+* use 0.4.16 of python-jenkins
+* need to upgrade when install python-jenkins
+* Contributors: Kei Okada
+
 0.4.35 (2017-12-30)
 -------------------
 * Merge pull request `#353 <https://github.com/jsk-ros-pkg/jsk_travis/issues/353>`_ from k-okada/exit_rosdep
