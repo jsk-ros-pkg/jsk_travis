@@ -139,7 +139,6 @@ echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 
 # Install pip
 curl https://bootstrap.pypa.io/get-pip.py | sudo python -
-sudo -E pip install -U -q pip setuptools
 
 # Setup apt
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
