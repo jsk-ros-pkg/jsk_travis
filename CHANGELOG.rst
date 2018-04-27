@@ -2,6 +2,15 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#355 <https://github.com/jsk-ros-pkg/jsk_travis/issues/355>`_ from wkentaro/pip9
+  Install pip<10
+* Install pip<10
+  Currently pip==10.0.1 is installed.
+  https://github.com/jsk-ros-pkg/jsk_recognition/pull/2280#issuecomment-384681527
+* Contributors: Kei Okada, Kentaro Wada
+
 0.4.36 (2018-04-24)
 -------------------
 * Merge pull request `#354 <https://github.com/jsk-ros-pkg/jsk_travis/issues/354>`_ from k-okada/fix_jenkins
