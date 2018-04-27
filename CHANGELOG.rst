@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.37 (2018-04-27)
+-------------------
 * Merge pull request `#355 <https://github.com/jsk-ros-pkg/jsk_travis/issues/355>`_ from wkentaro/pip9
   Install pip<10
 * Install pip<10
