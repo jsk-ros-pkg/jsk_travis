@@ -343,19 +343,15 @@ REPOSITORY_NAME = %(REPOSITORY_NAME)s
 ''' % locals())
 
 if env.get('ROS_DISTRO') == 'hydro':
-    LSB_RELEASE = '12.04'
     UBUNTU_DISTRO = 'precise'
 elif env.get('ROS_DISTRO') in ['indigo', 'jade']:
-    LSB_RELEASE = '14.04'
     UBUNTU_DISTRO = 'trusty'
 elif env.get('ROS_DISTRO') in ['kinetic', 'lunar']:
-    LSB_RELEASE = '16.04'
     UBUNTU_DISTRO = 'xenial'
 else:
-    LSB_RELEASE = '14.04'
     UBUNTU_DISTRO = 'trusty'
 
-DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s' % LSB_RELEASE)
+DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros:%s' % ROS_DISTRO)
 
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
