@@ -71,6 +71,7 @@ if [ "$USE_DOCKER" = true ]; then
       hydro) DISTRO=precise;;
       indigo|jade) DISTRO=trusty;;
       kinetic|lunar) DISTRO=xenial;;
+      melodic) DISTRO=bionic;;
       *) DISTRO=trusty;;
     esac
     export DOCKER_IMAGE=ubuntu:$DISTRO
@@ -79,8 +80,8 @@ if [ "$USE_DOCKER" = true ]; then
   DOCKER_XSERVER_OPTIONS=''
   if [ "$TRAVIS_SUDO" = true ]; then
     # use host xserver
-    sudo apt-get update -q || echo Ignore error of apt-get update
-    sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
+    sudo -E apt-get update -q || echo Ignore error of apt-get update
+    sudo -E apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
     export DISPLAY=:0
     sudo Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /tmp/xorg.log -config $CI_SOURCE_PATH/.travis/dummy.xorg.conf $DISPLAY &
     sleep 3 # wait x server up
@@ -144,12 +145,14 @@ curl https://bootstrap.pypa.io/get-pip.py | sudo python -
 # See https://github.com/pypa/pip/issues/4805 for detail.
 sudo -H pip install 'pip<10'
 
+# set DEBIAN_FRONTEND
+export DEBIAN_FRONTEND=noninteractive
 # Setup apt
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 lsb_release -a
 sudo apt-get update -q || echo Ignore error of apt-get update
-sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache
+sudo -E apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache
 # setup catkin-tools option
 if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
   if [[ "$(pip show catkin-tools | grep '^Version:' | awk '{print $2}')" =~ 0.3.[0-9]+ ]]; then
@@ -166,12 +169,12 @@ sudo ln -s /usr/bin/ccache /usr/local/bin/cc
 sudo ln -s /usr/bin/ccache /usr/local/bin/c++
 ccache -s
 
-if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
+if [ "$EXTRA_DEB" ]; then sudo -E apt-get install -q -qq -y $EXTRA_DEB;  fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
 dpkg -s mongodb || echo "ok"; export HAVE_MONGO_DB=$?
 if [ $HAVE_MONGO_DB == 0 ]; then
-    sudo apt-get remove --purge -q -qq -y mongodb mongodb-10gen || echo "ok"
-    sudo apt-get install -y --force-yes -q -qq  mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"
+    sudo -E apt-get remove --purge -q -qq -y mongodb mongodb-10gen || echo "ok"
+    sudo -E apt-get install -y --force-yes -q -qq  mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"
 fi # default actions
 
 travis_time_end
@@ -194,9 +197,9 @@ if [ "$ROS_DISTRO" == "hydro" ]; then
   [ ! -e /tmp/catkin ] && (cd /tmp/; git clone -q https://github.com/ros/catkin)
   (cd /tmp/catkin; git checkout 0.6.12; cmake . -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO/ ; make; sudo make install)
 else
-  sudo apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-catkin
+  sudo -E apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-catkin
 fi
-sudo apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-roslaunch
+sudo -E apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-roslaunch
 ### https://github.com/ros/ros_comm/pull/641
 (cd /opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/641.diff -O /tmp/641.diff; [ "$ROS_DISTRO" == "hydro" ] && sed -i s@items@iteritems@ /tmp/641.diff ; sudo patch -p4 < /tmp/641.diff)
 
