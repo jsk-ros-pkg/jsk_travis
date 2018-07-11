@@ -71,7 +71,7 @@ if [ "$USE_DOCKER" = true ]; then
       hydro) DISTRO=precise;;
       indigo|jade) DISTRO=trusty;;
       kinetic|lunar) DISTRO=xenial;;
-      melodic) DISTRO=biionic;;
+      melodic) DISTRO=bionic;;
       *) DISTRO=trusty;;
     esac
     export DOCKER_IMAGE=ubuntu:$DISTRO

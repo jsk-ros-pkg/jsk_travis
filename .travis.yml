@@ -48,6 +48,7 @@ env:
     - USE_DOCKER=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
     - USE_DOCKER=true ROS_DISTRO=kinetic
     - USE_DOCKER=true ROS_DISTRO=lunar
+    - USE_DOCKER=true ROS_DISTRO=melodic
     # gazebo
     - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=indigo
     - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=jade
