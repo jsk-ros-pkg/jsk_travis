@@ -351,6 +351,9 @@ elif env.get('ROS_DISTRO') in ['indigo', 'jade']:
 elif env.get('ROS_DISTRO') in ['kinetic', 'lunar']:
     LSB_RELEASE = '16.04'
     UBUNTU_DISTRO = 'xenial'
+elif env.get('ROS_DISTRO') in ['melodic']:
+    LSB_RELEASE = '18.04'
+    UBUNTU_DISTRO = 'bionic'
 else:
     LSB_RELEASE = '14.04'
     UBUNTU_DISTRO = 'trusty'
