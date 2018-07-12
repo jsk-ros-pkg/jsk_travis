@@ -71,6 +71,7 @@ if [ "$USE_DOCKER" = true ]; then
       hydro) DISTRO=precise;;
       indigo|jade) DISTRO=trusty;;
       kinetic|lunar) DISTRO=xenial;;
+      melodic) DISTRO=bionic;;
       *) DISTRO=trusty;;
     esac
     export DOCKER_IMAGE=ubuntu:$DISTRO
@@ -144,6 +145,8 @@ curl https://bootstrap.pypa.io/get-pip.py | sudo python -
 # See https://github.com/pypa/pip/issues/4805 for detail.
 sudo -H pip install 'pip<10'
 
+# set DEBIAN_FRONTEND=noninteractive
+echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 # Setup apt
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
