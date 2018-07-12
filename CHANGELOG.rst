@@ -2,6 +2,34 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.4.37 (2018-04-27)
+-------------------
+* Merge pull request `#355 <https://github.com/jsk-ros-pkg/jsk_travis/issues/355>`_ from wkentaro/pip9
+  Install pip<10
+* Install pip<10
+  Currently pip==10.0.1 is installed.
+  https://github.com/jsk-ros-pkg/jsk_recognition/pull/2280#issuecomment-384681527
+* Contributors: Kei Okada, Kentaro Wada
+
+0.4.36 (2018-04-24)
+-------------------
+* Merge pull request `#354 <https://github.com/jsk-ros-pkg/jsk_travis/issues/354>`_ from k-okada/fix_jenkins
+  need to upgrade when install python-jenkins
+* get-pip.py installs pip, so we do not need pip install pip
+* use 0.4.16 of python-jenkins
+* need to upgrade when install python-jenkins
+* Contributors: Kei Okada
+
+0.4.35 (2017-12-30)
+-------------------
+* Merge pull request `#353 <https://github.com/jsk-ros-pkg/jsk_travis/issues/353>`_ from k-okada/exit_rosdep
+  when rosdep install is called with -r, do not exit with 1
+* when rosdep install is called with -r, do not exit with 1
+* Merge pull request `#351 <https://github.com/jsk-ros-pkg/jsk_travis/issues/351>`_ from furushchev/fix-eof-error
+  travis.sh: fix EOFError
+* travis.sh: fix EOFError
+* Contributors: Furushchev, Kei Okada
+
 0.4.34 (2017-11-01)
 -------------------
 * travis.sh: use get-pip.py to get pipt (`#349 <https://github.com/jsk-ros-pkg/jsk_travis/issues/349>`_)

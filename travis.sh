@@ -111,7 +111,7 @@ if [ "$USE_DOCKER" = true ]; then
 fi
 
 if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
-    pip install --user python-jenkins -q
+    pip install --user -U python-jenkins==0.4.16 -q
     ./.travis/travis_jenkins.py
     exit $?
 fi
@@ -140,7 +140,10 @@ echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 
 # Install pip
 curl https://bootstrap.pypa.io/get-pip.py | sudo python -
-sudo -E pip install -U -q pip setuptools
+# pip>=10 no longer uninstalls distutils packages (ex. packages installed via apt),
+# and fails to install packages via pip if they are already installed via apt.
+# See https://github.com/pypa/pip/issues/4805 for detail.
+sudo -H pip install 'pip<10'
 
 # set DEBIAN_FRONTEND=noninteractive
 echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
@@ -219,8 +222,8 @@ cd ~/ros/ws_$REPOSITORY_NAME
 catkin init
 catkin config $CATKIN_TOOLS_CONFIG_OPTIONS
 cd ~/ros/ws_$REPOSITORY_NAME/src
+wstool init
 if [ "$USE_DEB" == false ]; then
-    wstool init .
     if [ -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
         # install (maybe unreleased version) dependencies from source
         wstool merge file://$CI_SOURCE_PATH/.travis.rosinstall
@@ -232,7 +235,7 @@ if [ "$USE_DEB" == false ]; then
     wstool update
 fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
-if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then wstool init .; $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; wstool update; fi
+if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; wstool update; fi
 # disable hrpsys/doc generation
 find . -ipath "*/hrpsys/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
 # disable metapackage
@@ -243,10 +246,6 @@ if [ "$ROSDEP_UPDATE_QUIET" == "true" ]; then
     ROSDEP_ARGS=>/dev/null
 fi
 source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x # ROS_PACKAGE_PATH is important for rosdep
-
-if [ ! -e .rosinstall ]; then
-    echo "- git: {local-name: $REPOSITORY_NAME, uri: 'http://github.com/$TRAVIS_REPO_SLUG'}" >> .rosinstall
-fi
 
 travis_time_end
 
