@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.38 (2018-07-13)
+-------------------
 * Add melodic `#358 <https://github.com/jsk-ros-pkg/jsk_travis/issues/358>`_
   * add DEBIAN_FRONTEND=noninteractive to travis.sh, see https://api.travis-ci.org/v3/job/402555750/log.txt for error case
   * add test for melodic
