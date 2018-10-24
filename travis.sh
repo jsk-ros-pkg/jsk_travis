@@ -91,8 +91,11 @@ if [ "$USE_DOCKER" = true ]; then
     DOCKER_XSERVER_OPTIONS='-v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM -e DISPLAY'
   fi
 
+  docker create -v /etc/group -v /etc/shadow -v /etc/sudoers.d -v /etc/passwd --name=sudodata $DOCKER_IMAGE
   docker pull $DOCKER_IMAGE || true
-  docker run -v $HOME:$HOME \
+  docker run -i\
+    -v $HOME:$HOME \
+    --volumes-from=sudodata \
     $DOCKER_XSERVER_OPTIONS \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
