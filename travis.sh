@@ -259,6 +259,8 @@ travis_time_end
 
 travis_time_start rosdep_install
 
+## add https://github.com/ros-infrastructure/rosdep/pull/612
+(cd /usr/lib/python2.7/dist-packages; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros-infrastructure/rosdep/pull/612.diff -O /tmp/612.diff; sudo patch -p2 < /tmp/612.diff)
 if [ -e ${CI_SOURCE_PATH}/.travis/rosdep-install.sh ]; then ## this is mainly for jsk_travis itself
     ${CI_SOURCE_PATH}/.travis/rosdep-install.sh
 else
