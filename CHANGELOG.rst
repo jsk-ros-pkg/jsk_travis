@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.39 (2018-10-26)
+-------------------
 * Enable rosdep quiet mode
   * remove redundant messages from rosdep install
   * apply https://github.com/ros-infrastructure/rosdep/pull/612 to enable rosdep quiet mode
