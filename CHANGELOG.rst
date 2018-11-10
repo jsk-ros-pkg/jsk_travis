@@ -2,6 +2,14 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* put fix_error branch on master, see `#361 <https://github.com/jsk-ros-pkg/jsk_travis/issues/361>`_ (`#362 <https://github.com/jsk-ros-pkg/jsk_travis/issues/362>`_)
+  * fix dpkg-deb: error: archive has premature member 'control.tar.xz' before 'control.tar.gz' `#9361 <https://github.com/jsk-ros-pkg/jsk_travis/issues/9361>`_
+  https://github.com/travis-ci/travis-ci/issues/9361#issuecomment-408431262
+  * this has been released as rosdep 0.13.0 -> https://github.com/ros-infrastructure/rosdep/pull/612#issuecomment-436774123
+* Contributors: Kei Okada
+
 0.4.39 (2018-10-26)
 -------------------
 * Enable rosdep quiet mode
