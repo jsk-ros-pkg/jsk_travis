@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.40 (2018-11-10)
+-------------------
 * put fix_error branch on master, see `#361 <https://github.com/jsk-ros-pkg/jsk_travis/issues/361>`_ (`#362 <https://github.com/jsk-ros-pkg/jsk_travis/issues/362>`_)
   * fix dpkg-deb: error: archive has premature member 'control.tar.xz' before 'control.tar.gz' `#9361 <https://github.com/jsk-ros-pkg/jsk_travis/issues/9361>`_
   https://github.com/travis-ci/travis-ci/issues/9361#issuecomment-408431262
