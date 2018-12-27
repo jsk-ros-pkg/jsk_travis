@@ -157,7 +157,7 @@ apt-get update -qq || echo Ignore error of apt-get update
 apt-get install -qq -y curl git wget sudo lsb-release ccache apt-cacher-ng patch
 
 # setup ccache
-ccache -M 20G                   # set maximum size of ccache to 20G
+ccache -M 30G                   # set maximum size of ccache to 30G
 
 # Enable apt-cacher-ng to cache apt packages
 echo 'Acquire::http {proxy "http://$(ifdata -pa docker0):3142"; };' > /etc/apt/apt.conf.d/02proxy.conf
