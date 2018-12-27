@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.41 (2018-12-27)
+-------------------
 * Increase maximum size of ccache to 30GB (`#363 <https://github.com/jsk-ros-pkg/jsk_travis/issues/363>`_)
 * Contributors: Yuto Uchimi
 
