@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use --include-eol-distros on rosdep for EOF ros distros (i.e. jade) (`#364 <https://github.com/jsk-ros-pkg/jsk_travis/issues/364>`_)
+* Contributors: Yasuhiro Ishiguro
+
 0.4.41 (2018-12-27)
 -------------------
 * Increase maximum size of ccache to 30GB (`#363 <https://github.com/jsk-ros-pkg/jsk_travis/issues/363>`_)
