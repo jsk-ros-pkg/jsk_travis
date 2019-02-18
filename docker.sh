@@ -107,6 +107,7 @@ fi
 # install fundamental packages
 sudo -E apt-get -y -qq update
 sudo -E apt-get -y -qq install apt-utils build-essential curl git lsb-release python-pip python-setuptools wget
+git config --global protocol.version 0 # https://stackoverflow.com/questions/53207973/fatal-unknown-value-for-config-protocol-version-2
 
 # add user for testing
 adduser --disabled-password --gecos "" travis
