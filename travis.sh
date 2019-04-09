@@ -92,7 +92,7 @@ if [ "$USE_DOCKER" = true ]; then
   fi
 
   docker pull $DOCKER_IMAGE || true
-  docker run -v $HOME:$HOME \
+  docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/  -v $HOME/.ccache/pip:$HOME/.ccache/pip \
     $DOCKER_XSERVER_OPTIONS \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
@@ -137,6 +137,13 @@ if [ ! "$CATKIN_PARALLEL_TEST_JOBS" ]; then export CATKIN_PARALLEL_TEST_JOBS="$C
 if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://packages.ros.org/ros-shadow-fixed/ubuntu"; fi
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
+
+# setup pip cache
+sudo mkdir -p $HOME/.cache/pip
+sudo ln -sf $HOME/.cache /root/
+sudo chown -R root:root /root/.cache/
+# Show cached PIP packages
+sudo find -L /root/.cache/ | grep whl
 
 # Install pip
 curl https://bootstrap.pypa.io/get-pip.py | sudo python -
@@ -266,6 +273,8 @@ else
     wget http://raw.github.com/jsk-ros-pkg/jsk_travis/master/rosdep-install.sh -O - | bash
 fi
 
+# Show cached PIP packages
+sudo find -L /root/.cache/ | grep whl
 
 travis_time_end
 
