@@ -138,13 +138,6 @@ if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://package
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 
-# setup pip cache
-sudo mkdir -p $HOME/.cache/pip
-sudo ln -sf $HOME/.cache /root/
-sudo chown -R root:root /root/.cache/
-# Show cached PIP packages
-sudo find -L /root/.cache/ | grep whl
-
 # Install pip
 curl https://bootstrap.pypa.io/get-pip.py | sudo python -
 # pip>=10 no longer uninstalls distutils packages (ex. packages installed via apt),
@@ -184,6 +177,16 @@ if [ $HAVE_MONGO_DB == 0 ]; then
     sudo apt-get remove --purge -q -qq -y mongodb mongodb-10gen || echo "ok"
     sudo apt-get install -y --force-yes -q -qq  mongodb-clients mongodb-server -o Dpkg::Options::="--force-confdef" || echo "ok"
 fi # default actions
+
+travis_time_end
+travis_time_start setup_pip_cache
+
+# setup pip cache
+sudo mkdir -p $HOME/.cache/pip
+sudo ln -sf $HOME/.cache /root/
+sudo chown -R root:root /root/.cache/
+# Show cached PIP packages
+sudo find -L /root/.cache/ | grep whl
 
 travis_time_end
 travis_time_start setup_rosdep
