@@ -2,15 +2,6 @@
 
 set -x
 
-export CI_SOURCE_PATH=$(pwd)
-export REPOSITORY_NAME=${PWD##*/}
-
-ANSI_RED="\033[31;1m"
-ANSI_GREEN="\033[32;1m"
-ANSI_BLUE="\033[34;1m"
-ANSI_RESET="\033[0m"
-ANSI_CLEAR="\033[0K"
-
 function travis_time_start {
     set +x
     TRAVIS_START_TIME=$(date +%s%N)
@@ -34,7 +25,18 @@ function travis_time_end {
 
 echo "Running jsk_travis/travis.sh whose version is $(cd $CI_SOURCE_PATH/.travis && git describe --all)."
 
+travis_time_start setup_variables
 
+export CI_SOURCE_PATH=$(pwd)
+export REPOSITORY_NAME=${PWD##*/}
+
+ANSI_RED="\033[31;1m"
+ANSI_GREEN="\033[32;1m"
+ANSI_BLUE="\033[34;1m"
+ANSI_RESET="\033[0m"
+ANSI_CLEAR="\033[0K"
+
+travis_time_end
 travis_time_start is_jsk_travis_upgraded
 
 # Check if jsk_travis is upgraded, because downgrading jsk_travis is not supported.
@@ -54,7 +56,7 @@ if [ "$(git diff origin/master HEAD $CI_SOURCE_PATH/.travis)" != "" ] ; then
   fi
 fi
 
-travis_time_end is_jsk_travis_upgraded
+travis_time_end
 
 
 # set default values to env variables
@@ -79,6 +81,9 @@ if [ "$USE_DOCKER" = true ]; then
 
   DOCKER_XSERVER_OPTIONS=''
   if [ "$TRAVIS_SUDO" = true ]; then
+
+    travis_time_start setup_docker_x11
+
     # use host xserver
     sudo apt-get update -q || echo Ignore error of apt-get update
     sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
@@ -89,6 +94,9 @@ if [ "$USE_DOCKER" = true ]; then
     export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
     xhost +local:root
     DOCKER_XSERVER_OPTIONS='-v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM -e DISPLAY'
+
+    travis_time_end
+
   fi
 
   docker pull $DOCKER_IMAGE || true
