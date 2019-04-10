@@ -2,15 +2,6 @@
 
 set -x
 
-export CI_SOURCE_PATH=$(pwd)
-export REPOSITORY_NAME=${PWD##*/}
-
-ANSI_RED="\033[31;1m"
-ANSI_GREEN="\033[32;1m"
-ANSI_BLUE="\033[34;1m"
-ANSI_RESET="\033[0m"
-ANSI_CLEAR="\033[0K"
-
 function travis_time_start {
     set +x
     TRAVIS_START_TIME=$(date +%s%N)
@@ -34,7 +25,18 @@ function travis_time_end {
 
 echo "Running jsk_travis/travis.sh whose version is $(cd $CI_SOURCE_PATH/.travis && git describe --all)."
 
+travis_time_start setup_variables
 
+export CI_SOURCE_PATH=$(pwd)
+export REPOSITORY_NAME=${PWD##*/}
+
+ANSI_RED="\033[31;1m"
+ANSI_GREEN="\033[32;1m"
+ANSI_BLUE="\033[34;1m"
+ANSI_RESET="\033[0m"
+ANSI_CLEAR="\033[0K"
+
+travis_time_end
 travis_time_start is_jsk_travis_upgraded
 
 # Check if jsk_travis is upgraded, because downgrading jsk_travis is not supported.
@@ -54,7 +56,7 @@ if [ "$(git diff origin/master HEAD $CI_SOURCE_PATH/.travis)" != "" ] ; then
   fi
 fi
 
-travis_time_end is_jsk_travis_upgraded
+travis_time_end
 
 
 # set default values to env variables
@@ -79,6 +81,9 @@ if [ "$USE_DOCKER" = true ]; then
 
   DOCKER_XSERVER_OPTIONS=''
   if [ "$TRAVIS_SUDO" = true ]; then
+
+    travis_time_start setup_docker_x11
+
     # use host xserver
     sudo apt-get update -q || echo Ignore error of apt-get update
     sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
@@ -89,10 +94,13 @@ if [ "$USE_DOCKER" = true ]; then
     export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
     xhost +local:root
     DOCKER_XSERVER_OPTIONS='-v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM -e DISPLAY'
+
+    travis_time_end
+
   fi
 
   docker pull $DOCKER_IMAGE || true
-  docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/  -v $HOME/.ccache/pip:$HOME/.ccache/pip \
+  docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/ \
     $DOCKER_XSERVER_OPTIONS \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
@@ -137,13 +145,6 @@ if [ ! "$CATKIN_PARALLEL_TEST_JOBS" ]; then export CATKIN_PARALLEL_TEST_JOBS="$C
 if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://packages.ros.org/ros-shadow-fixed/ubuntu"; fi
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
-
-# setup pip cache
-sudo mkdir -p $HOME/.cache/pip
-sudo ln -sf $HOME/.cache /root/
-sudo chown -R root:root /root/.cache/
-# Show cached PIP packages
-sudo find -L /root/.cache/ | grep whl
 
 # Install pip
 curl https://bootstrap.pypa.io/get-pip.py | sudo python -
@@ -265,6 +266,17 @@ if [ "${BEFORE_SCRIPT// }" != "" ]; then sh -c "${BEFORE_SCRIPT}"; fi
 
 travis_time_end
 
+travis_time_start setup_pip_cache
+
+# setup pip cache
+sudo rm -fr /root/.cache/pip
+sudo cp -r $HOME/.cache/pip /root/.cache/
+sudo chown -R root:root /root/.cache/pip/
+# Show cached PIP packages
+sudo find -L /root/.cache/ | grep whl
+
+travis_time_end
+
 travis_time_start rosdep_install
 
 if [ -e ${CI_SOURCE_PATH}/.travis/rosdep-install.sh ]; then ## this is mainly for jsk_travis itself
@@ -273,6 +285,12 @@ else
     wget http://raw.github.com/jsk-ros-pkg/jsk_travis/master/rosdep-install.sh -O - | bash
 fi
 
+# Store docker cache
+if [ `whoami` = travis ]; then
+    sudo rm -fr $HOME/.cache/pip
+    sudo cp -r /root/.cache/pip/ $HOME/.cache/
+    sudo chown -R travis.travis $HOME/.cache/pip/
+fi
 # Show cached PIP packages
 sudo find -L /root/.cache/ | grep whl
 
