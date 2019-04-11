@@ -100,7 +100,7 @@ if [ "$USE_DOCKER" = true ]; then
   fi
 
   docker pull $DOCKER_IMAGE || true
-  docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/ \
+  docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/ -v $HOME/.cache/pip:$HOME/.cache/pip/ \
     $DOCKER_XSERVER_OPTIONS \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
