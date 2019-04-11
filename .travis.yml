@@ -70,6 +70,8 @@ matrix:
         - ROS_DISTRO=kinetic
       sudo: false
 before_script:
+  - find $HOME/.ccache    -type f
+  - find $HOME/.cache/pip -type f
   - export ROSDEP_ADDITIONAL_OPTIONS='-n -v --ignore-src' # run rosdep without -r and -v
   - mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
   - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
