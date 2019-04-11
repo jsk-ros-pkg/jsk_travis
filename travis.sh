@@ -273,6 +273,7 @@ sudo rm -fr /root/.cache/pip
 sudo cp -r $HOME/.cache/pip /root/.cache/
 sudo chown -R root:root /root/.cache/pip/
 # Show cached PIP packages
+sudo find -L $HOME/.cache/ | grep whl
 sudo find -L /root/.cache/ | grep whl
 
 travis_time_end
@@ -293,6 +294,7 @@ if [ `whoami` = travis ]; then
 fi
 # Show cached PIP packages
 sudo find -L /root/.cache/ | grep whl
+sudo find -L $HOME/.cache/ | grep whl
 
 travis_time_end
 
