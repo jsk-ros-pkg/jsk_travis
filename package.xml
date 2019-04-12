@@ -18,7 +18,6 @@
   <!-- add pip module with takes long time to install -->
   <test_depend>python-chainer-pip</test_depend>
   <test_depend>python-chainercv-pip</test_depend>
-  <test_depend>python-dlib</test_depend>
   <test_depend>python-fcn-pip</test_depend>
 
   <export/>

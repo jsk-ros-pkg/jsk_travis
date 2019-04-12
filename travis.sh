@@ -100,7 +100,7 @@ if [ "$USE_DOCKER" = true ]; then
   fi
 
   docker pull $DOCKER_IMAGE || true
-  docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/ \
+  docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/ -v $HOME/.cache/pip:$HOME/.cache/pip/ \
     $DOCKER_XSERVER_OPTIONS \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
@@ -161,7 +161,7 @@ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 lsb_release -a
 sudo apt-get update -q || echo Ignore error of apt-get update
 sudo apt-get install -y --force-yes -q -qq dpkg # https://github.com/travis-ci/travis-ci/issues/9361#issuecomment-408431262 dpkg-deb: error: archive has premature member 'control.tar.xz' before 'control.tar.gz' #9361
-sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache
+sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache pv
 # setup catkin-tools option
 if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
   if [[ "$(pip show catkin-tools | grep '^Version:' | awk '{print $2}')" =~ 0.3.[0-9]+ ]]; then
@@ -273,6 +273,7 @@ sudo rm -fr /root/.cache/pip
 sudo cp -r $HOME/.cache/pip /root/.cache/
 sudo chown -R root:root /root/.cache/pip/
 # Show cached PIP packages
+sudo find -L $HOME/.cache/ | grep whl
 sudo find -L /root/.cache/ | grep whl
 
 travis_time_end
@@ -287,12 +288,13 @@ fi
 
 # Store docker cache
 if [ `whoami` = travis ]; then
-    sudo rm -fr $HOME/.cache/pip
+    sudo rm -fr $HOME/.cache/pip/*
     sudo cp -r /root/.cache/pip/ $HOME/.cache/
-    sudo chown -R travis.travis $HOME/.cache/pip/
+    sudo chown -R travis.travis $HOME/.cache/pip/*
 fi
 # Show cached PIP packages
 sudo find -L /root/.cache/ | grep whl
+sudo find -L $HOME/.cache/ | grep whl
 
 travis_time_end
 
