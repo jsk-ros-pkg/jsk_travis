@@ -288,9 +288,9 @@ fi
 
 # Store docker cache
 if [ `whoami` = travis ]; then
-    sudo rm -fr $HOME/.cache/pip
+    sudo rm -fr $HOME/.cache/pip/*
     sudo cp -r /root/.cache/pip/ $HOME/.cache/
-    sudo chown -R travis.travis $HOME/.cache/pip/
+    sudo chown -R travis.travis $HOME/.cache/pip/*
 fi
 # Show cached PIP packages
 sudo find -L /root/.cache/ | grep whl
