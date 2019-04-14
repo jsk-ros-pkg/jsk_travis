@@ -115,6 +115,11 @@ if [ "$USE_DOCKER" = true ]; then
     -e NOT_TEST_INSTALL \
     -t $DOCKER_IMAGE bash -c 'cd $CI_SOURCE_PATH; .travis/docker.sh'
   DOCKER_EXIT_CODE=$?
+
+  sudo chown -R travis.travis $HOME
+  find $HOME/.ccache    -type f
+  find $HOME/.cache/pip -type f
+
   exit $DOCKER_EXIT_CODE
 fi
 
@@ -290,7 +295,7 @@ fi
 if [ `whoami` = travis ]; then
     sudo rm -fr $HOME/.cache/pip/*
     sudo cp -r /root/.cache/pip/ $HOME/.cache/
-    sudo chown -R travis.travis $HOME/.cache/pip/*
+    sudo chown -R travis.travis $HOME/.cache/*
 fi
 # Show cached PIP packages
 sudo find -L /root/.cache/ | grep whl
