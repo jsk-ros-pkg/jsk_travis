@@ -2,15 +2,6 @@
 
 set -x
 
-export CI_SOURCE_PATH=$(pwd)
-export REPOSITORY_NAME=${PWD##*/}
-
-ANSI_RED="\033[31;1m"
-ANSI_GREEN="\033[32;1m"
-ANSI_BLUE="\033[34;1m"
-ANSI_RESET="\033[0m"
-ANSI_CLEAR="\033[0K"
-
 function travis_time_start {
     set +x
     TRAVIS_START_TIME=$(date +%s%N)
@@ -34,7 +25,18 @@ function travis_time_end {
 
 echo "Running jsk_travis/travis.sh whose version is $(cd $CI_SOURCE_PATH/.travis && git describe --all)."
 
+travis_time_start setup_variables
 
+export CI_SOURCE_PATH=$(pwd)
+export REPOSITORY_NAME=${PWD##*/}
+
+ANSI_RED="\033[31;1m"
+ANSI_GREEN="\033[32;1m"
+ANSI_BLUE="\033[34;1m"
+ANSI_RESET="\033[0m"
+ANSI_CLEAR="\033[0K"
+
+travis_time_end
 travis_time_start is_jsk_travis_upgraded
 
 # Check if jsk_travis is upgraded, because downgrading jsk_travis is not supported.
@@ -54,7 +56,7 @@ if [ "$(git diff origin/master HEAD $CI_SOURCE_PATH/.travis)" != "" ] ; then
   fi
 fi
 
-travis_time_end is_jsk_travis_upgraded
+travis_time_end
 
 
 # set default values to env variables
@@ -79,6 +81,9 @@ if [ "$USE_DOCKER" = true ]; then
 
   DOCKER_XSERVER_OPTIONS=''
   if [ "$TRAVIS_SUDO" = true ]; then
+
+    travis_time_start setup_docker_x11
+
     # use host xserver
     sudo apt-get update -q || echo Ignore error of apt-get update
     sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
@@ -89,10 +94,13 @@ if [ "$USE_DOCKER" = true ]; then
     export QT_X11_NO_MITSHM=1 # http://wiki.ros.org/docker/Tutorials/GUI
     xhost +local:root
     DOCKER_XSERVER_OPTIONS='-v /tmp/.X11-unix:/tmp/.X11-unix -e QT_X11_NO_MITSHM -e DISPLAY'
+
+    travis_time_end
+
   fi
 
   docker pull $DOCKER_IMAGE || true
-  docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/  -v $HOME/.ccache/pip:$HOME/.ccache/pip \
+  docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/ -v $HOME/.cache/pip:$HOME/.cache/pip/ \
     $DOCKER_XSERVER_OPTIONS \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
@@ -153,7 +161,7 @@ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 lsb_release -a
 sudo apt-get update -q || echo Ignore error of apt-get update
 sudo apt-get install -y --force-yes -q -qq dpkg # https://github.com/travis-ci/travis-ci/issues/9361#issuecomment-408431262 dpkg-deb: error: archive has premature member 'control.tar.xz' before 'control.tar.gz' #9361
-sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache
+sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache pv
 # setup catkin-tools option
 if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
   if [[ "$(pip show catkin-tools | grep '^Version:' | awk '{print $2}')" =~ 0.3.[0-9]+ ]]; then
@@ -268,6 +276,18 @@ if [ "${BEFORE_SCRIPT// }" != "" ]; then sh -c "${BEFORE_SCRIPT}"; fi
 
 travis_time_end
 
+travis_time_start setup_pip_cache
+
+# setup pip cache
+sudo rm -fr /root/.cache/pip
+sudo cp -r $HOME/.cache/pip /root/.cache/
+sudo chown -R root:root /root/.cache/pip/
+# Show cached PIP packages
+sudo find -L $HOME/.cache/ | grep whl
+sudo find -L /root/.cache/ | grep whl
+
+travis_time_end
+
 travis_time_start rosdep_install
 
 if [ -e ${CI_SOURCE_PATH}/.travis/rosdep-install.sh ]; then ## this is mainly for jsk_travis itself
@@ -276,8 +296,15 @@ else
     wget http://raw.github.com/jsk-ros-pkg/jsk_travis/master/rosdep-install.sh -O - | bash
 fi
 
+# Store docker cache
+if [ `whoami` = travis ]; then
+    sudo rm -fr $HOME/.cache/pip/*
+    sudo cp -r /root/.cache/pip/ $HOME/.cache/
+    sudo chown -R travis.travis $HOME/.cache/pip/*
+fi
 # Show cached PIP packages
 sudo find -L /root/.cache/ | grep whl
+sudo find -L $HOME/.cache/ | grep whl
 
 travis_time_end
 
