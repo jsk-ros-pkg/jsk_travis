@@ -122,6 +122,10 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   Flag to skip testing catkin install in addition to devel build.
 
+* `DEVELOPER_ERROR` (none or `true`, default: none)
+
+  Flag to show developer error in catkin run_tests.
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`
