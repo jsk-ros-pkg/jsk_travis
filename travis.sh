@@ -329,7 +329,7 @@ fi
 
 source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
 # set -Werror=dev for developer errors (supported only fo kinetic and above)
-if [[ "$ROS_DISTRO" > "indigo" ]] && [[ "$DEVELOPER_ERROR" == "true" ]]; then
+if [[ "$ROS_DISTRO" > "indigo" ]] && [[ "$CMAKE_DEVELOPER_ERROR" == "true" ]]; then
   CMAKE_ARGS_FLAGS="--cmake-args -Werror=dev"
 else
   CMAKE_ARGS_FLAGS=""
