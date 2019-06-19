@@ -87,7 +87,7 @@ set -e
 env
 WORKSPACE=`pwd`
 [ "${BUILD_TAG}" = "" ] &amp;&amp; BUILD_TAG="build_tag" # jenkins usually has build_tag environment, note this is sh
-trap "pwd; sudo rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
+trap "pwd; rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
 
 # try git clone until success
 until git clone https://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
@@ -112,12 +112,12 @@ if [ "%(REPOSITORY_NAME)s" = "jsk_travis" ]; then
 fi
 
 # run watchdog for kill orphan docker container
-.travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s --sudo &amp;
+.travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
 
-sudo docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
-sudo docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
-sudo docker pull %(DOCKER_IMAGE_JENKINS)s || true
-sudo docker run %(DOCKER_RUN_OPTION)s \\
+docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
+docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
+docker pull %(DOCKER_IMAGE_JENKINS)s || true
+docker run %(DOCKER_RUN_OPTION)s \\
     --name %(DOCKER_CONTAINER_NAME)s \\
     -e ROS_DISTRO='%(ROS_DISTRO)s' \\
     -e USE_DEB='%(USE_DEB)s' \\
@@ -365,7 +365,7 @@ else:
 DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s' % LSB_RELEASE)
 
 ### start here
-j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
+j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '11402334328fd5a26f0092c1d763f67f52')
 
 # use snasi color
 if j.get_plugin_info('ansicolor'):
