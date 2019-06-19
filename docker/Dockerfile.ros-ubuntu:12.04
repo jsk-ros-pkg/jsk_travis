@@ -1,0 +1,66 @@
+FROM ubuntu:12.04
+
+####
+#### BEGIN Copy from indigo-ros-base
+####
+
+# install packages
+RUN apt-get update && apt-get install -q -y dirmngr gnupg2 lsb-release sudo wget
+
+# setup keys
+RUN wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | apt-key add -
+
+# setup sources.list
+RUN echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list
+
+## setup sources.list for EOL distros
+RUN echo "deb http://snapshots.ros.org/hydro/final/ubuntu `lsb_release -sc` main" >> /etc/apt/sources.list.d/ros-latest.list
+RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xCBF125EA
+##
+
+# install bootstrap tools
+RUN apt-get update && apt-get install --no-install-recommends -y python-rosdep python-rosinstall python-vcstools
+
+# setup environment
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+# bootstrap rosdep
+RUN rosdep init && rosdep update
+
+# install ros packages
+ENV ROS_DISTRO hydro
+RUN apt-get update && apt-get install -y ros-hydro-ros-base
+
+####
+#### END Copy from indigo-ros-base
+####
+
+##
+RUN apt-get update && apt-get dist-upgrade -y
+
+RUN apt-get update && apt-get install -y \
+    wget \
+    libboost-all-dev \
+    libeigen3-dev \
+    libflann-dev \
+    libqhull-dev \
+    libvtk5-dev
+
+RUN apt-get update && apt-get install -y curl git wget sudo lsb-release ccache apt-cacher-ng patch
+RUN apt-get update && apt-get install -y mesa-utils
+RUN apt-get update && apt-get install -y --force-yes -q -qq mongodb-clients mongodb-server -o Dpkg::Options::=--force-confdef
+
+## missing files to compile catkin
+RUN apt-get update && apt-get install -y make
+
+RUN addgroup --gid 976 jenkins
+RUN adduser --uid 983 --disabled-password --gecos "" --force-badname --ingroup jenkins user
+
+RUN sed -i '/^%sudo/ a user ALL=(ALL) NOPASSWD: ALL' /etc/sudoers
+
+USER user
+
+# https://github.com/moby/moby/issues/1996#issuecomment-185872769
+ARG CACHEBUST=1
+RUN sudo apt-get dist-upgrade

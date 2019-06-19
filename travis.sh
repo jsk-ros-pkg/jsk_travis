@@ -23,7 +23,7 @@ function travis_time_end {
 }
 
 
-echo "Running jsk_travis/travis.sh whose version is $(cd $CI_SOURCE_PATH/.travis && git describe --all)."
+echo "Running jsk_travis/travis.sh whose version is $(cd .travis && git describe --all)."
 
 travis_time_start setup_variables
 
@@ -142,7 +142,7 @@ if [ ! "$ROS_PARALLEL_JOBS" ]; then export ROS_PARALLEL_JOBS="-j8";  fi
 if [ ! "$CATKIN_PARALLEL_JOBS" ]; then export CATKIN_PARALLEL_JOBS="-p4";  fi
 if [ ! "$ROS_PARALLEL_TEST_JOBS" ]; then export ROS_PARALLEL_TEST_JOBS="$ROS_PARALLEL_JOBS";  fi
 if [ ! "$CATKIN_PARALLEL_TEST_JOBS" ]; then export CATKIN_PARALLEL_TEST_JOBS="$CATKIN_PARALLEL_JOBS";  fi
-if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://packages.ros.org/ros-shadow-fixed/ubuntu"; fi
+if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://packages.ros.org/ros-testing/ubuntu"; fi
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 
@@ -159,6 +159,12 @@ echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selecti
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 lsb_release -a
+# Setup EoL repository
+if [[ "$ROS_DISTRO" ==  "hydro" || "$ROS_DISTRO" ==  "jade" || "$ROS_DISTRO" ==  "lunar" ]]; then
+    sudo -E sh -c 'echo "deb http://snapshots.ros.org/$ROS_DISTRO/final/ubuntu `lsb_release -sc` main" >> /etc/apt/sources.list.d/ros-latest.list'
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xCBF125EA
+fi
+# Install base system
 sudo apt-get update -q || echo Ignore error of apt-get update
 sudo apt-get install -y --force-yes -q -qq dpkg # https://github.com/travis-ci/travis-ci/issues/9361#issuecomment-408431262 dpkg-deb: error: archive has premature member 'control.tar.xz' before 'control.tar.gz' #9361
 sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache pv
@@ -273,8 +279,8 @@ sudo rm -fr /root/.cache/pip
 sudo cp -r $HOME/.cache/pip /root/.cache/
 sudo chown -R root:root /root/.cache/pip/
 # Show cached PIP packages
-sudo find -L $HOME/.cache/ | grep whl
-sudo find -L /root/.cache/ | grep whl
+sudo find -L $HOME/.cache/ | grep whl || echo "OK"
+sudo find -L /root/.cache/ | grep whl || echo "OK"
 
 travis_time_end
 
@@ -293,8 +299,8 @@ if [ `whoami` = travis ]; then
     sudo chown -R travis.travis $HOME/.cache/pip/*
 fi
 # Show cached PIP packages
-sudo find -L /root/.cache/ | grep whl
-sudo find -L $HOME/.cache/ | grep whl
+sudo find -L /root/.cache/ | grep whl || echo "OK"
+sudo find -L $HOME/.cache/ | grep whl || echo "OK"
 
 travis_time_end
 

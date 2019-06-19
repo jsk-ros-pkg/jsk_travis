@@ -87,7 +87,7 @@ set -e
 env
 WORKSPACE=`pwd`
 [ "${BUILD_TAG}" = "" ] &amp;&amp; BUILD_TAG="build_tag" # jenkins usually has build_tag environment, note this is sh
-trap "pwd; sudo rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
+trap "pwd; rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
 
 # try git clone until success
 until git clone https://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
@@ -111,13 +111,16 @@ if [ "%(REPOSITORY_NAME)s" = "jsk_travis" ]; then
   mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
 fi
 
-# run watchdog for kill orphan docker container
-.travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s --sudo &amp;
+# run docker build
+docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s docker
 
-sudo docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
-sudo docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
-sudo docker pull %(DOCKER_IMAGE_JENKINS)s || true
-sudo docker run %(DOCKER_RUN_OPTION)s \\
+# run watchdog for kill orphan docker container
+.travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
+
+docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
+docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
+docker pull %(DOCKER_IMAGE_JENKINS)s || true
+docker run %(DOCKER_RUN_OPTION)s \\
     --name %(DOCKER_CONTAINER_NAME)s \\
     -e ROS_DISTRO='%(ROS_DISTRO)s' \\
     -e USE_DEB='%(USE_DEB)s' \\
@@ -140,10 +143,9 @@ sudo docker run %(DOCKER_RUN_OPTION)s \\
     -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
     -e HOME=/workspace \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
-    -v /export/data1/ccache:/workspace/.ccache \\
-    -v /export/data1/pip-cache:/workspace/.cache/pip \\
-    -v /export/data1/ros_data:/workspace/.ros/data \\
-    -v /export/data1/ros_test_data:/workspace/.ros/test_data \\
+    -v /data/cache/ccache:/workspace/.ccache \\
+    -v /data/cache/pip-cache:/workspace/.cache/pip \\
+    -v /data/cache/ros:/workspace/.ros \\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
     -w /workspace %(DOCKER_IMAGE_JENKINS)s /bin/bash \\
     -c "$(cat &lt;&lt;EOL
@@ -155,15 +157,15 @@ env
 
 mkdir log
 export ROS_LOG_DIR=\$PWD/log
-apt-get update -qq || echo Ignore error of apt-get update
-apt-get install -qq -y curl git wget sudo lsb-release ccache apt-cacher-ng patch
+sudo apt-get update -qq || echo Ignore error of apt-get update
+sudo apt-get install -qq -y curl git wget sudo lsb-release ccache apt-cacher-ng patch
 
 # setup ccache
-ccache -M 30G                   # set maximum size of ccache to 30G
+sudo ccache -M 30G                   # set maximum size of ccache to 30G
 
 # Enable apt-cacher-ng to cache apt packages
-echo 'Acquire::http {proxy "http://$(ifdata -pa docker0):3142"; };' > /etc/apt/apt.conf.d/02proxy.conf
-apt-get update -qq || echo Ignore error of apt-get update
+echo 'Acquire::http {proxy "http://$(ifdata -pa docker0):3142"; };' | sudo tee /etc/apt/apt.conf.d/02proxy.conf
+sudo apt-get update -qq || echo Ignore error of apt-get update
 export SHELL=/bin/bash
 
 # Remove warning about camera module
@@ -174,8 +176,8 @@ sudo ln /dev/null /dev/raw1394
 # based on http://wiki.ros.org/docker/Tutorials/GUI
 export QT_X11_NO_MITSHM=1
 export DISPLAY=:0
-apt-get install -qq -y mesa-utils
-glxinfo | grep GLX
+sudo apt-get install -qq -y mesa-utils
+glxinfo | grep GLX || echo "OK"
 
 # start testing
 `cat .travis/travis.sh`
@@ -365,7 +367,7 @@ else:
 DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s' % LSB_RELEASE)
 
 ### start here
-j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '22f8b1c4812dad817381a05f41bef16b')
+j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '11402334328fd5a26f0092c1d763f67f52')
 
 # use snasi color
 if j.get_plugin_info('ansicolor'):
