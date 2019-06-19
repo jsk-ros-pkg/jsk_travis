@@ -47,9 +47,6 @@ RUN apt-get update && apt-get install -y \
     libqhull-dev \
     libvtk5-dev
 
-RUN apt-get update && apt-get install -y python-pip
-RUN pip install -U dlib
-
 RUN apt-get update && apt-get install -y curl git wget sudo lsb-release ccache apt-cacher-ng patch
 RUN apt-get update && apt-get install -y mesa-utils
 RUN apt-get update && apt-get install -y --force-yes -q -qq mongodb-clients mongodb-server -o Dpkg::Options::=--force-confdef
