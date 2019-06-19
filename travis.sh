@@ -23,7 +23,7 @@ function travis_time_end {
 }
 
 
-echo "Running jsk_travis/travis.sh whose version is $(cd $CI_SOURCE_PATH/.travis && git describe --all)."
+echo "Running jsk_travis/travis.sh whose version is $(cd .travis && git describe --all)."
 
 travis_time_start setup_variables
 
