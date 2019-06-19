@@ -158,15 +158,15 @@ env
 
 mkdir log
 export ROS_LOG_DIR=\$PWD/log
-apt-get update -qq || echo Ignore error of apt-get update
-apt-get install -qq -y curl git wget sudo lsb-release ccache apt-cacher-ng patch
+sudo apt-get update -qq || echo Ignore error of apt-get update
+sudo apt-get install -qq -y curl git wget sudo lsb-release ccache apt-cacher-ng patch
 
 # setup ccache
-ccache -M 30G                   # set maximum size of ccache to 30G
+sudo ccache -M 30G                   # set maximum size of ccache to 30G
 
 # Enable apt-cacher-ng to cache apt packages
-echo 'Acquire::http {proxy "http://$(ifdata -pa docker0):3142"; };' > /etc/apt/apt.conf.d/02proxy.conf
-apt-get update -qq || echo Ignore error of apt-get update
+echo 'Acquire::http {proxy "http://$(ifdata -pa docker0):3142"; };' | sudo tee /etc/apt/apt.conf.d/02proxy.conf
+sudo apt-get update -qq || echo Ignore error of apt-get update
 export SHELL=/bin/bash
 
 # Remove warning about camera module
@@ -177,8 +177,8 @@ sudo ln /dev/null /dev/raw1394
 # based on http://wiki.ros.org/docker/Tutorials/GUI
 export QT_X11_NO_MITSHM=1
 export DISPLAY=:0
-apt-get install -qq -y mesa-utils
-glxinfo | grep GLX
+sudo apt-get install -qq -y mesa-utils
+glxinfo | grep GLX || echo "OK"
 
 # start testing
 `cat .travis/travis.sh`
