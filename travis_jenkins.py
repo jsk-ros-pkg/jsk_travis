@@ -111,6 +111,9 @@ if [ "%(REPOSITORY_NAME)s" = "jsk_travis" ]; then
   mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
 fi
 
+# run docker build
+docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s docker
+
 # run watchdog for kill orphan docker container
 .travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
 
