@@ -143,10 +143,9 @@ docker run %(DOCKER_RUN_OPTION)s \\
     -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
     -e HOME=/workspace \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
-    -v /export/data1/ccache:/workspace/.ccache \\
-    -v /export/data1/pip-cache:/workspace/.cache/pip \\
-    -v /export/data1/ros_data:/workspace/.ros/data \\
-    -v /export/data1/ros_test_data:/workspace/.ros/test_data \\
+    -v /data/cache/ccache:/workspace/.ccache \\
+    -v /data/cache/pip-cache:/workspace/.cache/pip \\
+    -v /data/cache/ros:/workspace/.ros \\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
     -w /workspace %(DOCKER_IMAGE_JENKINS)s /bin/bash \\
     -c "$(cat &lt;&lt;EOL
