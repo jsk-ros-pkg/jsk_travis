@@ -17,6 +17,11 @@ RUN apt-get update && apt-get install -y curl git wget sudo lsb-release ccache a
 RUN apt-get update && apt-get install -y mesa-utils
 RUN apt-get update && apt-get install -y --force-yes -q -qq mongodb-clients mongodb-server -o Dpkg::Options::=--force-confdef
 
+## setup EoL repository for jade
+RUN echo "deb http://snapshots.ros.org/jade/final/ubuntu `lsb_release -sc` main" >> /etc/apt/sources.list.d/ros-latest.list
+RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xCBF125EA
+RUN apt-get update && apt-get install -y ros-jade-ros-base
+##
 
 RUN addgroup --gid 976 jenkins
 RUN adduser --uid 983 --disabled-password --gecos "" --force-badname --ingroup jenkins user
