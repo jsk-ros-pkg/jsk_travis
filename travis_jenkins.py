@@ -295,6 +295,8 @@ DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_
 DOCKER_RUN_OPTION = env.get('DOCKER_RUN_OPTION', '--rm')
 NUMBER_OF_LOGS_TO_KEEP = env.get('NUMBER_OF_LOGS_TO_KEEP', '3')
 REPOSITORY_NAME = env.get('REPOSITORY_NAME', '')
+TRAVIS_BUILD_WEB_URL = env.get('TRAVIS_BUILD_WEB_URL', '')
+TRAVIS_JOB_WEB_URL = env.get('TRAVIS_JOB_WEB_URL', '')
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
@@ -327,6 +329,8 @@ DOCKER_CONTAINER_NAME   = %(DOCKER_CONTAINER_NAME)s
 DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s
 NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s
 REPOSITORY_NAME = %(REPOSITORY_NAME)s
+TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s
+TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s
 ''' % locals())
 
 if env.get('ROS_DISTRO') == 'hydro':
@@ -399,8 +403,8 @@ elif TRAVIS_BRANCH:
 else:
     github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s>http://github.com/%(TRAVIS_REPO_SLUG)s</a><br>'
 
-if TRAVIS_JOB_NUMBER and TRAVIS_JOB_ID:
-    travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/builds/%(TRAVIS_BUILD_ID)s>Build #%(TRAVIS_BUILD_NUMBER)s</a> '+ '<a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/jobs/%(TRAVIS_JOB_ID)s>Job #%(TRAVIS_JOB_NUMBER)s</a><br>'
+if TRAVIS_BUILD_WEB_URL and TRAVIS_JOB_WEB_URL:
+    travis_link = 'travis <a href=%(TRAVIS_BUILD_WEB_URL)s>Build #%(TRAVIS_BUILD_NUMBER)s</a> '+ '<a href=%(TRAVIS_JOB_WEB_URL)s>Job #%(TRAVIS_JOB_NUMBER)s</a><br>'
 else:
     travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/>%(TRAVIS_REPO_SLUG)s</a><br>'
 j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG)s' % locals(),
