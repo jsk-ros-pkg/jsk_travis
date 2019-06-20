@@ -102,6 +102,12 @@ echo "TRAVIS_JOB_NUMBER: %(TRAVIS_JOB_NUMBER)s"
 # run watchdog for kill orphan docker container
 .travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
 
+# setup cache dir
+mkdir -p /data/cache/${ROS_DISTRO}/ccache
+mkdir -p /data/cache/${ROS_DISTRO}/pip-cache
+mkdir -p /data/cache/${ROS_DISTRO}/ros
+
+#
 docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
 docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
 docker pull %(DOCKER_IMAGE_JENKINS)s || true
@@ -128,9 +134,9 @@ docker run %(DOCKER_RUN_OPTION)s \\
     -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
     -e HOME=/workspace \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
-    -v /data/cache/ccache:/workspace/.ccache \\
-    -v /data/cache/pip-cache:/root/.cache/pip \\
-    -v /data/cache/ros:/workspace/.ros \\
+    -v /data/cache/${ROS_DISTRO}/ccache:/workspace/.ccache \\
+    -v /data/cache/${ROS_DISTRO}/pip-cache:/root/.cache/pip \\
+    -v /data/cache/${ROS_DISTRO}/ros:/workspace/.ros \\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
     -w /workspace %(DOCKER_IMAGE_JENKINS)s /bin/bash \\
     -c "$(cat &lt;&lt;EOL
