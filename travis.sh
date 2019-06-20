@@ -223,9 +223,6 @@ fi
 ret=1
 rosdep update --include-eol-distros|| while [ $ret != 0 ]; do sleep 1; rosdep update --include-eol-distros && ret=0 || echo "failed"; done
 
-# force disable -q on pip
-sudo sed -i "s@cmd.append('-q')@pass@" /usr/lib/python2.7/dist-packages/rosdep2/platforms/pip.py
-
 travis_time_end
 travis_time_start setup_catkin
 
