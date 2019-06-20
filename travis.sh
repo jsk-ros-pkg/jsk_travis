@@ -275,9 +275,12 @@ travis_time_end
 travis_time_start setup_pip_cache
 
 # setup pip cache
-sudo rm -fr /root/.cache/pip
-sudo cp -r $HOME/.cache/pip /root/.cache/
-sudo chown -R root:root /root/.cache/pip/
+# Store docker cache
+if [ `whoami` = travis ]; then
+   sudo rm -fr /root/.cache/pip
+   sudo cp -r $HOME/.cache/pip /root/.cache/
+   sudo chown -R root:root /root/.cache/pip/
+fi
 # Show cached PIP packages
 sudo find -L $HOME/.cache/ | grep whl || echo "OK"
 sudo find -L /root/.cache/ | grep whl || echo "OK"
