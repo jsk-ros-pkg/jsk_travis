@@ -68,7 +68,7 @@ set -e
 env
 WORKSPACE=`pwd`
 [ "${BUILD_TAG}" = "" ] &amp;&amp; BUILD_TAG="build_tag" # jenkins usually has build_tag environment, note this is sh
-trap "pwd; rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
+trap "pwd; ls -al  $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
 
 # try git clone until success
 until git clone https://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
