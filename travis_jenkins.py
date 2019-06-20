@@ -144,7 +144,7 @@ docker run %(DOCKER_RUN_OPTION)s \\
     -e HOME=/workspace \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
     -v /data/cache/ccache:/workspace/.ccache \\
-    -v /data/cache/pip-cache:/workspace/.cache/pip \\
+    -v /data/cache/pip-cache:/root/.cache/pip \\
     -v /data/cache/ros:/workspace/.ros \\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
     -w /workspace %(DOCKER_IMAGE_JENKINS)s /bin/bash \\
