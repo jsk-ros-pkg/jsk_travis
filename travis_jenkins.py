@@ -21,25 +21,6 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
      This is jenkins buildfirm for &lt;a href=http://github.com/%(TRAVIS_REPO_SLUG)s&gt;http://github.com/%(TRAVIS_REPO_SLUG)s&lt;/a&gt;&lt;br/&gt;
      see &lt;a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s&gt;http://travis-ci.org/%(TRAVIS_REPO_SLUG)s&lt;/a&gt; for travis page that execute this job.&lt;br&gt;
      &lt;/h4&gt;
-     Parameters are&lt;br&gt;
-       ROS_DISTRO = %(ROS_DISTRO)s&lt;br&gt;
-       USE_DEB    = %(USE_DEB)s&lt;br&gt;
-       EXTRA_DEB  = %(EXTRA_DEB)s&lt;br&gt;
-       TARGET_PKGS = %(TARGET_PKGS)s&lt;br&gt;
-       BEFORE_SCRIPT = %(BEFORE_SCRIPT)s&lt;br&gt;
-       TEST_PKGS  = %(TEST_PKGS)s&lt;br&gt;
-       NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s&lt;br&gt;
-       ROS_PARALLEL_JOBS = %(ROS_PARALLEL_JOBS)s&lt;br&gt;
-       CATKIN_PARALLEL_JOBS = %(CATKIN_PARALLEL_JOBS)s&lt;br&gt;
-       CATKIN_TOOLS_BUILD_OPTIONS = %(CATKIN_TOOLS_BUILD_OPTIONS)s&lt;br&gt;
-       CATKIN_TOOLS_CONFIG_OPTIONS = %(CATKIN_TOOLS_CONFIG_OPTIONS)s&lt;br&gt;
-       ROS_PARALLEL_TEST_JOBS = %(ROS_PARALLEL_TEST_JOBS)s&lt;br&gt;
-       CATKIN_PARALLEL_TEST_JOBS = %(CATKIN_PARALLEL_TEST_JOBS)s&lt;br&gt;
-       CMAKE_DEVELOPER_ERROR = %(CMAKE_DEVELOPER_ERROR)s&lt;br&gt;
-       BUILDING_PKG = %(BUILD_PKGS)s&lt;br&gt;
-       ROS_REPOSITORY_PATH = %(ROS_REPOSITORY_PATH)s&lt;br&gt;
-       ROSDEP_ADDITIONAL_OPTIONS = %(ROSDEP_ADDITIONAL_OPTIONS)s&lt;br&gt;
-       DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s&lt;br&gt;
   </description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -380,24 +361,8 @@ if j.get_plugin_info('build-timeout'):
 else:
     print('you need to install build_timeout plugin')
 # set job_name
-job_name = '-'.join(
-    filter(
-        bool,
-        [
-            UBUNTU_DISTRO,
-            'travis',
-            TRAVIS_REPO_SLUG,
-            ROS_DISTRO,
-            'deb',
-            USE_DEB,
-            EXTRA_DEB,
-            NOT_TEST_INSTALL,
-            BUILD_PKGS,
-            BEFORE_SCRIPT,
-            ROS_REPOSITORY_PATH,
-        ]
-    )
-)
+job_name = TRAVIS_REPO_SLUG
+
 job_name = re.sub(r'[^0-9A-Za-z]+', '-', job_name)
 # filename must be within 255
 if len(job_name) >= 128 : # 'jenkins+ job_naem + TRAVIS_REPO_SLUG'
@@ -434,12 +399,32 @@ elif TRAVIS_BRANCH:
 else:
     github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s>http://github.com/%(TRAVIS_REPO_SLUG)s</a><br>'
 
-if TRAVIS_BUILD_ID and TRAVIS_JOB_ID:
+if TRAVIS_JOB_NUMBER and TRAVIS_JOB_ID:
     travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/builds/%(TRAVIS_BUILD_ID)s>Build #%(TRAVIS_BUILD_NUMBER)s</a> '+ '<a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/jobs/%(TRAVIS_JOB_ID)s>Job #%(TRAVIS_JOB_NUMBER)s</a><br>'
 else:
     travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/>%(TRAVIS_REPO_SLUG)s</a><br>'
 j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG)s' % locals(),
-                   (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>USE_DEB=%(USE_DEB)s<br>') % locals())
+                   (travis_link + ' \
+       Parameters are<br> \
+       ROS_DISTRO = %(ROS_DISTRO)s<br> \
+       USE_DEB    = %(USE_DEB)s<br> \
+       EXTRA_DEB  = %(EXTRA_DEB)s<br> \
+       TARGET_PKGS = %(TARGET_PKGS)s<br> \
+       BEFORE_SCRIPT = %(BEFORE_SCRIPT)s<br> \
+       TEST_PKGS  = %(TEST_PKGS)s<br> \
+       NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s<br> \
+       ROS_PARALLEL_JOBS = %(ROS_PARALLEL_JOBS)s<br> \
+       CATKIN_PARALLEL_JOBS = %(CATKIN_PARALLEL_JOBS)s<br> \
+       CATKIN_TOOLS_BUILD_OPTIONS = %(CATKIN_TOOLS_BUILD_OPTIONS)s<br> \
+       CATKIN_TOOLS_CONFIG_OPTIONS = %(CATKIN_TOOLS_CONFIG_OPTIONS)s<br> \
+       ROS_PARALLEL_TEST_JOBS = %(ROS_PARALLEL_TEST_JOBS)s<br> \
+       CATKIN_PARALLEL_TEST_JOBS = %(CATKIN_PARALLEL_TEST_JOBS)s<br> \
+       CMAKE_DEVELOPER_ERROR = %(CMAKE_DEVELOPER_ERROR)s<br> \
+       BUILDING_PKG = %(BUILD_PKGS)s<br> \
+       ROS_REPOSITORY_PATH = %(ROS_REPOSITORY_PATH)s<br> \
+       ROSDEP_ADDITIONAL_OPTIONS = %(ROSDEP_ADDITIONAL_OPTIONS)s<br> \
+       DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s<br> \
+') % locals())
 
 ## wait for result
 result = wait_for_finished(job_name, build_number)
