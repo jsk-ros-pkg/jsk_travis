@@ -118,6 +118,9 @@ echo "travis ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers
 sudo -E apt-get -y -qq install mesa-utils
 glxinfo | grep GLX
 
+# set up apt-cache docker
+echo 'Acquire::http {proxy "http://172.17.0.1:3142"; };' | sudo tee /etc/apt/apt.conf.d/02proxy.conf
+
 # ensure setting testing environment same as travis
 export USE_JENKINS=false
 export USE_TRAVIS=true

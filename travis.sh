@@ -79,6 +79,21 @@ if [ "$USE_DOCKER" = true ]; then
     export DOCKER_IMAGE=ubuntu:$DISTRO
   fi
 
+  travis_time_start setup_apt_cacher_ng
+
+  # start apt-cacher-ng
+  sudo apt-get update && sudo apt-get install -y apt-cacher-ng
+  sudo sed -i "s@CacheDir: /var/cache/apt-cacher-ng@CacheDir: $HOME/apt-cacher-ng@" /etc/apt-cacher-ng/acng.conf
+  grep CacheDir /etc/apt-cacher-ng/acng.conf
+  sudo chmod 777 $HOME/apt-cacher-ng && sudo /etc/init.d/apt-cacher-ng restart
+  ls -al /var/cache/apt-cacher-ng
+  ls -al /var/cache/apt-cacher-ng/
+  ls -al $HOME/apt-cacher-ng
+  ls -al $HOME/apt-cacher-ng/
+  sudo tail -n 100 /var/log/apt-cacher-ng/*
+
+  travis_time_end
+
   DOCKER_XSERVER_OPTIONS=''
   if [ "$TRAVIS_SUDO" = true ]; then
 
@@ -115,6 +130,10 @@ if [ "$USE_DOCKER" = true ]; then
     -e NOT_TEST_INSTALL \
     -t $DOCKER_IMAGE bash -c 'cd $CI_SOURCE_PATH; .travis/docker.sh'
   DOCKER_EXIT_CODE=$?
+  sudo chown -R travis.travis $HOME/apt-cacher-ng
+  sudo tail -n 100 /var/log/apt-cacher-ng/*
+  sudo find $HOME/apt-cacher-ng
+  sudo find /var/cache/apt-cacher-ng
   exit $DOCKER_EXIT_CODE
 fi
 
