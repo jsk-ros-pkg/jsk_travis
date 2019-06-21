@@ -9,6 +9,7 @@ cache:
   directories:
     - $HOME/.ccache
     - $HOME/.cache/pip
+    - $HOME/apt-cacher-ng
 sudo: required
 dist: trusty
 services:
@@ -22,7 +23,6 @@ env:
     - ROS_DISTRO=indigo
     - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    - ROS_DISTRO=indigo NUMBER_OF_LOGS_TO_KEEP=4
     - ROS_DISTRO=jade
     - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
@@ -30,7 +30,6 @@ env:
     - USE_TRAVIS=true ROS_DISTRO=indigo
     - USE_TRAVIS=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - USE_TRAVIS=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    - USE_TRAVIS=true ROS_DISTRO=indigo NUMBER_OF_LOGS_TO_KEEP=4
     - USE_TRAVIS=true ROS_DISTRO=jade
     - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
@@ -43,7 +42,6 @@ env:
     - USE_DOCKER=true ROS_DISTRO=indigo
     - USE_DOCKER=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - USE_DOCKER=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    - USE_DOCKER=true ROS_DISTRO=indigo NUMBER_OF_LOGS_TO_KEEP=4
     - USE_DOCKER=true ROS_DISTRO=jade
     - USE_DOCKER=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - USE_DOCKER=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
@@ -64,15 +62,10 @@ matrix:
     - env: USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=kinetic
     - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=jade
     - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=kinetic
-  include:
-    - env:
-        - USE_DOCKER=true
-        - ROS_DISTRO=kinetic
-      sudo: false
 before_script:
   - find $HOME/.ccache    -type f
   - find $HOME/.cache/pip -type f
-  - export ROSDEP_ADDITIONAL_OPTIONS='-n -v --ignore-src' # run rosdep without -r and -v
+  - export ROSDEP_ADDITIONAL_OPTIONS='-n -v --ignore-src' # run rosdep without -q, -r and -v
   - mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
   - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin build -i -v --limit-status-rate 0.001@catkin_make@' .travis/travis.sh; fi

@@ -21,25 +21,6 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
      This is jenkins buildfirm for &lt;a href=http://github.com/%(TRAVIS_REPO_SLUG)s&gt;http://github.com/%(TRAVIS_REPO_SLUG)s&lt;/a&gt;&lt;br/&gt;
      see &lt;a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s&gt;http://travis-ci.org/%(TRAVIS_REPO_SLUG)s&lt;/a&gt; for travis page that execute this job.&lt;br&gt;
      &lt;/h4&gt;
-     Parameters are&lt;br&gt;
-       ROS_DISTRO = %(ROS_DISTRO)s&lt;br&gt;
-       USE_DEB    = %(USE_DEB)s&lt;br&gt;
-       EXTRA_DEB  = %(EXTRA_DEB)s&lt;br&gt;
-       TARGET_PKGS = %(TARGET_PKGS)s&lt;br&gt;
-       BEFORE_SCRIPT = %(BEFORE_SCRIPT)s&lt;br&gt;
-       TEST_PKGS  = %(TEST_PKGS)s&lt;br&gt;
-       NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s&lt;br&gt;
-       ROS_PARALLEL_JOBS = %(ROS_PARALLEL_JOBS)s&lt;br&gt;
-       CATKIN_PARALLEL_JOBS = %(CATKIN_PARALLEL_JOBS)s&lt;br&gt;
-       CATKIN_TOOLS_BUILD_OPTIONS = %(CATKIN_TOOLS_BUILD_OPTIONS)s&lt;br&gt;
-       CATKIN_TOOLS_CONFIG_OPTIONS = %(CATKIN_TOOLS_CONFIG_OPTIONS)s&lt;br&gt;
-       ROS_PARALLEL_TEST_JOBS = %(ROS_PARALLEL_TEST_JOBS)s&lt;br&gt;
-       CATKIN_PARALLEL_TEST_JOBS = %(CATKIN_PARALLEL_TEST_JOBS)s&lt;br&gt;
-       CMAKE_DEVELOPER_ERROR = %(CMAKE_DEVELOPER_ERROR)s&lt;br&gt;
-       BUILDING_PKG = %(BUILD_PKGS)s&lt;br&gt;
-       ROS_REPOSITORY_PATH = %(ROS_REPOSITORY_PATH)s&lt;br&gt;
-       ROSDEP_ADDITIONAL_OPTIONS = %(ROSDEP_ADDITIONAL_OPTIONS)s&lt;br&gt;
-       DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s&lt;br&gt;
   </description>
   <keepDependencies>false</keepDependencies>
   <properties>
@@ -87,7 +68,7 @@ set -e
 env
 WORKSPACE=`pwd`
 [ "${BUILD_TAG}" = "" ] &amp;&amp; BUILD_TAG="build_tag" # jenkins usually has build_tag environment, note this is sh
-trap "pwd; rm -fr $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
+trap "pwd; ls -al  $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
 
 # try git clone until success
 until git clone https://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
@@ -114,9 +95,19 @@ fi
 # run docker build
 docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s docker
 
+echo "DOCKER_CONTAINER_NAME: %(DOCKER_CONTAINER_NAME)s"
+echo "TRAVIS_REPO_SLUG:  %(TRAVIS_REPO_SLUG)s"
+echo "TRAVIS_JOB_NUMBER: %(TRAVIS_JOB_NUMBER)s"
+
 # run watchdog for kill orphan docker container
 .travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
 
+# setup cache dir
+mkdir -p /data/cache/${ROS_DISTRO}/ccache
+mkdir -p /data/cache/${ROS_DISTRO}/pip-cache
+mkdir -p /data/cache/${ROS_DISTRO}/ros
+
+#
 docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
 docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
 docker pull %(DOCKER_IMAGE_JENKINS)s || true
@@ -143,9 +134,9 @@ docker run %(DOCKER_RUN_OPTION)s \\
     -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
     -e HOME=/workspace \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
-    -v /data/cache/ccache:/workspace/.ccache \\
-    -v /data/cache/pip-cache:/workspace/.cache/pip \\
-    -v /data/cache/ros:/workspace/.ros \\
+    -v /data/cache/${ROS_DISTRO}/ccache:/workspace/.ccache \\
+    -v /data/cache/${ROS_DISTRO}/pip-cache:/root/.cache/pip \\
+    -v /data/cache/${ROS_DISTRO}/ros:/workspace/.ros \\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
     -w /workspace %(DOCKER_IMAGE_JENKINS)s /bin/bash \\
     -c "$(cat &lt;&lt;EOL
@@ -310,10 +301,12 @@ CMAKE_DEVELOPER_ERROR = env.get('CMAKE_DEVELOPER_ERROR', '')
 BUILD_PKGS = env.get('BUILD_PKGS', '')
 ROS_REPOSITORY_PATH = env.get('ROS_REPOSITORY_PATH', '')
 ROSDEP_ADDITIONAL_OPTIONS = env.get('ROSDEP_ADDITIONAL_OPTIONS', '')
-DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER])
+DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER, TRAVIS_JOB_ID])
 DOCKER_RUN_OPTION = env.get('DOCKER_RUN_OPTION', '--rm')
-NUMBER_OF_LOGS_TO_KEEP = env.get('NUMBER_OF_LOGS_TO_KEEP', '3')
+NUMBER_OF_LOGS_TO_KEEP = env.get('NUMBER_OF_LOGS_TO_KEEP', '30')
 REPOSITORY_NAME = env.get('REPOSITORY_NAME', '')
+TRAVIS_BUILD_WEB_URL = env.get('TRAVIS_BUILD_WEB_URL', '')
+TRAVIS_JOB_WEB_URL = env.get('TRAVIS_JOB_WEB_URL', '')
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
@@ -346,6 +339,8 @@ DOCKER_CONTAINER_NAME   = %(DOCKER_CONTAINER_NAME)s
 DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s
 NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s
 REPOSITORY_NAME = %(REPOSITORY_NAME)s
+TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s
+TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s
 ''' % locals())
 
 if env.get('ROS_DISTRO') == 'hydro':
@@ -380,24 +375,8 @@ if j.get_plugin_info('build-timeout'):
 else:
     print('you need to install build_timeout plugin')
 # set job_name
-job_name = '-'.join(
-    filter(
-        bool,
-        [
-            UBUNTU_DISTRO,
-            'travis',
-            TRAVIS_REPO_SLUG,
-            ROS_DISTRO,
-            'deb',
-            USE_DEB,
-            EXTRA_DEB,
-            NOT_TEST_INSTALL,
-            BUILD_PKGS,
-            BEFORE_SCRIPT,
-            ROS_REPOSITORY_PATH,
-        ]
-    )
-)
+job_name = TRAVIS_REPO_SLUG
+
 job_name = re.sub(r'[^0-9A-Za-z]+', '-', job_name)
 # filename must be within 255
 if len(job_name) >= 128 : # 'jenkins+ job_naem + TRAVIS_REPO_SLUG'
@@ -434,12 +413,46 @@ elif TRAVIS_BRANCH:
 else:
     github_link = 'github <a href=http://github.com/%(TRAVIS_REPO_SLUG)s>http://github.com/%(TRAVIS_REPO_SLUG)s</a><br>'
 
-if TRAVIS_BUILD_ID and TRAVIS_JOB_ID:
-    travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/builds/%(TRAVIS_BUILD_ID)s>Build #%(TRAVIS_BUILD_NUMBER)s</a> '+ '<a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/jobs/%(TRAVIS_JOB_ID)s>Job #%(TRAVIS_JOB_NUMBER)s</a><br>'
+if TRAVIS_BUILD_WEB_URL and TRAVIS_JOB_WEB_URL:
+    travis_link = 'travis <a href=%(TRAVIS_BUILD_WEB_URL)s>Build #%(TRAVIS_BUILD_NUMBER)s</a> '+ '<a href=%(TRAVIS_JOB_WEB_URL)s>Job #%(TRAVIS_JOB_NUMBER)s</a><br>'
 else:
     travis_link = 'travis <a href=http://travis-ci.org/%(TRAVIS_REPO_SLUG)s/>%(TRAVIS_REPO_SLUG)s</a><br>'
 j.set_build_config(job_name, build_number, '#%(build_number)s %(TRAVIS_REPO_SLUG)s' % locals(),
-                   (github_link + travis_link +'ROS_DISTRO=%(ROS_DISTRO)s<br>USE_DEB=%(USE_DEB)s<br>') % locals())
+                   (travis_link + ' \
+       Parameters are<br> \
+TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s <br> \
+TRAVIS_COMMIT        = %(TRAVIS_COMMIT)s <br> \
+TRAVIS_PULL_REQUEST  = %(TRAVIS_PULL_REQUEST)s <br> \
+TRAVIS_REPO_SLUG     = %(TRAVIS_REPO_SLUG)s <br> \
+TRAVIS_BUILD_ID      = %(TRAVIS_BUILD_ID)s <br> \
+TRAVIS_BUILD_NUMBER  = %(TRAVIS_BUILD_NUMBER)s <br> \
+TRAVIS_JOB_ID        = %(TRAVIS_JOB_ID)s <br> \
+TRAVIS_JOB_NUMBER    = %(TRAVIS_JOB_NUMBER)s <br> \
+TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s <br> \
+ROS_DISTRO       = %(ROS_DISTRO)s <br> \
+USE_DEB          = %(USE_DEB)s <br> \
+EXTRA_DEB        = %(EXTRA_DEB)s <br> \
+TEST_PKGS        = %(TEST_PKGS)s <br> \
+TARGET_PKGS       = %(TARGET_PKGS)s <br> \
+BEFORE_SCRIPT      = %(BEFORE_SCRIPT)s <br> \
+NOT_TEST_INSTALL = %(NOT_TEST_INSTALL)s <br> \
+ROS_PARALLEL_JOBS       = %(ROS_PARALLEL_JOBS)s <br> \
+CATKIN_PARALLEL_JOBS    = %(CATKIN_PARALLEL_JOBS)s <br> \
+CATKIN_TOOLS_BUILD_OPTIONS    = %(CATKIN_TOOLS_BUILD_OPTIONS)s <br> \
+CATKIN_TOOLS_CONFIG_OPTIONS    = %(CATKIN_TOOLS_CONFIG_OPTIONS)s <br> \
+ROS_PARALLEL_TEST_JOBS  = %(ROS_PARALLEL_TEST_JOBS)s <br> \
+CATKIN_PARALLEL_TEST_JOBS = %(CATKIN_PARALLEL_TEST_JOBS)s <br> \
+CMAKE_DEVELOPER_ERROR  = %(CMAKE_DEVELOPER_ERROR)s <br> \
+BUILD_PKGS       = %(BUILD_PKGS)s <br> \
+ROS_REPOSITORY_PATH = %(ROS_REPOSITORY_PATH)s <br> \
+ROSDEP_ADDITIONAL_OPTIONS = %(ROSDEP_ADDITIONAL_OPTIONS)s <br> \
+DOCKER_CONTAINER_NAME   = %(DOCKER_CONTAINER_NAME)s <br> \
+DOCKER_RUN_OPTION = %(DOCKER_RUN_OPTION)s <br> \
+NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s <br> \
+REPOSITORY_NAME = %(REPOSITORY_NAME)s <br> \
+TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s <br> \
+TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s <br> \
+') % locals())
 
 ## wait for result
 result = wait_for_finished(job_name, build_number)
