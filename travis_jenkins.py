@@ -93,7 +93,7 @@ if [ "%(REPOSITORY_NAME)s" = "jsk_travis" ]; then
 fi
 
 # run docker build
-docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s docker
+docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s .travis/docker
 
 echo "DOCKER_CONTAINER_NAME: %(DOCKER_CONTAINER_NAME)s"
 echo "TRAVIS_REPO_SLUG:  %(TRAVIS_REPO_SLUG)s"
