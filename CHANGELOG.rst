@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.43 (2019-06-21)
+-------------------
 * enable pip/apt cache on Jenkins and Docker on Travis (`#377 <https://github.com/jsk-ros-pkg/jsk_travis/issues/377>`_ )
 
   * rosdep respect ROSDEP_ADDITIONAL_OPTIONS for -q
