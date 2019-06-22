@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     libeigen3-dev \
     libflann-dev \
     libqhull-dev \
-    libvtk6-dev
+    libvtk5-dev
 
 RUN apt-get update && apt-get install -y python-pip
 RUN pip install -U dlib
