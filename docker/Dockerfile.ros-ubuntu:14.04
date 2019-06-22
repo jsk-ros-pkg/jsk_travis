@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     libqhull-dev \
     libvtk5-dev
 
+RUN apt-get update && apt-get install -y python-vtk tcl-vtk
+
 RUN apt-get update && apt-get install -y python-pip
 RUN pip install -U dlib
 
