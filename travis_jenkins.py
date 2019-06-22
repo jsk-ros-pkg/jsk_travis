@@ -315,6 +315,24 @@ REPOSITORY_NAME = env.get('REPOSITORY_NAME', '')
 TRAVIS_BUILD_WEB_URL = env.get('TRAVIS_BUILD_WEB_URL', '')
 TRAVIS_JOB_WEB_URL = env.get('TRAVIS_JOB_WEB_URL', '')
 
+if env.get('ROS_DISTRO') == 'hydro':
+    LSB_RELEASE = '12.04'
+    UBUNTU_DISTRO = 'precise'
+elif env.get('ROS_DISTRO') in ['indigo', 'jade']:
+    LSB_RELEASE = '14.04'
+    UBUNTU_DISTRO = 'trusty'
+elif env.get('ROS_DISTRO') in ['kinetic', 'lunar']:
+    LSB_RELEASE = '16.04'
+    UBUNTU_DISTRO = 'xenial'
+elif env.get('ROS_DISTRO') in ['melodic']:
+    LSB_RELEASE = '18.04'
+    UBUNTU_DISTRO = 'bionic'
+else:
+    LSB_RELEASE = '14.04'
+    UBUNTU_DISTRO = 'trusty'
+
+DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s' % LSB_RELEASE)
+
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
 TRAVIS_COMMIT        = %(TRAVIS_COMMIT)s
@@ -348,25 +366,8 @@ NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s
 REPOSITORY_NAME = %(REPOSITORY_NAME)s
 TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s
 TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s
+DOCKER_IMAGE_JENKINS = %(DOCKER_IMAGE_JENKINS)s
 ''' % locals())
-
-if env.get('ROS_DISTRO') == 'hydro':
-    LSB_RELEASE = '12.04'
-    UBUNTU_DISTRO = 'precise'
-elif env.get('ROS_DISTRO') in ['indigo', 'jade']:
-    LSB_RELEASE = '14.04'
-    UBUNTU_DISTRO = 'trusty'
-elif env.get('ROS_DISTRO') in ['kinetic', 'lunar']:
-    LSB_RELEASE = '16.04'
-    UBUNTU_DISTRO = 'xenial'
-elif env.get('ROS_DISTRO') in ['melodic']:
-    LSB_RELEASE = '18.04'
-    UBUNTU_DISTRO = 'bionic'
-else:
-    LSB_RELEASE = '14.04'
-    UBUNTU_DISTRO = 'trusty'
-
-DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s' % LSB_RELEASE)
 
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '11402334328fd5a26f0092c1d763f67f52')
@@ -459,6 +460,7 @@ NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s <br> \
 REPOSITORY_NAME = %(REPOSITORY_NAME)s <br> \
 TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s <br> \
 TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s <br> \
+DOCKER_IMAGE_JENKINS = %(DOCKER_IMAGE_JENKINS)s <br> \
 ') % locals())
 
 ## wait for result
