@@ -103,9 +103,9 @@ echo "TRAVIS_JOB_NUMBER: %(TRAVIS_JOB_NUMBER)s"
 .travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
 
 # setup cache dir
-mkdir -p /data/cache/${ROS_DISTRO}/ccache
-mkdir -p /data/cache/${ROS_DISTRO}/pip-cache
-mkdir -p /data/cache/${ROS_DISTRO}/ros
+mkdir -p /data/cache/%(ROS_DISTRO)s/ccache
+mkdir -p /data/cache/%(ROS_DISTRO)s/pip-cache
+mkdir -p /data/cache/%(ROS_DISTRO)s/ros
 
 #
 docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
@@ -134,9 +134,9 @@ docker run %(DOCKER_RUN_OPTION)s \\
     -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
     -e HOME=/workspace \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
-    -v /data/cache/${ROS_DISTRO}/ccache:/workspace/.ccache \\
-    -v /data/cache/${ROS_DISTRO}/pip-cache:/root/.cache/pip \\
-    -v /data/cache/${ROS_DISTRO}/ros:/workspace/.ros \\
+    -v /data/cache/%(ROS_DISTRO)s/ccache:/workspace/.ccache \\
+    -v /data/cache/%(ROS_DISTRO)s/pip-cache:/root/.cache/pip \\
+    -v /data/cache/%(ROS_DISTRO)s/ros:/workspace/.ros \\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
     -w /workspace %(DOCKER_IMAGE_JENKINS)s /bin/bash \\
     -c "$(cat &lt;&lt;EOL
@@ -146,6 +146,13 @@ set -x
 trap 'exit 1' ERR
 env
 
+# setup cache dir
+sudo chmod -R a+rw /root/.cache/pip
+sudo chown -R root.root /root/.cache/pip
+sudo chown -R user.jenkins /workspace/.ccache
+sudo chown -R user.jenkins /workspace/.ros
+
+# mkdir log dir
 mkdir log
 export ROS_LOG_DIR=\$PWD/log
 sudo apt-get update -qq || echo "Ignore error of apt-get update"
