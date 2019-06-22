@@ -108,9 +108,7 @@ mkdir -p /data/cache/%(ROS_DISTRO)s/pip-cache
 mkdir -p /data/cache/%(ROS_DISTRO)s/ros
 
 #
-docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
-docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
-docker pull %(DOCKER_IMAGE_JENKINS)s || true
+docker stop %(DOCKER_CONTAINER_NAME)s &amp;&amp; (echo "wait the docker to stop the container..."; sleep 2) || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
 docker run %(DOCKER_RUN_OPTION)s \\
     --name %(DOCKER_CONTAINER_NAME)s \\
     -e ROS_DISTRO='%(ROS_DISTRO)s' \\
