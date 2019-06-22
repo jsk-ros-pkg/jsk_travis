@@ -148,7 +148,7 @@ env
 
 mkdir log
 export ROS_LOG_DIR=\$PWD/log
-sudo apt-get update -qq || echo Ignore error of apt-get update
+sudo apt-get update -qq || echo "Ignore error of apt-get update"
 sudo apt-get install -qq -y curl git wget sudo lsb-release ccache apt-cacher-ng patch
 
 # setup ccache
