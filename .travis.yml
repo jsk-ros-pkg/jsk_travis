@@ -23,6 +23,8 @@ env:
     - ROS_DISTRO=indigo
     - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS=ros-ubuntu:14.04-pcl
+    - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS=ros-ubuntu:14.04-pcl1.8
     - ROS_DISTRO=jade
     - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
