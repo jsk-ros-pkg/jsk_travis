@@ -96,8 +96,15 @@ fi
 docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s .travis/docker
 
 echo "DOCKER_CONTAINER_NAME: %(DOCKER_CONTAINER_NAME)s"
-echo "TRAVIS_REPO_SLUG:  %(TRAVIS_REPO_SLUG)s"
-echo "TRAVIS_JOB_NUMBER: %(TRAVIS_JOB_NUMBER)s"
+echo "TRAVIS_BRANCH        : %(TRAVIS_BRANCH)s"
+echo "TRAVIS_COMMIT        : %(TRAVIS_COMMIT)s"
+echo "TRAVIS_PULL_REQUEST  : %(TRAVIS_PULL_REQUEST)s"
+echo "TRAVIS_REPO_SLUG     : %(TRAVIS_REPO_SLUG)s"
+echo "TRAVIS_BUILD_ID      : %(TRAVIS_BUILD_ID)s"
+echo "TRAVIS_BUILD_NUMBER  : %(TRAVIS_BUILD_NUMBER)s"
+echo "TRAVIS_JOB_ID        : %(TRAVIS_JOB_ID)s"
+echo "TRAVIS_JOB_NUMBER    : %(TRAVIS_JOB_NUMBER)s"
+echo "TRAVIS_BRANCH        : %(TRAVIS_BRANCH)s"
 
 # run watchdog for kill orphan docker container
 .travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
@@ -108,7 +115,11 @@ mkdir -p /data/cache/%(ROS_DISTRO)s/pip-cache
 mkdir -p /data/cache/%(ROS_DISTRO)s/ros
 
 #
-docker stop %(DOCKER_CONTAINER_NAME)s &amp;&amp; (echo "wait the docker to stop the container..."; sleep 2) || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
+docker ps -a
+if [ "$(docker ps -a | grep %(DOCKER_CONTAINER_NAME)s || true)" ] ; then
+   echo "Reanaming docker container name to %(DOCKER_CONTAINER_NAME)s_%(TRAVIS_JENKINS_UNIQUE_ID)s"
+   docker rename %(DOCKER_CONTAINER_NAME)s %(DOCKER_CONTAINER_NAME)s_%(TRAVIS_JENKINS_UNIQUE_ID)s
+fi
 docker run %(DOCKER_RUN_OPTION)s \\
     --name %(DOCKER_CONTAINER_NAME)s \\
     -e ROS_DISTRO='%(ROS_DISTRO)s' \\
@@ -289,6 +300,7 @@ TRAVIS_BUILD_ID = env.get('TRAVIS_BUILD_ID')
 TRAVIS_BUILD_NUMBER = env.get('TRAVIS_BUILD_NUMBER')
 TRAVIS_JOB_ID = env.get('TRAVIS_JOB_ID')
 TRAVIS_JOB_NUMBER = env.get('TRAVIS_JOB_NUMBER')
+TRAVIS_JENKINS_UNIQUE_ID = '{}.{}'.format(TRAVIS_JOB_ID,time.time())
 ROS_DISTRO = env.get('ROS_DISTRO', 'indigo')
 USE_DEB = env.get('USE_DEB', 'true')
 EXTRA_DEB = env.get('EXTRA_DEB', '')
@@ -306,7 +318,7 @@ CMAKE_DEVELOPER_ERROR = env.get('CMAKE_DEVELOPER_ERROR', '')
 BUILD_PKGS = env.get('BUILD_PKGS', '')
 ROS_REPOSITORY_PATH = env.get('ROS_REPOSITORY_PATH', '')
 ROSDEP_ADDITIONAL_OPTIONS = env.get('ROSDEP_ADDITIONAL_OPTIONS', '')
-DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER, TRAVIS_JOB_ID])
+DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER])
 DOCKER_RUN_OPTION = env.get('DOCKER_RUN_OPTION', '--rm')
 NUMBER_OF_LOGS_TO_KEEP = env.get('NUMBER_OF_LOGS_TO_KEEP', '30')
 REPOSITORY_NAME = env.get('REPOSITORY_NAME', '')
@@ -341,6 +353,7 @@ TRAVIS_BUILD_NUMBER  = %(TRAVIS_BUILD_NUMBER)s
 TRAVIS_JOB_ID        = %(TRAVIS_JOB_ID)s
 TRAVIS_JOB_NUMBER    = %(TRAVIS_JOB_NUMBER)s
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
+TRAVIS_JENKINS_UNIQUE_ID = %(TRAVIS_JENKINS_UNIQUE_ID)s
 ROS_DISTRO       = %(ROS_DISTRO)s
 USE_DEB          = %(USE_DEB)s
 EXTRA_DEB        = %(EXTRA_DEB)s
@@ -402,7 +415,6 @@ j.reconfig_job(job_name, CONFIGURE_XML % locals())
 
 ## get next number and run
 build_number = j.get_job_info(job_name)['nextBuildNumber']
-TRAVIS_JENKINS_UNIQUE_ID='{}.{}'.format(TRAVIS_JOB_ID,time.time())
 
 j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
 print('next build number is {}'.format(build_number))
