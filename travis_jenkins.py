@@ -407,6 +407,10 @@ if len(job_name) >= 128 : # 'jenkins+ job_naem + TRAVIS_REPO_SLUG'
 if j.job_exists(job_name) is None:
     j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
 
+## Sometimes two jobs (<number> and false in TRAVIS_PULL_REQUEST) runs sametimes and get same build_number, so for ce for TRAVIS_PULL_REQUEST false
+if not TRAVIS_PULL_REQUEST: # is false
+    time.sleep(5 + TRAVIS_JOB_ID%10)
+
 ## if reconfigure job is already in queue, wait for more seconds...
 while [item for item in j.get_queue_info() if item['task']['name'] == job_name]:
     time.sleep(10)
