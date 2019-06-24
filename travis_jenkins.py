@@ -94,6 +94,7 @@ if [ "%(REPOSITORY_NAME)s" = "jsk_travis" ]; then
 fi
 
 # run docker build
+docker build -t %(DOCKER_IMAGE_JENKINS)s -f $(echo .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s | sed -e s/-[^-]*\$//) .travis/docker
 docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s .travis/docker
 
 echo "DOCKER_CONTAINER_NAME: %(DOCKER_CONTAINER_NAME)s"
@@ -342,7 +343,7 @@ else:
     LSB_RELEASE = '14.04'
     UBUNTU_DISTRO = 'trusty'
 
-DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s' % LSB_RELEASE)
+DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s-base' % LSB_RELEASE)
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
