@@ -5,12 +5,6 @@
 
 ![](_media/jsk_travis_diagram.png)
 
-- How to update docker image on jenkins
-```
-echo -e "FROM ros-ubuntu:14.04\nRUN apt-get update\nRUN apt-get -y upgrade\nEXPOSE 22" | sudo docker build -t ros-ubuntu:14.04 -
-```
-
-
 ----------------------------------------------------------
 
 ## Where test runs
@@ -148,6 +142,21 @@ mv CATKIN_IGNORE.bak CATKIN_IGNORE      # do not forget this
 gitk                                    # make sure that what you changed is correct
 git push && git push --tags
 ```
+
+## How to build docker images used in jenkins
+
+```
+cd docker; make
+```
+
+This will build base images for each distros, such as `ros-ubuntu:12.04-base`, `ros-ubuntu:14.04-base`, `ros-ubuntu:16.04-base` ...
+
+and PCL-installed images `ros-ubuntu:14.04-pcl`, `ros-ubuntu:16.04-pcl` ...
+
+Each images are re-build everyday by `--build-arg CACHEBUST=$(date +%%Y%%m%%d)`.
+
+Note that `ros-ubuntu:14.04` is used for build process and we do not expect users to run this package. Please use `ros-ubuntu:14.04-base` instead.
+
 
 
 ## Debug by changing the submodule jsk_travis
