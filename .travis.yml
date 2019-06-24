@@ -23,6 +23,8 @@ env:
     - ROS_DISTRO=indigo
     - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS=ros-ubuntu:14.04-pcl
+    - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS=ros-ubuntu:14.04-pcl1.8
     - ROS_DISTRO=jade
     - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
@@ -33,6 +35,8 @@ env:
     - USE_TRAVIS=true ROS_DISTRO=jade
     - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
     - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    - USE_JENKINS=true ROS_DISTRO=kinetic DOCKER_IMAGE_JENKINS=ros-ubuntu:16.04-pcl
+    - USE_JENKINS=true ROS_DISTRO=melodic DOCKER_IMAGE_JENKINS=ros-ubuntu:18.04-pcl
     # travis + docker
     - USE_DOCKER=true ROS_DISTRO=hydro
     - USE_DOCKER=true ROS_DISTRO=hydro USE_CATKIN_MAKE=true BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs" NOT_TEST_INSTALL=true

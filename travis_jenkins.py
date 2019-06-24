@@ -3,6 +3,7 @@
 # need pip installed version of python-jenkins > 0.4.0
 
 import jenkins
+import requests
 import urllib
 import urllib2
 import json
@@ -93,24 +94,34 @@ if [ "%(REPOSITORY_NAME)s" = "jsk_travis" ]; then
 fi
 
 # run docker build
-docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s docker
+docker build -t %(DOCKER_IMAGE_JENKINS)s -f $(echo .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s | sed -e s/-[^-]*\$//) .travis/docker
+docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s .travis/docker
 
 echo "DOCKER_CONTAINER_NAME: %(DOCKER_CONTAINER_NAME)s"
-echo "TRAVIS_REPO_SLUG:  %(TRAVIS_REPO_SLUG)s"
-echo "TRAVIS_JOB_NUMBER: %(TRAVIS_JOB_NUMBER)s"
+echo "TRAVIS_BRANCH        : %(TRAVIS_BRANCH)s"
+echo "TRAVIS_COMMIT        : %(TRAVIS_COMMIT)s"
+echo "TRAVIS_PULL_REQUEST  : %(TRAVIS_PULL_REQUEST)s"
+echo "TRAVIS_REPO_SLUG     : %(TRAVIS_REPO_SLUG)s"
+echo "TRAVIS_BUILD_ID      : %(TRAVIS_BUILD_ID)s"
+echo "TRAVIS_BUILD_NUMBER  : %(TRAVIS_BUILD_NUMBER)s"
+echo "TRAVIS_JOB_ID        : %(TRAVIS_JOB_ID)s"
+echo "TRAVIS_JOB_NUMBER    : %(TRAVIS_JOB_NUMBER)s"
+echo "TRAVIS_JENKINS_UNIQUE_ID : %(TRAVIS_JENKINS_UNIQUE_ID)s"
 
 # run watchdog for kill orphan docker container
 .travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
 
 # setup cache dir
-mkdir -p /data/cache/${ROS_DISTRO}/ccache
-mkdir -p /data/cache/${ROS_DISTRO}/pip-cache
-mkdir -p /data/cache/${ROS_DISTRO}/ros
+mkdir -p /data/cache/%(ROS_DISTRO)s/ccache
+mkdir -p /data/cache/%(ROS_DISTRO)s/pip-cache
+mkdir -p /data/cache/%(ROS_DISTRO)s/ros
 
 #
-docker stop %(DOCKER_CONTAINER_NAME)s || echo "docker stop %(DOCKER_CONTAINER_NAME)s ends with $?"
-docker rm %(DOCKER_CONTAINER_NAME)s || echo  "docker rm %(DOCKER_CONTAINER_NAME)s ends with $?"
-docker pull %(DOCKER_IMAGE_JENKINS)s || true
+docker ps -a
+if [ "$(docker ps -a | grep %(DOCKER_CONTAINER_NAME)s || true)" ] ; then
+   echo "Reanaming docker container name to %(DOCKER_CONTAINER_NAME)s_%(TRAVIS_JENKINS_UNIQUE_ID)s"
+   docker rename %(DOCKER_CONTAINER_NAME)s %(DOCKER_CONTAINER_NAME)s_%(TRAVIS_JENKINS_UNIQUE_ID)s
+fi
 docker run %(DOCKER_RUN_OPTION)s \\
     --name %(DOCKER_CONTAINER_NAME)s \\
     -e ROS_DISTRO='%(ROS_DISTRO)s' \\
@@ -134,9 +145,9 @@ docker run %(DOCKER_RUN_OPTION)s \\
     -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
     -e HOME=/workspace \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
-    -v /data/cache/${ROS_DISTRO}/ccache:/workspace/.ccache \\
-    -v /data/cache/${ROS_DISTRO}/pip-cache:/root/.cache/pip \\
-    -v /data/cache/${ROS_DISTRO}/ros:/workspace/.ros \\
+    -v /data/cache/%(ROS_DISTRO)s/ccache:/workspace/.ccache \\
+    -v /data/cache/%(ROS_DISTRO)s/pip-cache:/root/.cache/pip \\
+    -v /data/cache/%(ROS_DISTRO)s/ros:/workspace/.ros \\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
     -w /workspace %(DOCKER_IMAGE_JENKINS)s /bin/bash \\
     -c "$(cat &lt;&lt;EOL
@@ -146,10 +157,17 @@ set -x
 trap 'exit 1' ERR
 env
 
+# setup cache dir
+sudo chmod -R a+rw /root/.cache/pip
+sudo chown -R root.root /root/.cache/pip
+sudo chown -R user.jenkins /workspace/.ccache
+sudo chown -R user.jenkins /workspace/.ros
+
+# mkdir log dir
 mkdir log
 export ROS_LOG_DIR=\$PWD/log
-sudo apt-get update -qq || echo Ignore error of apt-get update
-sudo apt-get install -qq -y curl git wget sudo lsb-release ccache apt-cacher-ng patch
+ret=1; while [ \$ret != 0 ]; do sudo apt-get update -qq &amp;&amp; ret=0 || echo "apt-get update failed"; done
+ret=1; while [ \$ret != 0 ]; do sudo apt-get install -qq -y curl git wget sudo lsb-release ccache apt-cacher-ng patch &amp;&amp; ret=0 || echo "apt-get install failed"; done
 
 # setup ccache
 sudo ccache -M 30G                   # set maximum size of ccache to 30G
@@ -202,10 +220,10 @@ class Jenkins(jenkins.Jenkins):
     # http://blog.keshi.org/hogememo/2012/12/14/jenkins-setting-build-info
     def set_build_config(self, name, number, display_name, description): # need to allow anonymous user to update build 
         try:
-            # print '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)
-            response = self.jenkins_open(urllib2.Request(
-                self.server + BUILD_SET_CONFIG % locals(),
-                urllib.urlencode({'json': '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)})
+            parameters = json.dumps({'displayName': display_name, 'description': description})
+            response = self.jenkins_open(requests.Request(
+                    'POST', self._build_url(BUILD_SET_CONFIG, locals()),
+                    data = {'json': parameters}
                 ))
             if response:
                 return response
@@ -284,6 +302,7 @@ TRAVIS_BUILD_ID = env.get('TRAVIS_BUILD_ID')
 TRAVIS_BUILD_NUMBER = env.get('TRAVIS_BUILD_NUMBER')
 TRAVIS_JOB_ID = env.get('TRAVIS_JOB_ID')
 TRAVIS_JOB_NUMBER = env.get('TRAVIS_JOB_NUMBER')
+TRAVIS_JENKINS_UNIQUE_ID = '{}.{}'.format(TRAVIS_JOB_ID,time.time())
 ROS_DISTRO = env.get('ROS_DISTRO', 'indigo')
 USE_DEB = env.get('USE_DEB', 'true')
 EXTRA_DEB = env.get('EXTRA_DEB', '')
@@ -301,12 +320,30 @@ CMAKE_DEVELOPER_ERROR = env.get('CMAKE_DEVELOPER_ERROR', '')
 BUILD_PKGS = env.get('BUILD_PKGS', '')
 ROS_REPOSITORY_PATH = env.get('ROS_REPOSITORY_PATH', '')
 ROSDEP_ADDITIONAL_OPTIONS = env.get('ROSDEP_ADDITIONAL_OPTIONS', '')
-DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER, TRAVIS_JOB_ID])
+DOCKER_CONTAINER_NAME = '_'.join([TRAVIS_REPO_SLUG.replace('/','.'), TRAVIS_JOB_NUMBER, TRAVIS_JENKINS_UNIQUE_ID])
 DOCKER_RUN_OPTION = env.get('DOCKER_RUN_OPTION', '--rm')
 NUMBER_OF_LOGS_TO_KEEP = env.get('NUMBER_OF_LOGS_TO_KEEP', '30')
 REPOSITORY_NAME = env.get('REPOSITORY_NAME', '')
 TRAVIS_BUILD_WEB_URL = env.get('TRAVIS_BUILD_WEB_URL', '')
 TRAVIS_JOB_WEB_URL = env.get('TRAVIS_JOB_WEB_URL', '')
+
+if env.get('ROS_DISTRO') == 'hydro':
+    LSB_RELEASE = '12.04'
+    UBUNTU_DISTRO = 'precise'
+elif env.get('ROS_DISTRO') in ['indigo', 'jade']:
+    LSB_RELEASE = '14.04'
+    UBUNTU_DISTRO = 'trusty'
+elif env.get('ROS_DISTRO') in ['kinetic', 'lunar']:
+    LSB_RELEASE = '16.04'
+    UBUNTU_DISTRO = 'xenial'
+elif env.get('ROS_DISTRO') in ['melodic']:
+    LSB_RELEASE = '18.04'
+    UBUNTU_DISTRO = 'bionic'
+else:
+    LSB_RELEASE = '14.04'
+    UBUNTU_DISTRO = 'trusty'
+
+DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s-base' % LSB_RELEASE)
 
 print('''
 TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
@@ -317,7 +354,7 @@ TRAVIS_BUILD_ID      = %(TRAVIS_BUILD_ID)s
 TRAVIS_BUILD_NUMBER  = %(TRAVIS_BUILD_NUMBER)s
 TRAVIS_JOB_ID        = %(TRAVIS_JOB_ID)s
 TRAVIS_JOB_NUMBER    = %(TRAVIS_JOB_NUMBER)s
-TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
+TRAVIS_JENKINS_UNIQUE_ID = %(TRAVIS_JENKINS_UNIQUE_ID)s
 ROS_DISTRO       = %(ROS_DISTRO)s
 USE_DEB          = %(USE_DEB)s
 EXTRA_DEB        = %(EXTRA_DEB)s
@@ -341,25 +378,8 @@ NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s
 REPOSITORY_NAME = %(REPOSITORY_NAME)s
 TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s
 TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s
+DOCKER_IMAGE_JENKINS = %(DOCKER_IMAGE_JENKINS)s
 ''' % locals())
-
-if env.get('ROS_DISTRO') == 'hydro':
-    LSB_RELEASE = '12.04'
-    UBUNTU_DISTRO = 'precise'
-elif env.get('ROS_DISTRO') in ['indigo', 'jade']:
-    LSB_RELEASE = '14.04'
-    UBUNTU_DISTRO = 'trusty'
-elif env.get('ROS_DISTRO') in ['kinetic', 'lunar']:
-    LSB_RELEASE = '16.04'
-    UBUNTU_DISTRO = 'xenial'
-elif env.get('ROS_DISTRO') in ['melodic']:
-    LSB_RELEASE = '18.04'
-    UBUNTU_DISTRO = 'bionic'
-else:
-    LSB_RELEASE = '14.04'
-    UBUNTU_DISTRO = 'trusty'
-
-DOCKER_IMAGE_JENKINS = env.get('DOCKER_IMAGE_JENKINS', 'ros-ubuntu:%s' % LSB_RELEASE)
 
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '11402334328fd5a26f0092c1d763f67f52')
@@ -395,15 +415,26 @@ while [item for item in j.get_queue_info() if item['task']['name'] == job_name]:
 j.reconfig_job(job_name, CONFIGURE_XML % locals())
 
 ## get next number and run
-build_number = j.get_job_info(job_name)['nextBuildNumber']
-TRAVIS_JENKINS_UNIQUE_ID='{}.{}'.format(TRAVIS_JOB_ID,time.time())
+queue_number = j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
 
-j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
-print('next build number is {}'.format(build_number))
+# wait for queueing
+while True:
+    message = j.get_queue_item(queue_number)['why']
+    if message is None:
+        break
+    print("wait for queueing ... {} ".format(message.encode('utf-8')))
+    time.sleep(3)
 
-## wait for starting
-result = wait_for_building(job_name, build_number)
-print('start building, wait for result....')
+# wait for execution
+while True:
+    item = j.get_queue_item(queue_number)
+    if item.has_key('executable'):
+        item = item['executable']
+        break;
+    print("wait for execution....", item)
+    time.sleep(10)
+build_number = item['number']
+print('build number is {}'.format(build_number))
 
 ## configure description
 if TRAVIS_PULL_REQUEST != 'false':
@@ -428,7 +459,7 @@ TRAVIS_BUILD_ID      = %(TRAVIS_BUILD_ID)s <br> \
 TRAVIS_BUILD_NUMBER  = %(TRAVIS_BUILD_NUMBER)s <br> \
 TRAVIS_JOB_ID        = %(TRAVIS_JOB_ID)s <br> \
 TRAVIS_JOB_NUMBER    = %(TRAVIS_JOB_NUMBER)s <br> \
-TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s <br> \
+TRAVIS_JENKINS_UNIQUE_ID        = %(TRAVIS_JENKINS_UNIQUE_ID)s <br> \
 ROS_DISTRO       = %(ROS_DISTRO)s <br> \
 USE_DEB          = %(USE_DEB)s <br> \
 EXTRA_DEB        = %(EXTRA_DEB)s <br> \
@@ -452,6 +483,7 @@ NUMBER_OF_LOGS_TO_KEEP = %(NUMBER_OF_LOGS_TO_KEEP)s <br> \
 REPOSITORY_NAME = %(REPOSITORY_NAME)s <br> \
 TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s <br> \
 TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s <br> \
+DOCKER_IMAGE_JENKINS = %(DOCKER_IMAGE_JENKINS)s <br> \
 ') % locals())
 
 ## wait for result

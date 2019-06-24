@@ -1,0 +1,14 @@
+FROM ros-ubuntu:16.04
+
+RUN sudo apt-get update
+RUN sudo apt-get install -y ros-kinetic-pcl-conversions ros-kinetic-pcl-ros ros-kinetic-octomap-server
+RUN sudo apt-get install -y ros-kinetic-rviz ros-kinetic-robot-self-filter ros-kinetic-moveit-ros-perception
+RUN sudo apt-get install -y libopencv-dev liblapack-dev
+RUN sudo apt-get install -y emacs cython
+RUN rosdep update --include-eol-distros
+RUN rosdep resolve gtk2 | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # image_view
+RUN rosdep resolve python-qt-bindings | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # qt_gui_core
+
+# https://github.com/moby/moby/issues/1996#issuecomment-185872769
+ARG CACHEBUST=1
+RUN sudo apt-get update && sudo apt-get dist-upgrade -y

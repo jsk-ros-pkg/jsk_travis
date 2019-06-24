@@ -8,7 +8,9 @@ RUN apt-get update && apt-get install -y \
     libeigen3-dev \
     libflann-dev \
     libqhull-dev \
-    libvtk6-dev
+    libvtk5-dev
+
+RUN apt-get update && apt-get install -y python-vtk tcl-vtk
 
 RUN apt-get update && apt-get install -y python-pip
 RUN pip install -U dlib
@@ -29,7 +31,3 @@ RUN adduser --uid 983 --disabled-password --gecos "" --force-badname --ingroup j
 RUN sed -i '/^%sudo/ a user ALL=(ALL) NOPASSWD: ALL' /etc/sudoers
 
 USER user
-
-# https://github.com/moby/moby/issues/1996#issuecomment-185872769
-ARG CACHEBUST=1
-RUN sudo apt-get dist-upgrade

@@ -1,0 +1,15 @@
+FROM ros-ubuntu:14.04
+
+RUN sudo apt-get update
+RUN sudo apt-get install -y python-vtk tcl-vtk
+RUN sudo apt-get install -y ros-indigo-pcl-conversions ros-indigo-pcl-ros ros-indigo-octomap-server
+RUN sudo apt-get install -y ros-indigo-rviz ros-indigo-robot-self-filter ros-indigo-moveit-ros-perception
+RUN sudo apt-get install -y libopencv-dev liblapack-dev
+RUN sudo apt-get install -y emacs cython
+RUN rosdep update --include-eol-distros
+RUN rosdep resolve gtk2 | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # image_view
+RUN rosdep resolve python-qt-bindings | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # qt_gui_core
+
+# https://github.com/moby/moby/issues/1996#issuecomment-185872769
+ARG CACHEBUST=1
+RUN sudo apt-get update && sudo apt-get dist-upgrade -y

@@ -60,7 +60,3 @@ RUN adduser --uid 983 --disabled-password --gecos "" --force-badname --ingroup j
 RUN sed -i '/^%sudo/ a user ALL=(ALL) NOPASSWD: ALL' /etc/sudoers
 
 USER user
-
-# https://github.com/moby/moby/issues/1996#issuecomment-185872769
-ARG CACHEBUST=1
-RUN sudo apt-get dist-upgrade

@@ -1,0 +1,5 @@
+FROM ros-ubuntu:18.04
+
+# https://github.com/moby/moby/issues/1996#issuecomment-185872769
+ARG CACHEBUST=1
+RUN sudo apt-get update && sudo apt-get dist-upgrade -y
