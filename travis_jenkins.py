@@ -3,6 +3,7 @@
 # need pip installed version of python-jenkins > 0.4.0
 
 import jenkins
+import requests
 import urllib
 import urllib2
 import json
@@ -104,7 +105,7 @@ echo "TRAVIS_BUILD_ID      : %(TRAVIS_BUILD_ID)s"
 echo "TRAVIS_BUILD_NUMBER  : %(TRAVIS_BUILD_NUMBER)s"
 echo "TRAVIS_JOB_ID        : %(TRAVIS_JOB_ID)s"
 echo "TRAVIS_JOB_NUMBER    : %(TRAVIS_JOB_NUMBER)s"
-echo "TRAVIS_BRANCH        : %(TRAVIS_BRANCH)s"
+echo "TRAVIS_JENKINS_UNIQUE_ID : %(TRAVIS_JENKINS_UNIQUE_ID)s"
 
 # run watchdog for kill orphan docker container
 .travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
@@ -218,10 +219,10 @@ class Jenkins(jenkins.Jenkins):
     # http://blog.keshi.org/hogememo/2012/12/14/jenkins-setting-build-info
     def set_build_config(self, name, number, display_name, description): # need to allow anonymous user to update build 
         try:
-            # print '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)
-            response = self.jenkins_open(urllib2.Request(
-                self.server + BUILD_SET_CONFIG % locals(),
-                urllib.urlencode({'json': '{{ "displayName": "{}", "description": "{}" }}'.format(display_name, description)})
+            parameters = json.dumps({'displayName': display_name, 'description': description})
+            response = self.jenkins_open(requests.Request(
+                    'POST', self._build_url(BUILD_SET_CONFIG, locals()),
+                    data = {'json': parameters}
                 ))
             if response:
                 return response
@@ -352,7 +353,6 @@ TRAVIS_BUILD_ID      = %(TRAVIS_BUILD_ID)s
 TRAVIS_BUILD_NUMBER  = %(TRAVIS_BUILD_NUMBER)s
 TRAVIS_JOB_ID        = %(TRAVIS_JOB_ID)s
 TRAVIS_JOB_NUMBER    = %(TRAVIS_JOB_NUMBER)s
-TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s
 TRAVIS_JENKINS_UNIQUE_ID = %(TRAVIS_JENKINS_UNIQUE_ID)s
 ROS_DISTRO       = %(ROS_DISTRO)s
 USE_DEB          = %(USE_DEB)s
@@ -407,10 +407,6 @@ if len(job_name) >= 128 : # 'jenkins+ job_naem + TRAVIS_REPO_SLUG'
 if j.job_exists(job_name) is None:
     j.create_job(job_name, jenkins.EMPTY_CONFIG_XML)
 
-## Sometimes two jobs (<number> and false in TRAVIS_PULL_REQUEST) runs sametimes and get same build_number, so for ce for TRAVIS_PULL_REQUEST false
-if not TRAVIS_PULL_REQUEST: # is false
-    time.sleep(5 + TRAVIS_JOB_ID%10)
-
 ## if reconfigure job is already in queue, wait for more seconds...
 while [item for item in j.get_queue_info() if item['task']['name'] == job_name]:
     time.sleep(10)
@@ -418,14 +414,26 @@ while [item for item in j.get_queue_info() if item['task']['name'] == job_name]:
 j.reconfig_job(job_name, CONFIGURE_XML % locals())
 
 ## get next number and run
-build_number = j.get_job_info(job_name)['nextBuildNumber']
+queue_number = j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
 
-j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
-print('next build number is {}'.format(build_number))
+# wait for queueing
+while True:
+    message = j.get_queue_item(queue_number)['why']
+    if message is None:
+        break
+    print("wait for queueing ... {} ".format(message.encode('utf-8')))
+    time.sleep(3)
 
-## wait for starting
-result = wait_for_building(job_name, build_number)
-print('start building, wait for result....')
+# wait for execution
+while True:
+    item = j.get_queue_item(queue_number)
+    if item.has_key('executable'):
+        item = item['executable']
+        break;
+    print("wait for execution....", item)
+    time.sleep(10)
+build_number = item['number']
+print('build number is {}'.format(build_number))
 
 ## configure description
 if TRAVIS_PULL_REQUEST != 'false':
@@ -450,7 +458,7 @@ TRAVIS_BUILD_ID      = %(TRAVIS_BUILD_ID)s <br> \
 TRAVIS_BUILD_NUMBER  = %(TRAVIS_BUILD_NUMBER)s <br> \
 TRAVIS_JOB_ID        = %(TRAVIS_JOB_ID)s <br> \
 TRAVIS_JOB_NUMBER    = %(TRAVIS_JOB_NUMBER)s <br> \
-TRAVIS_BRANCH        = %(TRAVIS_BRANCH)s <br> \
+TRAVIS_JENKINS_UNIQUE_ID        = %(TRAVIS_JENKINS_UNIQUE_ID)s <br> \
 ROS_DISTRO       = %(ROS_DISTRO)s <br> \
 USE_DEB          = %(USE_DEB)s <br> \
 EXTRA_DEB        = %(EXTRA_DEB)s <br> \
