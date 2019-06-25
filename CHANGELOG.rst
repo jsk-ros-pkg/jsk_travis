@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.0 (2019-06-25)
+------------------
 * more fix for newer jenkins (`#378 <https://github.com/jsk-ros-pkg/jsk_travis/issues/378>`_, `#380 <https://github.com/jsk-ros-pkg/jsk_travis/issues/380>`_, `#379 <https://github.com/jsk-ros-pkg/jsk_travis/issues/379>`_)
 
   * install apt-utils to remove debconf: delaying package configuration, since apt-utils is not installed warnings
