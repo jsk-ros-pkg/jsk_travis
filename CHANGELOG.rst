@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use --merge-replace -y for .travis.rosinstall.$ROS_DISTRO (`#381 <https://github.com/jsk-ros-pkg/jsk_travis/issues/381>`_)
+* Contributors: Kei Okada
+
 0.5.0 (2019-06-25)
 ------------------
 * more fix for newer jenkins (`#378 <https://github.com/jsk-ros-pkg/jsk_travis/issues/378>`_, `#380 <https://github.com/jsk-ros-pkg/jsk_travis/issues/380>`_, `#379 <https://github.com/jsk-ros-pkg/jsk_travis/issues/379>`_)
