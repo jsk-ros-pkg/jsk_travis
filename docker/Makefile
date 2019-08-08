@@ -1,4 +1,6 @@
-all: 12.04-base 14.04-pcl1.8 14.04-pcl 14.04-base 16.04-pcl 14.04-base 18.04-pcl 18.04-base
+all: 12.04-base 14.04-base 14.04-base 18.04-base \
+     14.04-pcl 16.04-pcl 18.04-pcl \
+     14.04-pcl1.8
 
 12.04-base: 12.04 Dockerfile.ros-ubuntu\:12.04-base
 	echo "Building $@"
