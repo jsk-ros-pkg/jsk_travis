@@ -131,9 +131,9 @@ if [ "$USE_DOCKER" = true ]; then
     -t $DOCKER_IMAGE bash -c 'cd $CI_SOURCE_PATH; .travis/docker.sh'
   DOCKER_EXIT_CODE=$?
   sudo chown -R travis.travis $HOME/apt-cacher-ng
-  sudo tail -n 100 /var/log/apt-cacher-ng/*
-  sudo find $HOME/apt-cacher-ng
-  sudo find /var/cache/apt-cacher-ng
+  # sudo tail -n 100 /var/log/apt-cacher-ng/*
+  # sudo find $HOME/apt-cacher-ng
+  # sudo find /var/cache/apt-cacher-ng
   exit $DOCKER_EXIT_CODE
 fi
 
