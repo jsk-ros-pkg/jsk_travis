@@ -18,6 +18,11 @@ RUN echo "deb http://snapshots.ros.org/hydro/final/ubuntu `lsb_release -sc` main
 RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xCBF125EA
 ##
 
+# https://github.com/travis-ci/travis-ci/issues/9361#issuecomment-408431262 dpkg-deb: error: archive has premature member 'control.tar.xz' before 'control.tar.gz' #9361
+RUN wget http://old-releases.ubuntu.com/ubuntu/pool/main/x/xz-utils/liblzma5_5.1.1alpha+20120614-1_amd64.deb -O /tmp/liblzma5.deb && dpkg -i /tmp/liblzma5.deb
+RUN wget http://old-releases.ubuntu.com/ubuntu/pool/main/libs/libselinux/libselinux1_2.3-1build1_amd64.deb -O /tmp/libselinux1.deb && dpkg -i /tmp/libselinux1.deb
+RUN mkdir /tmp/dpkg && wget http://old-releases.ubuntu.com/ubuntu/pool/main/d/dpkg/dpkg_1.17.13ubuntu1.1_amd64.deb -O /tmp/dpkg.deb && dpkg -i /tmp/dpkg.deb
+RUN rm /etc/dpkg/dpkg.cfg.d/multiarch ## https://askubuntu.com/questions/230952/how-do-i-fix-a-unknown-configuration-key-foreign-architecture-found-in-your
 # install bootstrap tools
 RUN apt-get update && apt-get install --no-install-recommends -y python-rosdep python-rosinstall python-vcstools
 

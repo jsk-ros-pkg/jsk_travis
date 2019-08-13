@@ -131,9 +131,9 @@ if [ "$USE_DOCKER" = true ]; then
     -t $DOCKER_IMAGE bash -c 'cd $CI_SOURCE_PATH; .travis/docker.sh'
   DOCKER_EXIT_CODE=$?
   sudo chown -R travis.travis $HOME/apt-cacher-ng
-  sudo tail -n 100 /var/log/apt-cacher-ng/*
-  sudo find $HOME/apt-cacher-ng
-  sudo find /var/cache/apt-cacher-ng
+  # sudo tail -n 100 /var/log/apt-cacher-ng/*
+  # sudo find $HOME/apt-cacher-ng
+  # sudo find /var/cache/apt-cacher-ng
   exit $DOCKER_EXIT_CODE
 fi
 
@@ -186,7 +186,13 @@ fi
 # Install base system
 sudo apt-get update -q || echo Ignore error of apt-get update
 sudo apt-get install -y --force-yes -q -qq dpkg # https://github.com/travis-ci/travis-ci/issues/9361#issuecomment-408431262 dpkg-deb: error: archive has premature member 'control.tar.xz' before 'control.tar.gz' #9361
+dpkg --version
+if [[ "$ROS_DISTRO" ==  "hydro" ]]; then
+    sudo apt-get install -y --force-yes -q python-vcstools=0.1.40-1
+    sudo apt-mark hold python-vcstools
+fi
 sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache pv
+
 # setup catkin-tools option
 if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
   if [[ "$(pip show catkin-tools | grep '^Version:' | awk '{print $2}')" =~ 0.3.[0-9]+ ]]; then
