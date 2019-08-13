@@ -2,6 +2,21 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix docker/Makefile (`#382 <https://github.com/jsk-ros-pkg/jsk_travis/issues/382>`_)
+
+  * compile base file first
+  * fix CACHEBUST=$(date), which does not work on make command
+
+* fix dpkg-deb error on 12.04 (`#382 <https://github.com/jsk-ros-pkg/jsk_travis/issues/382>`_)
+
+  * hold python-vcstools for hydro
+  * show dpkg version
+  * remove debug code to show apt-cache-ng log
+
+* Contributors: Kei Okada
+
 0.5.1 (2019-08-01)
 ------------------
 * use --merge-replace -y for .travis.rosinstall.$ROS_DISTRO (`#381 <https://github.com/jsk-ros-pkg/jsk_travis/issues/381>`_)
