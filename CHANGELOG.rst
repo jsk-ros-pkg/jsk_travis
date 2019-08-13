@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.2 (2019-08-13)
+------------------
 * fix docker/Makefile (`#382 <https://github.com/jsk-ros-pkg/jsk_travis/issues/382>`_)
 
   * compile base file first
