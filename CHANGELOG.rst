@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.3 (2019-08-28)
+------------------
 * Share only downloaded data in ~/.ros/ among all docker process on jenkins (`#384 <https://github.com/jsk-ros-pkg/jsk_travis/issues/384>`_)
 * Contributors: Yuto Uchimi
 
