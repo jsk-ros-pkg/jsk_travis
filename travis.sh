@@ -134,13 +134,13 @@ if [ "$USE_DOCKER" = true ]; then
   # sudo tail -n 100 /var/log/apt-cacher-ng/*
   # sudo find $HOME/apt-cacher-ng
   # sudo find /var/cache/apt-cacher-ng
-  exit $DOCKER_EXIT_CODE
+  return $DOCKER_EXIT_CODE
 fi
 
 if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
     pip install --user -U python-jenkins==1.4.0 -q
     ./.travis/travis_jenkins.py
-    exit $?
+    return $?
 fi
 
 function error {
