@@ -134,6 +134,7 @@ if [ "$USE_DOCKER" = true ]; then
   # sudo tail -n 100 /var/log/apt-cacher-ng/*
   # sudo find $HOME/apt-cacher-ng
   # sudo find /var/cache/apt-cacher-ng
+  ccache -s
   return $DOCKER_EXIT_CODE
 fi
 
