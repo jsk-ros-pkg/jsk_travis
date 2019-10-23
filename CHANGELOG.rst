@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.4 (2019-10-23)
+------------------
 * supress the output of run_tests (`#386 <https://github.com/jsk-ros-pkg/jsk_travis/issues/386>`_)
   * catkin Make Args should only be run_tests, as --catkin-make-args stops with -- just after run_tests in `ros-planning/moveit_ci#18 <https://github.com/ros-planning/moveit_ci/issues/18>`_.
   * catkin-make-args should be run_tests only
