@@ -2,6 +2,13 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* supress the output of run_tests (`#386 <https://github.com/jsk-ros-pkg/jsk_travis/issues/386>`_)
+  * catkin Make Args should only be run_tests, as --catkin-make-args stops with -- just after run_tests in `ros-planning/moveit_ci#18 <https://github.com/ros-planning/moveit_ci/issues/18>`_.
+  * catkin-make-args should be run_tests only
+* Contributors: Kei Okada, Shun Hasegawa
+
 0.5.3 (2019-08-28)
 ------------------
 * Share only downloaded data in ~/.ros/ among all docker process on jenkins (`#384 <https://github.com/jsk-ros-pkg/jsk_travis/issues/384>`_)
