@@ -134,7 +134,10 @@ if [ "$USE_DOCKER" = true ]; then
   # sudo tail -n 100 /var/log/apt-cacher-ng/*
   # sudo find $HOME/apt-cacher-ng
   # sudo find /var/cache/apt-cacher-ng
+  sudo chown -R travis.travis $HOME
   ccache -s
+  find $HOME/.ccache    -type f
+  find $HOME/.cache/pip -type f
   return $DOCKER_EXIT_CODE
 fi
 
@@ -325,7 +328,7 @@ fi
 if [ `whoami` = travis ]; then
     sudo rm -fr $HOME/.cache/pip/*
     sudo cp -r /root/.cache/pip/ $HOME/.cache/
-    sudo chown -R travis.travis $HOME/.cache/pip/*
+    sudo chown -R travis.travis $HOME/.cache/*
 fi
 # Show cached PIP packages
 sudo find -L /root/.cache/ | grep whl || echo "OK"
