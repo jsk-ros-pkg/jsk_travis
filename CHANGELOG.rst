@@ -2,6 +2,15 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix exitting from script and show ccache stat after build as well (`#385 <https://github.com/jsk-ros-pkg/jsk_travis/issues/385>`_)
+  * Show cache after docker
+  * Call 'return' instead of 'exit' after 'docker run' and 'travis_jenkins.py'
+  * Show ccache stat after build as well as before build
+
+* Contributors: Yuto Uchimi
+
 0.5.4 (2019-10-23)
 ------------------
 * supress the output of run_tests (`#386 <https://github.com/jsk-ros-pkg/jsk_travis/issues/386>`_)
