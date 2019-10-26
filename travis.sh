@@ -134,13 +134,16 @@ if [ "$USE_DOCKER" = true ]; then
   # sudo tail -n 100 /var/log/apt-cacher-ng/*
   # sudo find $HOME/apt-cacher-ng
   # sudo find /var/cache/apt-cacher-ng
-  exit $DOCKER_EXIT_CODE
+  sudo chown -R travis.travis $HOME
+  find $HOME/.ccache    -type f
+  find $HOME/.cache/pip -type f
+  return $DOCKER_EXIT_CODE
 fi
 
 if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
     pip install --user -U python-jenkins==1.4.0 -q
     ./.travis/travis_jenkins.py
-    exit $?
+    return $?
 fi
 
 function error {
@@ -324,7 +327,7 @@ fi
 if [ `whoami` = travis ]; then
     sudo rm -fr $HOME/.cache/pip/*
     sudo cp -r /root/.cache/pip/ $HOME/.cache/
-    sudo chown -R travis.travis $HOME/.cache/pip/*
+    sudo chown -R travis.travis $HOME/.cache/*
 fi
 # Show cached PIP packages
 sudo find -L /root/.cache/ | grep whl || echo "OK"
@@ -433,5 +436,6 @@ if [ "${ROS_LOG_DIR// }" == "" ]; then export ROS_LOG_DIR=~/.ros/test_results; f
 if [ -e $ROS_LOG_DIR ]; then catkin_test_results --verbose --all $ROS_LOG_DIR || error; fi
 if [ -e ~/ros/ws_$REPOSITORY_NAME/build/ ]; then catkin_test_results --verbose --all ~/ros/ws_$REPOSITORY_NAME/build/ || error; fi
 if [ -e ~/.ros/test_results/ ]; then catkin_test_results --verbose --all ~/.ros/test_results/ || error; fi
+ccache -s
 
 travis_time_end
