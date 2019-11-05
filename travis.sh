@@ -82,6 +82,7 @@ if [ "$USE_DOCKER" = true ]; then
   travis_time_start setup_apt_cacher_ng
 
   # start apt-cacher-ng
+  sudo apt-key update || echo Ignore error of apt-key update
   sudo apt-get update && sudo apt-get install -y apt-cacher-ng
   sudo sed -i "s@CacheDir: /var/cache/apt-cacher-ng@CacheDir: $HOME/apt-cacher-ng@" /etc/apt-cacher-ng/acng.conf
   grep CacheDir /etc/apt-cacher-ng/acng.conf
@@ -100,6 +101,7 @@ if [ "$USE_DOCKER" = true ]; then
     travis_time_start setup_docker_x11
 
     # use host xserver
+    sudo apt-key update || echo Ignore error of apt-key update
     sudo apt-get update -q || echo Ignore error of apt-get update
     sudo apt-get -y -qq install mesa-utils x11-xserver-utils xserver-xorg-video-dummy
     export DISPLAY=:0
@@ -187,6 +189,7 @@ if [[ "$ROS_DISTRO" ==  "hydro" || "$ROS_DISTRO" ==  "jade" || "$ROS_DISTRO" == 
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xCBF125EA
 fi
 # Install base system
+sudo apt-key update || echo Ignore error of apt-key update
 sudo apt-get update -q || echo Ignore error of apt-get update
 sudo apt-get install -y --force-yes -q -qq dpkg # https://github.com/travis-ci/travis-ci/issues/9361#issuecomment-408431262 dpkg-deb: error: archive has premature member 'control.tar.xz' before 'control.tar.gz' #9361
 dpkg --version
