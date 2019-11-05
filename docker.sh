@@ -120,6 +120,10 @@ glxinfo | grep GLX
 
 # set up apt-cache docker
 echo 'Acquire::http {proxy "http://172.17.0.1:3142"; };' | sudo tee /etc/apt/apt.conf.d/02proxy.conf
+# to fix https://github.com/jsk-ros-pkg/jsk_travis/pull/388#issuecomment-549735323
+# see https://matoken.org/blog/2019/07/19/direct-access-to-https-repository-with-apt-cacher-ng/
+# see https://github.com/sameersbn/docker-apt-cacher-ng/tree/3.1#usage
+echo 'Acquire::https {proxy "false"; };' | sudo tee -a /etc/apt/apt.conf.d/02proxy.conf
 
 # ensure setting testing environment same as travis
 export USE_JENKINS=false
