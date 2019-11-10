@@ -373,10 +373,14 @@ else
 fi
 if [ -z $TRAVIS_JOB_ID ]; then
   # on Jenkins
-  catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
+  # suppressing the output
+  # - https://github.com/catkin/catkin_tools/issues/405
+  # - https://github.com/ros-planning/moveit_ci/pull/18
+  #catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
+  catkin build --catkin-make-args run_tests -- -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
 else
   # on Travis
-  # supressing the output
+  # suppressing the output
   # - https://github.com/catkin/catkin_tools/issues/405
   # - https://github.com/ros-planning/moveit_ci/pull/18
   #travis_wait 60 catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
