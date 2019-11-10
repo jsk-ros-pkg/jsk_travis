@@ -176,6 +176,10 @@ sudo ccache -M 30G                   # set maximum size of ccache to 30G
 
 # Enable apt-cacher-ng to cache apt packages
 echo 'Acquire::http {proxy "http://$(ifdata -pa docker0):3142"; };' | sudo tee /etc/apt/apt.conf.d/02proxy.conf
+# to fix https://github.com/jsk-ros-pkg/jsk_travis/pull/388#issuecomment-549735323
+# see https://matoken.org/blog/2019/07/19/direct-access-to-https-repository-with-apt-cacher-ng/
+# see https://github.com/sameersbn/docker-apt-cacher-ng/tree/3.1#usage
+echo 'Acquire::https {proxy "false"; };' | sudo tee -a /etc/apt/apt.conf.d/02proxy.conf
 sudo apt-get update -qq || echo Ignore error of apt-get update
 export SHELL=/bin/bash
 
