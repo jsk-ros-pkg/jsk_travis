@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.6 (2019-11-11)
+------------------
 * Suppress the output of run_tests on jenkins (`#390 <https://github.com/jsk-ros-pkg/jsk_travis/issues/390>`_)
 * Don't use HTTP proxy for HTTPS urls for apt-cacher-ng (`#389 <https://github.com/jsk-ros-pkg/jsk_travis/issues/389>`_)
   * To fix https://github.com/jsk-ros-pkg/jsk_travis/pull/388#issuecomment-549735323 and https://github.com/start-jsk/rtmros_common/pull/1077#issuecomment-549629846
