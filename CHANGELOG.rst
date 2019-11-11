@@ -2,6 +2,14 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Suppress the output of run_tests on jenkins (`#390 <https://github.com/jsk-ros-pkg/jsk_travis/issues/390>`_)
+* Don't use HTTP proxy for HTTPS urls for apt-cacher-ng (`#389 <https://github.com/jsk-ros-pkg/jsk_travis/issues/389>`_)
+  * To fix https://github.com/jsk-ros-pkg/jsk_travis/pull/388#issuecomment-549735323 and https://github.com/start-jsk/rtmros_common/pull/1077#issuecomment-549629846
+
+* Contributors: Shun Hasegawa
+
 0.5.5 (2019-10-26)
 ------------------
 * Fix exitting from script and show ccache stat after build as well (`#385 <https://github.com/jsk-ros-pkg/jsk_travis/issues/385>`_)
