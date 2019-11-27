@@ -100,6 +100,14 @@ travis_time_start setup_docker
 
 export DEBIAN_FRONTEND=noninteractive
 
+if [ -f "/etc/apt/sources.list.d/ubuntu-esm-infra-$DISTRO.list" ]; then
+  if [ "$(which sudo)" = "" ]; then
+    rm /etc/apt/sources.list.d/ubuntu-esm-infra-$DISTRO.list
+  else
+    sudo rm /etc/apt/sources.list.d/ubuntu-esm-infra-$DISTRO.list
+  fi
+fi
+
 if [ "$(which sudo)" = "" ]; then
   apt-get -y -qq update
   apt-get -y -qq install sudo

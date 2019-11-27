@@ -127,7 +127,7 @@ if [ "$USE_DOCKER" = true ]; then
     -e ROS_PARALLEL_JOBS -e ROS_PARALLEL_TEST_JOBS \
     -e ROSDEP_ADDITIONAL_OPTIONS -e ROSDEP_UPDATE_QUIET \
     -e SUDO_PIP -e USE_PYTHON_VIRTUALENV \
-    -e NOT_TEST_INSTALL \
+    -e NOT_TEST_INSTALL -e DISTRO \
     -t $DOCKER_IMAGE bash -c 'cd $CI_SOURCE_PATH; .travis/docker.sh'
   DOCKER_EXIT_CODE=$?
   sudo chown -R travis.travis $HOME/apt-cacher-ng
