@@ -70,11 +70,11 @@ travis_time_end
 if [ "$USE_DOCKER" = true ]; then
   if [ "$DOCKER_IMAGE" = "" ]; then
     case $ROS_DISTRO in
-      hydro) DISTRO=precise;;
-      indigo|jade) DISTRO=trusty;;
-      kinetic|lunar) DISTRO=xenial;;
-      melodic) DISTRO=bionic;;
-      *) DISTRO=trusty;;
+      hydro) export DISTRO=precise;;
+      indigo|jade) export DISTRO=trusty;;
+      kinetic|lunar) export DISTRO=xenial;;
+      melodic) export DISTRO=bionic;;
+      *) export DISTRO=trusty;;
     esac
     export DOCKER_IMAGE=ubuntu:$DISTRO
   fi
