@@ -118,14 +118,15 @@ mkdir -p /data/cache/%(ROS_DISTRO)s/ros/data
 mkdir -p /data/cache/%(ROS_DISTRO)s/ros/rosdep
 
 # setup docker env-file
-touch /tmp/docker_env_file
+DOCKER_ENV_FILE="/tmp/docker_env_file_$$"
+touch $DOCKER_ENV_FILE
 if [ "%(ADD_ENV_VALUE_TO_DOCKER)s" != "" ]; then
   env_var_list=(`echo "%(ADD_ENV_VALUE_TO_DOCKER)s"`)
   for env_var in ${env_var_list[@]}; do
-    echo "$env_var" >> /tmp/docker_env_file
+    echo "$env_var" >> $DOCKER_ENV_FILE
   done
 fi
-cat /tmp/docker_env_file
+cat $DOCKER_ENV_FILE
 
 #
 docker ps -a
@@ -155,7 +156,7 @@ docker run %(DOCKER_RUN_OPTION)s \\
     -e ROSDEP_ADDITIONAL_OPTIONS='%(ROSDEP_ADDITIONAL_OPTIONS)s'  \\
     -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
     -e HOME=/workspace \\
-    --env-file /tmp/docker_env_file \\
+    --env-file $DOCKER_ENV_FILE \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
     -v /data/cache/%(ROS_DISTRO)s/ccache:/workspace/.ccache \\
     -v /data/cache/%(ROS_DISTRO)s/pip-cache:/root/.cache/pip \\
@@ -210,6 +211,7 @@ glxinfo | grep GLX || echo "OK"
 
 EOL
 )"
+rm $DOCKER_ENV_FILE
 
      </command>
     </hudson.tasks.Shell>
