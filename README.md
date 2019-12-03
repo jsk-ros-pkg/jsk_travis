@@ -120,6 +120,12 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
 
   Flag to show CMake developer error in catkin run_tests.
 
+* `ADDITIONAL_ENV_TO_DOCKER` (default: none)
+
+  Specify environment variables you want to pass to docker on travis/jenkins.
+  You can specify multiple variables separated by a space.  
+  e.g. `IS_EUSLISP_TRAVIS_TEST IS_GAZEBO_TRAVIS_TEST`
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`
