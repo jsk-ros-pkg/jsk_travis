@@ -116,14 +116,15 @@ if [ "$USE_DOCKER" = true ]; then
 
   travis_time_start setup_docker_env_file
 
-  touch /tmp/docker_env_file
+  DOCKER_ENV_FILE="/tmp/docker_env_file_$$"
+  touch $DOCKER_ENV_FILE
   if [ "$ADDITIONAL_ENV_TO_DOCKER" != "" ]; then
     env_list=(`echo "$ADDITIONAL_ENV_TO_DOCKER"`)
     for env in ${env_list[@]}; do
-      echo "$env=${!env}" >> /tmp/docker_env_file
+      echo "$env=${!env}" >> $DOCKER_ENV_FILE
     done
   fi
-  cat /tmp/docker_env_file
+  cat $DOCKER_ENV_FILE
 
   travis_time_end
 
@@ -141,9 +142,10 @@ if [ "$USE_DOCKER" = true ]; then
     -e ROSDEP_ADDITIONAL_OPTIONS -e ROSDEP_UPDATE_QUIET \
     -e SUDO_PIP -e USE_PYTHON_VIRTUALENV \
     -e NOT_TEST_INSTALL \
-    --env-file /tmp/docker_env_file \
+    --env-file $DOCKER_ENV_FILE \
     -t $DOCKER_IMAGE bash -c 'cd $CI_SOURCE_PATH; .travis/docker.sh'
   DOCKER_EXIT_CODE=$?
+  rm $DOCKER_ENV_FILE
   sudo chown -R travis.travis $HOME/apt-cacher-ng
   # sudo tail -n 100 /var/log/apt-cacher-ng/*
   # sudo find $HOME/apt-cacher-ng
