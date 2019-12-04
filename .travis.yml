@@ -17,6 +17,11 @@ services:
 notifications:
   slack: jsk-robotics:Av7tc8wj3IWkLYvlTzHE7x2g
 env:
+  global:
+    # For testing ADDITIONAL_ENV_TO_DOCKER
+    - TEST_VAR1=true
+    - TEST_VAR2=false
+    - ADDITIONAL_ENV_TO_DOCKER='TEST_VAR1 TEST_VAR2'
   matrix:
     # travis + jsk jenkins
     - ROS_DISTRO=hydro USE_JENKINS="true" NO_SUDO="true"
