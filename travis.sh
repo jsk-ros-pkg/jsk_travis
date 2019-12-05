@@ -117,7 +117,7 @@ if [ "$USE_DOCKER" = true ]; then
   travis_time_start setup_docker_env_file
 
   DOCKER_ENV_FILE="/tmp/docker_env_file_$$"
-  touch $DOCKER_ENV_FILE
+  : > $DOCKER_ENV_FILE
   if [ "$ADDITIONAL_ENV_TO_DOCKER" != "" ]; then
     env_list=(`echo "$ADDITIONAL_ENV_TO_DOCKER"`)
     for env in ${env_list[@]}; do

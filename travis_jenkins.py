@@ -119,7 +119,7 @@ mkdir -p /data/cache/%(ROS_DISTRO)s/ros/rosdep
 
 # setup docker env-file
 DOCKER_ENV_FILE="/tmp/docker_env_file_$$"
-touch $DOCKER_ENV_FILE
+: > $DOCKER_ENV_FILE
 if [ "%(ADD_ENV_VALUE_TO_DOCKER)s" != "" ]; then
   env_var_list=(`echo "%(ADD_ENV_VALUE_TO_DOCKER)s"`)
   for env_var in ${env_var_list[@]}; do
