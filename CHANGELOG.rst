@@ -2,6 +2,19 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Enable to pass additional environment variables to docker on travis/jenkins (`#395 <https://github.com/jsk-ros-pkg/jsk_travis/issues/395>`_)
+
+  * Format docker env-file in case it already exists (I haven't observed this phenomenon. Just in case)
+  * Each job on jenkins should have unique env-file
+  * Each job on travis should have unique env-file
+  * Add doc of ADDITIONAL_ENV_TO_DOCKER
+  * Enable to pass additional environment variables to jenkins docker
+  * Add test of ADDITIONAL_ENV_TO_DOCKER
+
+* Contributors: Shun Hasegawa
+
 0.5.6 (2019-11-11)
 ------------------
 * Suppress the output of run_tests on jenkins (`#390 <https://github.com/jsk-ros-pkg/jsk_travis/issues/390>`_)
