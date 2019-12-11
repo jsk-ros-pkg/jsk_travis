@@ -117,6 +117,17 @@ mkdir -p /data/cache/%(ROS_DISTRO)s/pip-cache
 mkdir -p /data/cache/%(ROS_DISTRO)s/ros/data
 mkdir -p /data/cache/%(ROS_DISTRO)s/ros/rosdep
 
+# setup docker env-file
+DOCKER_ENV_FILE="/tmp/docker_env_file_$$"
+: > $DOCKER_ENV_FILE
+if [ "%(ADD_ENV_VALUE_TO_DOCKER)s" != "" ]; then
+  env_var_list=(`echo "%(ADD_ENV_VALUE_TO_DOCKER)s"`)
+  for env_var in ${env_var_list[@]}; do
+    echo "$env_var" >> $DOCKER_ENV_FILE
+  done
+fi
+cat $DOCKER_ENV_FILE
+
 #
 docker ps -a
 if [ "$(docker ps -a | grep %(DOCKER_CONTAINER_NAME)s || true)" ] ; then
@@ -145,6 +156,7 @@ docker run %(DOCKER_RUN_OPTION)s \\
     -e ROSDEP_ADDITIONAL_OPTIONS='%(ROSDEP_ADDITIONAL_OPTIONS)s'  \\
     -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
     -e HOME=/workspace \\
+    --env-file $DOCKER_ENV_FILE \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
     -v /data/cache/%(ROS_DISTRO)s/ccache:/workspace/.ccache \\
     -v /data/cache/%(ROS_DISTRO)s/pip-cache:/root/.cache/pip \\
@@ -199,6 +211,7 @@ glxinfo | grep GLX || echo "OK"
 
 EOL
 )"
+rm $DOCKER_ENV_FILE
 
      </command>
     </hudson.tasks.Shell>
@@ -332,6 +345,14 @@ NUMBER_OF_LOGS_TO_KEEP = env.get('NUMBER_OF_LOGS_TO_KEEP', '30')
 REPOSITORY_NAME = env.get('REPOSITORY_NAME', '')
 TRAVIS_BUILD_WEB_URL = env.get('TRAVIS_BUILD_WEB_URL', '')
 TRAVIS_JOB_WEB_URL = env.get('TRAVIS_JOB_WEB_URL', '')
+ADDITIONAL_ENV_TO_DOCKER = env.get('ADDITIONAL_ENV_TO_DOCKER', '')
+ADD_ENV_VALUE_TO_DOCKER = ''
+tmp_list = []
+for add_env in ADDITIONAL_ENV_TO_DOCKER.split(' '):
+    if add_env != '':
+        add_env_val = env.get(add_env, '')
+        tmp_list.append(add_env + '=' + add_env_val)
+ADD_ENV_VALUE_TO_DOCKER = ' '.join(tmp_list)
 
 if env.get('ROS_DISTRO') == 'hydro':
     LSB_RELEASE = '12.04'
@@ -385,6 +406,7 @@ REPOSITORY_NAME = %(REPOSITORY_NAME)s
 TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s
 TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s
 DOCKER_IMAGE_JENKINS = %(DOCKER_IMAGE_JENKINS)s
+ADD_ENV_VALUE_TO_DOCKER = %(ADD_ENV_VALUE_TO_DOCKER)s
 ''' % locals())
 
 ### start here
@@ -490,6 +512,7 @@ REPOSITORY_NAME = %(REPOSITORY_NAME)s <br> \
 TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s <br> \
 TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s <br> \
 DOCKER_IMAGE_JENKINS = %(DOCKER_IMAGE_JENKINS)s <br> \
+ADD_ENV_VALUE_TO_DOCKER = %(ADD_ENV_VALUE_TO_DOCKER)s <br> \
 ') % locals())
 
 ## wait for result
