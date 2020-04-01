@@ -519,10 +519,10 @@ ADD_ENV_VALUE_TO_DOCKER = %(ADD_ENV_VALUE_TO_DOCKER)s <br> \
 result = wait_for_finished(job_name, build_number)
 
 ## show console
-print j.get_build_console_output(job_name, build_number)
-print "======================================="
-print j.get_build_info(job_name, build_number)['url']
-print "======================================="
+print (u"{}".format(j.get_build_console_output(job_name, build_number)))
+print (u"=======================================")
+print (u"{}".format(j.get_build_info(job_name, build_number)['url']))
+print (u"=======================================")
 if result == "SUCCESS" :
     exit(0)
 else:
