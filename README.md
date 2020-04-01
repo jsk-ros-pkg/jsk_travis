@@ -126,6 +126,11 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   You can specify multiple variables separated by a space.  
   e.g. `IS_EUSLISP_TRAVIS_TEST IS_GAZEBO_TRAVIS_TEST`
 
+* `DEBUG_TRAVIS_PYTHON` (default: none)
+
+  Specify python command to run within travis/docker/jenkins,
+  for example set `DEBUG_TRAVIS_PYTHON` to `python -v`
+
 ## Config Files
 
 * `.travis.rosinstall`, `.travis.rosinstall.{{ ROS_DISTRO }}`
