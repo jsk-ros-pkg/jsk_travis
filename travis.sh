@@ -161,7 +161,7 @@ if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}"
         pip --version
         python --version
     fi
-    pip install --user -U python-jenkins==1.4.0 -q
+    pip install --user -U python-jenkins==1.7.0 -q
     ${DEBUG_TRAVIS_PYTHON} ./.travis/travis_jenkins.py
     return $?
 fi
