@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.8 (2020-04-02)
+------------------
 * Fix utf-8/ascii errors (`#397 <https://github.com/jsk-ros-pkg/jsk_travis/issues/397>`_))
 
   * fix for https://github.com/start-jsk/rtmros_common/pull/1089
