@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 # need pip installed version of python-jenkins > 0.4.0
 
 import jenkins
@@ -277,14 +278,14 @@ def wait_for_finished(name, number):
             info = j.get_build_info(name, number)
         except jenkins.NotFoundException as e:
             print('ERROR: Jenkins job name={0}, number={1} in server={2}'
-                  'not found.'.format(name, number, j.server))
+                  'not found.'.format(name, number, j.server), file=sys.stderr)
             break
         except jenkins.JenkinsException as e:
             print('ERROR: Maybe Jenkins server is down. Please visit {0}'
-                  .format(j.server))
+                  .format(j.server), file=sys.stderr)
             break
         except Exception as e:
-            print('ERROR: Unexpected error: {0}'.format(e))
+            print('ERROR: Unexpected error: {0}'.format(e), file=sys.stderr)
             break
         if not info['building']:
             result = info['result']
@@ -292,7 +293,7 @@ def wait_for_finished(name, number):
         # update progressbar
         progress = (now - info['timestamp']) / info['estimatedDuration']
         if loop % (display/sleep) == 0:
-            print(info['url'], "building: ", info['building'], "result: ", info['result'], "progress: ", progress)
+            print("{} building {}, result: {}, progress: {}".format(info['url'], info['building'], info['result'], progress), file=sys.stderr)
         time.sleep(sleep)
         loop += 1
     return result
@@ -311,7 +312,7 @@ def wait_for_building(name, number):
         except:
             pass
         if loop % (display/sleep) == 0:
-            print('wait for {} {}'.format(name, number))
+            print('wait for {} {}'.format(name, number), file=sys.stderr)
         time.sleep(sleep)
         loop += 1
 
@@ -410,7 +411,7 @@ TRAVIS_BUILD_WEB_URL = %(TRAVIS_BUILD_WEB_URL)s
 TRAVIS_JOB_WEB_URL = %(TRAVIS_JOB_WEB_URL)s
 DOCKER_IMAGE_JENKINS = %(DOCKER_IMAGE_JENKINS)s
 ADD_ENV_VALUE_TO_DOCKER = %(ADD_ENV_VALUE_TO_DOCKER)s
-''' % locals())
+''' % locals(), file=sys.stderr)
 
 ### start here
 j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '11402334328fd5a26f0092c1d763f67f52')
@@ -419,12 +420,12 @@ j = Jenkins('http://jenkins.jsk.imi.i.u-tokyo.ac.jp:8080/', 'k-okada', '11402334
 if j.get_plugin_info('ansicolor'):
     ANSICOLOR_PLUGIN_VERSION=j.get_plugin_info('ansicolor')['version']
 else:
-    print('you need to install ansi color plugin')
+    print('you need to install ansi color plugin', file=sys.stderr)
 # use timeout plugin
 if j.get_plugin_info('build-timeout'):
     TIMEOUT_PLUGIN_VERSION=j.get_plugin_info('build-timeout')['version']
 else:
-    print('you need to install build_timeout plugin')
+    print('you need to install build_timeout plugin', file=sys.stderr)
 # set job_name
 job_name = TRAVIS_REPO_SLUG
 
@@ -453,7 +454,7 @@ while True:
     message = j.get_queue_item(queue_number)['why']
     if message is None:
         break
-    print("wait for queueing ... {} ".format(message.encode('utf-8')))
+    print("wait for queueing ... {} ".format(message.encode('utf-8')), file=sys.stderr)
     time.sleep(3)
 
 # wait for execution
@@ -462,10 +463,10 @@ while True:
     if 'executable' in item:
         item = item['executable']
         break;
-    print("wait for execution....", item)
+    print("wait for execution.... {}".format(item), file=sys.stderr)
     time.sleep(10)
 build_number = item['number']
-print('build number is {}'.format(build_number))
+print('build number is {}'.format(build_number), file=sys.stderr)
 
 ## configure description
 if TRAVIS_PULL_REQUEST != 'false':
@@ -522,10 +523,10 @@ ADD_ENV_VALUE_TO_DOCKER = %(ADD_ENV_VALUE_TO_DOCKER)s <br> \
 result = wait_for_finished(job_name, build_number)
 
 ## show console
-print (u"{}".format(j.get_build_console_output(job_name, build_number)))
-print (u"=======================================")
-print (u"{}".format(j.get_build_info(job_name, build_number)['url']))
-print (u"=======================================")
+print (u"{}".format(j.get_build_console_output(job_name, build_number)), file=sys.stderr)
+print (u"=======================================", file=sys.stderr)
+print (u"{}".format(j.get_build_info(job_name, build_number)['url']), file=sys.stderr)
+print (u"=======================================", file=sys.stderr)
 if result == "SUCCESS" :
     exit(0)
 else:
