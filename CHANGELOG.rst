@@ -2,6 +2,19 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix utf-8/ascii errors (`#397 <https://github.com/jsk-ros-pkg/jsk_travis/issues/397>`_))
+
+  * fix for https://github.com/start-jsk/rtmros_common/pull/1089
+  * PYTHONIOENCODING=utf-8 fix utf-8
+  * support python3
+  * use python-jenkins 1.7.0
+  * set unicode for print console output
+  * add DEBUG_TRAVIS_PYTHON
+
+* Contributors: Kei Okada
+
 0.5.7 (2019-12-11)
 ------------------
 * Enable to pass additional environment variables to docker on travis/jenkins (`#395 <https://github.com/jsk-ros-pkg/jsk_travis/issues/395>`_)
