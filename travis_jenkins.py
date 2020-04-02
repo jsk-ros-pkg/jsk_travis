@@ -5,7 +5,10 @@
 import jenkins
 import requests
 import urllib
-import urllib2
+try:
+    import urllib2
+except:
+    import urllib.request, urllib.error
 import json
 import time
 import os
@@ -272,15 +275,15 @@ def wait_for_finished(name, number):
         now = time.time() * 1000
         try:
             info = j.get_build_info(name, number)
-        except jenkins.NotFoundException, e:
+        except jenkins.NotFoundException as e:
             print('ERROR: Jenkins job name={0}, number={1} in server={2}'
                   'not found.'.format(name, number, j.server))
             break
-        except jenkins.JenkinsException, e:
+        except jenkins.JenkinsException as e:
             print('ERROR: Maybe Jenkins server is down. Please visit {0}'
                   .format(j.server))
             break
-        except Exception, e:
+        except Exception as e:
             print('ERROR: Unexpected error: {0}'.format(e))
             break
         if not info['building']:
@@ -289,7 +292,7 @@ def wait_for_finished(name, number):
         # update progressbar
         progress = (now - info['timestamp']) / info['estimatedDuration']
         if loop % (display/sleep) == 0:
-            print info['url'], "building: ", info['building'], "result: ", info['result'], "progress: ", progress
+            print(info['url'], "building: ", info['building'], "result: ", info['result'], "progress: ", progress)
         time.sleep(sleep)
         loop += 1
     return result
@@ -456,7 +459,7 @@ while True:
 # wait for execution
 while True:
     item = j.get_queue_item(queue_number)
-    if item.has_key('executable'):
+    if 'executable' in item:
         item = item['executable']
         break;
     print("wait for execution....", item)
@@ -519,10 +522,10 @@ ADD_ENV_VALUE_TO_DOCKER = %(ADD_ENV_VALUE_TO_DOCKER)s <br> \
 result = wait_for_finished(job_name, build_number)
 
 ## show console
-print j.get_build_console_output(job_name, build_number)
-print "======================================="
-print j.get_build_info(job_name, build_number)['url']
-print "======================================="
+print (u"{}".format(j.get_build_console_output(job_name, build_number)))
+print (u"=======================================")
+print (u"{}".format(j.get_build_info(job_name, build_number)['url']))
+print (u"=======================================")
 if result == "SUCCESS" :
     exit(0)
 else:

@@ -141,7 +141,7 @@ if [ "$USE_DOCKER" = true ]; then
     -e ROS_PARALLEL_JOBS -e ROS_PARALLEL_TEST_JOBS \
     -e ROSDEP_ADDITIONAL_OPTIONS -e ROSDEP_UPDATE_QUIET \
     -e SUDO_PIP -e USE_PYTHON_VIRTUALENV \
-    -e NOT_TEST_INSTALL \
+    -e NOT_TEST_INSTALL -e DEBUG_TRAVIS_PYTHON \
     --env-file $DOCKER_ENV_FILE \
     -t $DOCKER_IMAGE bash -c 'cd $CI_SOURCE_PATH; .travis/docker.sh'
   DOCKER_EXIT_CODE=$?
@@ -157,8 +157,12 @@ if [ "$USE_DOCKER" = true ]; then
 fi
 
 if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
-    pip install --user -U python-jenkins==1.4.0 -q
-    ./.travis/travis_jenkins.py
+    if [ "${DEBUG_TRAVIS_PYTHON}" != "" ]; then
+        pip --version
+        python --version
+    fi
+    pip install --user -U python-jenkins==1.7.0 -q
+    PYTHONIOENCODING=utf-8 ${DEBUG_TRAVIS_PYTHON} ./.travis/travis_jenkins.py
     return $?
 fi
 
