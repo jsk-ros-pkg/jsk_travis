@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* output all messages to sys.stderr (`#398 <https://github.com/jsk-ros-pkg/jsk_travis/issues/398>`_)
+* Contributors: Kei Okada
+
 0.5.8 (2020-04-02)
 ------------------
 * Fix utf-8/ascii errors (`#397 <https://github.com/jsk-ros-pkg/jsk_travis/issues/397>`_))
