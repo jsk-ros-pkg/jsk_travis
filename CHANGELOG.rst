@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.9 (2020-04-03)
+------------------
 * output all messages to sys.stderr (`#398 <https://github.com/jsk-ros-pkg/jsk_travis/issues/398>`_)
 * Contributors: Kei Okada
 
