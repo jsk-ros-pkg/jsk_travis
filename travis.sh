@@ -74,6 +74,7 @@ if [ "$USE_DOCKER" = true ]; then
       indigo|jade) DISTRO=trusty;;
       kinetic|lunar) DISTRO=xenial;;
       melodic) DISTRO=bionic;;
+      noetic) DISTRO=focal;;
       *) DISTRO=trusty;;
     esac
     export DOCKER_IMAGE=ubuntu:$DISTRO
@@ -138,7 +139,7 @@ if [ "$USE_DOCKER" = true ]; then
     -e ROS_DISTRO -e ROS_LOG_DIR -e ROS_REPOSITORY_PATH -e ROSWS \
     -e CATKIN_TOOLS_BUILD_OPTIONS -e CATKIN_TOOLS_CONFIG_OPTIONS \
     -e CATKIN_PARALLEL_JOBS -e CATKIN_PARALLEL_TEST_JOBS \
-    -e ROS_PARALLEL_JOBS -e ROS_PARALLEL_TEST_JOBS \
+    -e ROS_PARALLEL_JOBS -e ROS_PARALLEL_TEST_JOBS -e ROS_PYTHON_VERSION \
     -e ROSDEP_ADDITIONAL_OPTIONS -e ROSDEP_UPDATE_QUIET \
     -e SUDO_PIP -e USE_PYTHON_VIRTUALENV \
     -e NOT_TEST_INSTALL -e DEBUG_TRAVIS_PYTHON \
@@ -214,7 +215,9 @@ if [[ "$ROS_DISTRO" ==  "hydro" ]]; then
     sudo apt-get install -y --force-yes -q python-vcstools=0.1.40-1
     sudo apt-mark hold python-vcstools
 fi
-sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache pv
+# noetic uses python3-rosdep
+sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools || (sudo apt-get install -y --force-yes -q -qq python3-rosdep python3-wstool; sudo pip install catkin-tools)
+sudo apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache pv
 
 # setup catkin-tools option
 if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
@@ -264,8 +267,9 @@ else
 fi
 sudo apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-roslaunch
 ### https://github.com/ros/ros_comm/pull/641
-(cd /opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/641.diff -O /tmp/641.diff; [ "$ROS_DISTRO" == "hydro" ] && sed -i s@items@iteritems@ /tmp/641.diff ; sudo patch -p4 < /tmp/641.diff)
-
+if [[ "$ROS_DISTRO" =~ "indigo"|"jade"|"kinetic"|"lunar"|"melodic" ]]; then
+  (cd /opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/641.diff -O /tmp/641.diff; sed -i s@items@iteritems@ /tmp/641.diff ; sudo patch -p4 < /tmp/641.diff)
+fi
 
 travis_time_end
 

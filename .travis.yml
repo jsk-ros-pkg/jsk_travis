@@ -24,46 +24,53 @@ env:
     - ADDITIONAL_ENV_TO_DOCKER='TEST_VAR1 TEST_VAR2'
   matrix:
     # travis + jsk jenkins
-    - ROS_DISTRO=hydro USE_JENKINS="true" NO_SUDO="true"
-    - ROS_DISTRO=indigo
-    - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-    - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS=ros-ubuntu:14.04-pcl
-    - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS=ros-ubuntu:14.04-pcl1.8
-    - ROS_DISTRO=jade
-    - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-    - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    # travis
-    - USE_TRAVIS=true ROS_DISTRO=indigo
-    - USE_TRAVIS=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-    - USE_TRAVIS=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    - USE_TRAVIS=true ROS_DISTRO=jade
-    - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-    - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    - USE_JENKINS=true ROS_DISTRO=kinetic DOCKER_IMAGE_JENKINS=ros-ubuntu:16.04-pcl
-    - USE_JENKINS=true ROS_DISTRO=melodic DOCKER_IMAGE_JENKINS=ros-ubuntu:18.04-pcl
+    # - ROS_DISTRO=hydro USE_JENKINS="true" NO_SUDO="true"
+    # - ROS_DISTRO=indigo
+    # - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    # - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    # - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS=ros-ubuntu:14.04-pcl
+    # - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS=ros-ubuntu:14.04-pcl1.8
+    # - ROS_DISTRO=jade
+    # - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    # - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    # # travis
+    # - USE_TRAVIS=true ROS_DISTRO=indigo
+    # - USE_TRAVIS=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    # - USE_TRAVIS=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    # - USE_TRAVIS=true ROS_DISTRO=jade
+    # - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    # - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    # - USE_JENKINS=true ROS_DISTRO=kinetic DOCKER_IMAGE_JENKINS=ros-ubuntu:16.04-pcl
+    # - USE_JENKINS=true ROS_DISTRO=melodic DOCKER_IMAGE_JENKINS=ros-ubuntu:18.04-pcl
+    - USE_JENKINS=true ROS_DISTRO=noetic  DOCKER_IMAGE_JENKINS=ros-ubuntu:20.04-pcl
     # travis + docker
-    - USE_DOCKER=true ROS_DISTRO=hydro
-    - USE_DOCKER=true ROS_DISTRO=hydro USE_CATKIN_MAKE=true BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs" NOT_TEST_INSTALL=true
-    - USE_DOCKER=true ROS_DISTRO=hydro TEST_PKGS=" "
-    - USE_DOCKER=true ROS_DISTRO=hydro ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
-    - USE_DOCKER=true ROS_DISTRO=hydro BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs"
-    - USE_DOCKER=true ROS_DISTRO=indigo
-    - USE_DOCKER=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-    - USE_DOCKER=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    - USE_DOCKER=true ROS_DISTRO=jade
-    - USE_DOCKER=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-    - USE_DOCKER=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    - USE_DOCKER=true ROS_DISTRO=kinetic
-    - USE_DOCKER=true ROS_DISTRO=lunar
-    - USE_DOCKER=true ROS_DISTRO=melodic
+    # - USE_DOCKER=true ROS_DISTRO=hydro
+    # - USE_DOCKER=true ROS_DISTRO=hydro USE_CATKIN_MAKE=true BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs" NOT_TEST_INSTALL=true
+    # - USE_DOCKER=true ROS_DISTRO=hydro TEST_PKGS=" "
+    # - USE_DOCKER=true ROS_DISTRO=hydro ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
+    # - USE_DOCKER=true ROS_DISTRO=hydro BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs"
+    # - USE_DOCKER=true ROS_DISTRO=indigo
+    # - USE_DOCKER=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    # - USE_DOCKER=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    # - USE_DOCKER=true ROS_DISTRO=jade
+    # - USE_DOCKER=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
+    # - USE_DOCKER=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    # - USE_DOCKER=true ROS_DISTRO=kinetic
+    # - USE_DOCKER=true ROS_DISTRO=lunar
+    # - USE_DOCKER=true ROS_DISTRO=melodic
+    - USE_DOCKER=true ROS_DISTRO=noetic ROS_PYTHON_VERSION=2
+    - USE_DOCKER=true ROS_DISTRO=noetic ROS_PYTHON_VERSION=3
     # gazebo
-    - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=indigo
-    - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=jade
-    - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=kinetic
-    - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=indigo
-    - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=jade
-    - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=kinetic
+    # - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=indigo
+    # - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=jade
+    # - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=kinetic
+    # - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=melodic
+    - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=noetic
+    ## - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=indigo
+    # - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=jade
+    # - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=kinetic
+    # - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=melodic
+    - USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=noetic
 matrix:
   fast_finish: true
   allow_failures:
@@ -71,12 +78,17 @@ matrix:
     - env: USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=kinetic
     - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=jade
     - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=kinetic
+    - env: USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=melodic
+    - env: USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=noetic
+    - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=noetic
+    - env: USE_JENKINS=true TEST_GAZEBO=true ROS_DISTRO=melodic
 before_script:
   - find $HOME/.ccache    -type f
   - find $HOME/.cache/pip -type f
   - export ROSDEP_ADDITIONAL_OPTIONS='-n -v --ignore-src' # run rosdep without -q, -r and -v
   - mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
-  - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
+  # ros_tutorials does not have noetic-devel branch
+  - [ ${ROS_DISTRO} != "noetic" ] && export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}" || export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b melodic-devel;${BEFORE_SCRIPT}"
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin build -i -v --limit-status-rate 0.001@catkin_make@' .travis/travis.sh; fi
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin run_tests --no-deps --limit-status-rate 0.001@catkin_make run_tests@' .travis/travis.sh; fi
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then export CATKIN_PARALLEL_JOBS="--no-color" ; fi
