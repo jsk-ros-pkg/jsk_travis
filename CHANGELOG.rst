@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.10 (2020-05-02)
+-------------------
 * add support noetic/focal (`#401 <https://github.com/jsk-ros-pkg/jsk_travis/issues/401>`_)
 * Contributors: Kei Okada
 
