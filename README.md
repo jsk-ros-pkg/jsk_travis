@@ -57,6 +57,12 @@ see [this document](https://github.com/jsk-ros-pkg/jsk_common#restart-travis-fro
   Specify your target distribution of ROS. Now we support hydro, indigo and jade.
   If you specify indigo or jade, tests automatically run on jenkins.
 
+* `ROS_PYTHON_VERSION` (default: none)
+
+  Specify your target python version used of ROS. Available from Noetic.
+  see [Build Using Python3](http://wiki.ros.org/UsingPython3/BuildUsingPython3) and
+  [rep 149](https://github.com/ros-infrastructure/rep/blob/master/rep-0149.rst)
+
 * `USE_DEB` (value: [`true`|`false`|`source`])
 
   If `false`, travis firstly sees [config files](#config-files) to resolve dependencies,
