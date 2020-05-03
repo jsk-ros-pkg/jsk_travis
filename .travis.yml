@@ -60,6 +60,7 @@ env:
     - USE_DOCKER=true ROS_DISTRO=melodic
     - USE_DOCKER=true ROS_DISTRO=noetic ROS_PYTHON_VERSION=2
     - USE_DOCKER=true ROS_DISTRO=noetic ROS_PYTHON_VERSION=3
+    - USE_DOCKER=true ROS_DISTRO=noetic
     # gazebo
     - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=indigo
     - USE_DOCKER=true TEST_GAZEBO=true ROS_DISTRO=jade
