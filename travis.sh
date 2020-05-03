@@ -152,8 +152,9 @@ if [ "$USE_DOCKER" = true ]; then
   # sudo find $HOME/apt-cacher-ng
   # sudo find /var/cache/apt-cacher-ng
   sudo chown -R travis.travis $HOME
-  find $HOME/.ccache    -type f
-  find $HOME/.cache/pip -type f
+  # find $HOME/.ccache    -type f
+  find $HOME/.cache/pip -type f | grep whl || echo "OK"
+  set +x
   return $DOCKER_EXIT_CODE
 fi
 
