@@ -146,6 +146,8 @@ if [ "$USE_DOCKER" = true ]; then
     --env-file $DOCKER_ENV_FILE \
     -t $DOCKER_IMAGE bash -c 'cd $CI_SOURCE_PATH; .travis/docker.sh'
   DOCKER_EXIT_CODE=$?
+
+  travis_time_start show_cache
   rm $DOCKER_ENV_FILE
   sudo chown -R travis.travis $HOME/apt-cacher-ng
   # sudo tail -n 100 /var/log/apt-cacher-ng/*
@@ -154,6 +156,7 @@ if [ "$USE_DOCKER" = true ]; then
   sudo chown -R travis.travis $HOME
   # find $HOME/.ccache    -type f
   find $HOME/.cache/pip -type f | grep whl || echo "OK"
+  travis_time_end
   set +x
   return $DOCKER_EXIT_CODE
 fi
@@ -418,6 +421,10 @@ else
   #travis_wait 60 catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
   travis_wait 60 catkin build --catkin-make-args run_tests -- -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
 fi
+
+travis_time_end
+travis_time_start catkin_test_results
+
 catkin_test_results --verbose --all build || error
 
 travis_time_end
