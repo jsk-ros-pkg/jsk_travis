@@ -2,6 +2,25 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* update rosdep-install.sh for indigo, which does not read <*_depend condition="$ROS_PYTHON=VERSION == 2"> format (`#403 <https://github.com/jsk-ros-pkg/jsk_travis/issues/403>`_)
+
+  * remove condition=ROS_PYTHON=VERSION=2 for indigo
+  * use scipy instead of numpy, because numpy is already installed
+  * show debug message to stderr
+  * check if rosdep works with format=3
+  * add more travis_time_start/travis_time_end
+
+* Fix 0.5.10, which does not work for melodic/noetic (`#402 <https://github.com/jsk-ros-pkg/jsk_travis/issues/402>`_)
+
+  * add USE_DOCKER=true ROS_DISTRO=noetic
+  * do not print debug message end of docker.sh
+  * fix when ROS_PYTHON_VERSION is not set
+  * add USE_DOCKER=true ROS_DISTRO=noetic
+
+* Contributors: Kei Okada
+
 0.5.10 (2020-05-02)
 -------------------
 * add support noetic/focal (`#401 <https://github.com/jsk-ros-pkg/jsk_travis/issues/401>`_)
