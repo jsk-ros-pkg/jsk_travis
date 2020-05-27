@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.11 (2020-05-28)
+-------------------
 * update rosdep-install.sh for indigo, which does not read <*_depend condition="$ROS_PYTHON=VERSION == 2"> format (`#403 <https://github.com/jsk-ros-pkg/jsk_travis/issues/403>`_)
 
   * remove condition=ROS_PYTHON=VERSION=2 for indigo
