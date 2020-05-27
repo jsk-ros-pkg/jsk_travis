@@ -7,6 +7,8 @@ add_rostest(test/example.test)
 if(CATKIN_ENABLE_TESTING)
   # For testing ADDITIONAL_ENV_TO_DOCKER
   catkin_add_nosetests(test/test_env_var.py)
+  # Check if rosdep is correctly install scipy
+  catkin_add_nosetests(test/test_scipy.py)
 endif()
 
 set(ENABLE_TEST_GAZEBO OFF CACHE BOOL "Option to enable testing gazebo")
