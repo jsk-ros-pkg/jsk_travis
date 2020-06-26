@@ -38,6 +38,7 @@ RUN apt-get update && apt-get install -y curl git wget sudo lsb-release ccache a
 RUN apt-get update && apt-get install -y mesa-utils
 RUN apt-get update && apt-get install -y --force-yes -q -qq mongodb-clients mongodb-server -o Dpkg::Options::=--force-confdef
 
+RUN apt-get update && apt-get install -y python # some tools (get-pip.py) requires 'python' to install
 
 RUN addgroup --gid 976 jenkins
 RUN adduser --uid 983 --disabled-password --gecos "" --force-badname --ingroup jenkins user
