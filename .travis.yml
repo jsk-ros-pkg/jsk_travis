@@ -22,6 +22,7 @@ env:
     - TEST_VAR1=true
     - TEST_VAR2=false
     - ADDITIONAL_ENV_TO_DOCKER='TEST_VAR1 TEST_VAR2'
+    # - CATKIN_TOOLS_BUILD_OPTIONS="-iv --summarize --no-status --make-args VERBOSE=1 --"
   matrix:
     # travis + jsk jenkins
     - ROS_DISTRO=hydro USE_JENKINS="true" NO_SUDO="true"
