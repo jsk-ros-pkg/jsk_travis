@@ -2,6 +2,20 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* check USE_JENKINS=true ROS_DISTRO=noetic without DOCKER_IMAGE_JENKINS (`#405 <https://github.com/jsk-ros-pkg/jsk_travis/issues/405>`_)
+
+  * install python3-pip for 20.04
+  * add python-gdown-pip to run_depend to check pip install
+  * qt5/moc does not work on docker (https://stackoverflow.com/questions/56319830/error-when-building-qt-app-in-a-recent-docker)
+  * add CATKIN_TOOLS_BUILD_OPTIONS for debug
+  * ros_tutorials now support noetic-devel
+  * install 'python' for noetic
+  * check USE_JENKINS=true ROS_DISTRO=noetic without DOCKER_IMAGE_JENKINS
+
+* Contributors: Kei Okada
+
 0.5.11 (2020-05-28)
 -------------------
 * update rosdep-install.sh for indigo, which does not read <*_depend condition="$ROS_PYTHON=VERSION == 2"> format (`#403 <https://github.com/jsk-ros-pkg/jsk_travis/issues/403>`_)
