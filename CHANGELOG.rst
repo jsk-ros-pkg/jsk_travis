@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.12 (2020-06-28)
+-------------------
 * check USE_JENKINS=true ROS_DISTRO=noetic without DOCKER_IMAGE_JENKINS (`#405 <https://github.com/jsk-ros-pkg/jsk_travis/issues/405>`_)
 
   * install python3-pip for 20.04
