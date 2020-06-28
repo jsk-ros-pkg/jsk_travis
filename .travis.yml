@@ -22,6 +22,7 @@ env:
     - TEST_VAR1=true
     - TEST_VAR2=false
     - ADDITIONAL_ENV_TO_DOCKER='TEST_VAR1 TEST_VAR2'
+    # - CATKIN_TOOLS_BUILD_OPTIONS="-iv --summarize --no-status --make-args VERBOSE=1 --"
   matrix:
     # travis + jsk jenkins
     - ROS_DISTRO=hydro USE_JENKINS="true" NO_SUDO="true"
@@ -43,6 +44,7 @@ env:
     - USE_JENKINS=true ROS_DISTRO=kinetic DOCKER_IMAGE_JENKINS=ros-ubuntu:16.04-pcl
     - USE_JENKINS=true ROS_DISTRO=melodic DOCKER_IMAGE_JENKINS=ros-ubuntu:18.04-pcl
     - USE_JENKINS=true ROS_DISTRO=noetic  DOCKER_IMAGE_JENKINS=ros-ubuntu:20.04-pcl
+    - USE_JENKINS=true ROS_DISTRO=noetic BEFORE_SCRIPT="touch ros_tutorials/turtlesim/CATKIN_IGNORE" # qt5/moc does not work on docker (https://stackoverflow.com/questions/56319830/error-when-building-qt-app-in-a-recent-docker)
     # travis + docker
     - USE_DOCKER=true ROS_DISTRO=hydro
     - USE_DOCKER=true ROS_DISTRO=hydro USE_CATKIN_MAKE=true BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs" NOT_TEST_INSTALL=true
@@ -91,8 +93,7 @@ before_script:
   - export ROSDEP_ADDITIONAL_OPTIONS='-n -v --ignore-src' # run rosdep without -q, -r and -v
   - if [ ${ROS_DISTRO} == "noetic" ]; then export BEFORE_SCRIPT="sed -ie \"/gazebo/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME gazebo is not released in noetic
   - mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
-  # ros_tutorials does not have noetic-devel branch
-  - if [ ${ROS_DISTRO} != "noetic" ]; then export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"; else export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b melodic-devel;${BEFORE_SCRIPT}"; fi
+  - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin build -i -v --limit-status-rate 0.001@catkin_make@' .travis/travis.sh; fi
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin run_tests --no-deps --limit-status-rate 0.001@catkin_make run_tests@' .travis/travis.sh; fi
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then export CATKIN_PARALLEL_JOBS="--no-color" ; fi
