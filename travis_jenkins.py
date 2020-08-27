@@ -450,6 +450,7 @@ if j.job_exists(job_name) is None:
 while [item for item in j.get_queue_info() if item['task']['name'] == job_name]:
     time.sleep(10)
 # reconfigure job
+# if this fails, check https://github.com/spinnaker/spinnaker/issues/2067#issuecomment-407708770
 j.reconfig_job(job_name, CONFIGURE_XML % locals())
 
 ## get next number and run
@@ -466,9 +467,10 @@ while True:
 # wait for execution
 while True:
     item = j.get_queue_item(queue_number)
-    if 'executable' in item:
+    if isinstance(item, dict) and 'executable' in item:
         item = item['executable']
-        break;
+        if isinstance(item, dict) and 'number' in item:
+            break;
     print("wait for execution.... {}".format(item), file=sys.stderr)
     time.sleep(10)
 build_number = item['number']
