@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.13 (2020-08-27)
+-------------------
 * Fix for new jenkins (`#407 <https://github.com/jsk-ros-pkg/jsk_travis/issues/407>`_)
 
   * check if 'number' in item['executable']
