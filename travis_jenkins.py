@@ -467,9 +467,10 @@ while True:
 # wait for execution
 while True:
     item = j.get_queue_item(queue_number)
-    if 'executable' in item:
+    if isinstance(item, dict) and 'executable' in item:
         item = item['executable']
-        break;
+        if isinstance(item, dict) and 'number' in item:
+            break;
     print("wait for execution.... {}".format(item), file=sys.stderr)
     time.sleep(10)
 build_number = item['number']
