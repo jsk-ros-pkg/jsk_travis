@@ -2,6 +2,16 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix for new jenkins (`#407 <https://github.com/jsk-ros-pkg/jsk_travis/issues/407>`_)
+
+  * check if 'number' in item['executable']
+  * add comment when j.reconfig_job fails
+  * disable CACHEBUST, use --pull --no-cache to build, https://developer.devada.com/docs/appendix-a-troubleshooting-answerhub-docker-startup
+
+* Contributors: Kei Okada
+
 0.5.12 (2020-06-28)
 -------------------
 * check USE_JENKINS=true ROS_DISTRO=noetic without DOCKER_IMAGE_JENKINS (`#405 <https://github.com/jsk-ros-pkg/jsk_travis/issues/405>`_)
