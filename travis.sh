@@ -263,6 +263,9 @@ rosdep update --include-eol-distros|| while [ $ret != 0 ]; do sleep 1; rosdep up
 travis_time_end
 travis_time_start setup_catkin
 
+# avoid git protocol version error on travis
+git config --global --add protocol.version 1
+
 ### before_install: # Use this to prepare the system to install prerequisites or dependencies
 if [ "$ROS_DISTRO" == "hydro" ]; then
   [ ! -e /tmp/catkin ] && (cd /tmp/; git clone -q https://github.com/ros/catkin)
