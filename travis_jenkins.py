@@ -118,6 +118,7 @@ echo "TRAVIS_JENKINS_UNIQUE_ID : %(TRAVIS_JENKINS_UNIQUE_ID)s"
 # setup cache dir
 mkdir -p /data/cache/%(ROS_DISTRO)s/ccache
 mkdir -p /data/cache/%(ROS_DISTRO)s/pip-cache
+mkdir -p /data/cache/%(ROS_DISTRO)s/chainer
 mkdir -p /data/cache/%(ROS_DISTRO)s/ros/data
 mkdir -p /data/cache/%(ROS_DISTRO)s/ros/rosdep
 
@@ -165,6 +166,7 @@ docker run %(DOCKER_RUN_OPTION)s \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
     -v /data/cache/%(ROS_DISTRO)s/ccache:/workspace/.ccache \\
     -v /data/cache/%(ROS_DISTRO)s/pip-cache:/root/.cache/pip \\
+    -v /data/cache/%(ROS_DISTRO)s/chainer:/workspace/.chainer \\
     -v /data/cache/%(ROS_DISTRO)s/ros/data:/workspace/.ros/data \\
     -v /data/cache/%(ROS_DISTRO)s/ros/rosdep:/workspace/.ros/rosdep \\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
@@ -179,6 +181,7 @@ env
 # setup cache dir
 sudo chmod -R a+rw /root/.cache/pip
 sudo chown -R root.root /root/.cache/pip
+sudo chown -R user.jenkins /workspace/.chainer
 sudo chown -R user.jenkins /workspace/.ccache
 sudo chown -R user.jenkins /workspace/.ros
 
