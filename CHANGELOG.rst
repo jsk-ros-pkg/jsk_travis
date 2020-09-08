@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.14 (2020-09-08)
+-------------------
 * add /workspace/.chainer cache directory (`#409 <https://github.com/jsk-ros-pkg/jsk_travis/issues/409>`_)
 
 * Contributors: Kei Okada
