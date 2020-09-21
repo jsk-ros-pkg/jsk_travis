@@ -9,4 +9,20 @@ RUN rosdep update --include-eol-distros
 RUN rosdep resolve gtk2 | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # image_view
 RUN rosdep resolve python-qt-bindings | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # qt_gui_core
 
+# fix latest pip install fcn errors
+RUN curl https://bootstrap.pypa.io/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
+RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91
+
+# install common package to speedup
+RUN sudo pip install freezegun
+RUN sudo apt-get install -y libshiboken-dev shiboken \
+                                python-qt4 python-qt4-dev python-sip-dev libvtk-java \
+                                libgtk2.0-dev \
+                                python-pyside libpyside-dev \
+                                ros-kinetic-rqt-reconfigure python-matplotlib imagemagick \
+                                python-rosinstall-generator python-wstool \
+                                ros-kinetic-pcl-msgs ros-kinetic-octomap-msgs
+
+ARG CACHEBUST=1
+RUN echo $CACHBUST
 RUN sudo apt-get update && sudo apt-get dist-upgrade -y

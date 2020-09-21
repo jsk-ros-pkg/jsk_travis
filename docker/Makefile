@@ -1,3 +1,5 @@
+DOCKER_BUILD_ARGS=--build-arg CACHEBUST=$(shell date +%Y%m%d)
+
 all: 12.04-base 14.04-base 14.04-base 18.04-base 20.04-base \
      14.04-pcl 16.04-pcl 18.04-pcl 20.04-pcl \
      14.04-pcl1.8
