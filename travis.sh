@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 function travis_time_start {
     set +x
     TRAVIS_START_TIME=$(date +%s%N)
@@ -19,7 +17,6 @@ function travis_time_end {
     echo -e "traivs_time:end:$TRAVIS_TIME_ID:start=$TRAVIS_START_TIME,finish=$TRAVIS_END_TIME,duration=$(($TRAVIS_END_TIME - $TRAVIS_START_TIME))\n${ANSI_CLEAR}"
     echo -e "traivs_fold:end:$TRAVIS_FOLD_NAME\e[${_COLOR}m<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<${ANSI_RESET}"
     echo -e "${ANSI_CLEAR}\e[${_COLOR}mFunction $TRAVIS_FOLD_NAME takes $(( $TIME_ELAPSED_SECONDS / 60 )) min $(( $TIME_ELAPSED_SECONDS % 60 )) sec${ANSI_RESET}"
-    set -x
 }
 
 
@@ -56,15 +53,14 @@ if [ "$(git diff origin/master HEAD $CI_SOURCE_PATH/.travis)" != "" ] ; then
   fi
 fi
 
-travis_time_end
-
-
 # set default values to env variables
 [ "${USE_TRAVIS// }" = "" ] && USE_TRAVIS=false
 
 # Deprecated environmental variables
 [ ! -z $BUILDER ] && [ "$BUILDER" != catkin ] && ( echo "ERROR: $BUILDER is not supported. BUILDER env is deprecated and only 'catkin' is supported for the build."; exit 1; )
 [ ! -z $ROSWS ] && [ "$ROSWS" != wstool ] && ( echo "ERROR: $ROSWS is not supported. ROSWS env is deprecated and only 'wstool' is supported for workspace management."; exit 1; )
+
+travis_time_end
 
 # docker on travis
 if [ "$USE_DOCKER" = true ]; then
@@ -157,8 +153,7 @@ if [ "$USE_DOCKER" = true ]; then
   # find $HOME/.ccache    -type f
   find $HOME/.cache/pip -type f | grep whl || echo "OK"
   travis_time_end
-  set +x
-  return $DOCKER_EXIT_CODE
+  exit $DOCKER_EXIT_CODE
 fi
 
 if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}" == "true" ] && [ "$TRAVIS_JOB_ID" ]; then
@@ -168,7 +163,8 @@ if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}"
     fi
     pip install --user -U python-jenkins==1.7.0 -q
     PYTHONIOENCODING=utf-8 ${DEBUG_TRAVIS_PYTHON} ./.travis/travis_jenkins.py
-    return $?
+    JENKINS_EXIT_CODE=$?
+    exit $JENKINS_EXIT_CODE
 fi
 
 function error {
@@ -277,6 +273,7 @@ if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade"|"kinetic"|"lunar"|"melodic" ]]; t
 fi
 
 travis_time_end
+set -x
 
 # Check ROS tool's version
 echo -e "\e[0KROS tool's version"
@@ -365,6 +362,7 @@ sudo find -L /root/.cache/ | grep whl || echo "OK"
 sudo find -L $HOME/.cache/ | grep whl || echo "OK"
 
 travis_time_end
+set -x
 
 wstool --version
 wstool info -t .
@@ -428,6 +426,9 @@ travis_time_start catkin_test_results
 catkin_test_results --verbose --all build || error
 
 travis_time_end
+set -x
+
+catkin_test_results build || echo "OK"
 
 if [ "$NOT_TEST_INSTALL" != "true" ]; then
 

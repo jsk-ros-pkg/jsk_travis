@@ -68,12 +68,33 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
   <builders>
     <hudson.tasks.Shell>
       <command>
+function travis_time_start {
+    set +x
+    TRAVIS_START_TIME=$(date +%%s%%N)
+    TRAVIS_TIME_ID=$RANDOM
+    TRAVIS_FOLD_NAME=$1
+    echo -e "${ANSI_CLEAR}traivs_fold:start:${TRAVIS_FOLD_NAME}"
+    echo -e "${ANSI_CLEAR}traivs_time:start:${TRAVIS_TIME_ID}${ANSI_BLUE}&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;${ANSI_RESET}"
+    set -x
+}
+function travis_time_end {
+    set +x
+    _COLOR=${1:-32}
+    TRAVIS_END_TIME=$(date +%%s%%N)
+    TIME_ELAPSED_SECONDS=$(( (${TRAVIS_END_TIME} - ${TRAVIS_START_TIME})/1000000000 ))
+    echo -e "traivs_time:end:${TRAVIS_TIME_ID}:start=${TRAVIS_START_TIME},finish=${TRAVIS_END_TIME},duration=$((${TRAVIS_END_TIME} - ${TRAVIS_START_TIME}))\n${ANSI_CLEAR}"
+    echo -e "traivs_fold:end:${TRAVIS_FOLD_NAME}\e[${_COLOR}m&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;${ANSI_RESET}"
+    echo -e "${ANSI_CLEAR}\e[${_COLOR}mFunction ${TRAVIS_FOLD_NAME} takes $(( ${TIME_ELAPSED_SECONDS} / 60 )) min $(( ${TIME_ELAPSED_SECONDS} %% 60 )) sec${ANSI_RESET}"
+}
+
+travis_time_start setup_jenkins
+
 set -x
 set -e
 env
 WORKSPACE=`pwd`
 [ "${BUILD_TAG}" = "" ] &amp;&amp; BUILD_TAG="build_tag" # jenkins usually has build_tag environment, note this is sh
-trap "pwd; ls -al  $WORKSPACE/${BUILD_TAG} || echo 'ok'" EXIT
+trap "set +x" EXIT
 
 # try git clone until success
 until git clone https://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
@@ -97,9 +118,15 @@ if [ "%(REPOSITORY_NAME)s" = "jsk_travis" ]; then
   mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
 fi
 
+travis_time_end
+travis_time_start docker_build
+
 # run docker build
 docker build -t %(DOCKER_IMAGE_JENKINS)s -f $(echo .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s | sed -e s/-[^-]*\$//) .travis/docker
 docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s .travis/docker
+
+travis_time_end
+set +x
 
 echo "DOCKER_CONTAINER_NAME: %(DOCKER_CONTAINER_NAME)s"
 echo "TRAVIS_BRANCH        : %(TRAVIS_BRANCH)s"
@@ -112,6 +139,9 @@ echo "TRAVIS_JOB_ID        : %(TRAVIS_JOB_ID)s"
 echo "TRAVIS_JOB_NUMBER    : %(TRAVIS_JOB_NUMBER)s"
 echo "TRAVIS_JENKINS_UNIQUE_ID : %(TRAVIS_JENKINS_UNIQUE_ID)s"
 
+travis_time_start setup_cache
+
+set -x
 # run watchdog for kill orphan docker container
 .travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
 
@@ -133,12 +163,17 @@ if [ "%(ADD_ENV_VALUE_TO_DOCKER)s" != "" ]; then
 fi
 cat $DOCKER_ENV_FILE
 
+travis_time_end
+
 #
 docker ps -a
 if [ "$(docker ps -a | grep %(DOCKER_CONTAINER_NAME)s || true)" ] ; then
    echo "Reanaming docker container name to %(DOCKER_CONTAINER_NAME)s_%(TRAVIS_JENKINS_UNIQUE_ID)s"
    docker rename %(DOCKER_CONTAINER_NAME)s %(DOCKER_CONTAINER_NAME)s_%(TRAVIS_JENKINS_UNIQUE_ID)s
 fi
+
+travis_time_start docker_run
+
 docker run %(DOCKER_RUN_OPTION)s \\
     --name %(DOCKER_CONTAINER_NAME)s \\
     -e ROS_DISTRO='%(ROS_DISTRO)s' \\
