@@ -2,6 +2,15 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* docker: install common packages for '-pcl', and reenable CACHEBUST (`#410 <https://github.com/jsk-ros-pkg/jsk_travis/issues/410>`_)
+
+  * add travis_utils
+  * clean up travis results
+
+* Contributors: Kei Okada
+
 0.5.14 (2020-09-08)
 -------------------
 * add /workspace/.chainer cache directory (`#409 <https://github.com/jsk-ros-pkg/jsk_travis/issues/409>`_)
