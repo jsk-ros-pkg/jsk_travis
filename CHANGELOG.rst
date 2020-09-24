@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.15 (2020-09-24)
+-------------------
 * docker: install common packages for '-pcl', and reenable CACHEBUST (`#410 <https://github.com/jsk-ros-pkg/jsk_travis/issues/410>`_)
 
   * add travis_utils
