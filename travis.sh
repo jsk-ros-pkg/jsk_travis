@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. travis_utils.sh
+. $(dirname "${BASH_SOURCE[0]}")/travis_utils.sh
 
 echo "Running jsk_travis/travis.sh whose version is $(cd .travis && git describe --all)."
 
