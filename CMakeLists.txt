@@ -16,5 +16,7 @@ if(ENABLE_TEST_GAZEBO)
   add_rostest(test/gazebo.test)
 endif()
 
-install(FILES rosdep-install.sh travis_jenkins.py travis.sh
+file(GLOB_RECURSE script_files RELATIVE ${PROJECT_SOURCE_DIR} *.sh *.py)
+message(STATUS "install ${script_files}")
+install(FILES ${script_files}
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})

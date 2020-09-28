@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. travis_utils.sh
+. $(dirname "${BASH_SOURCE[0]}")/travis_utils.sh
 
 travis_time_start setup_docker
 
