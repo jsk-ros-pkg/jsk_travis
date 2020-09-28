@@ -2,6 +2,16 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix last release 0.5.15 (`#411 <https://github.com/jsk-ros-pkg/jsk_travis//issues/411>`_)
+
+  * use GLOB_RECOURSE to install scripts in test code
+  * source travis_utils.sh from .travis.sh directory
+  * mv all scripts into .travis and run tests
+
+* Contributors: Kei Okada
+
 0.5.15 (2020-09-24)
 -------------------
 * docker: install common packages for '-pcl', and reenable CACHEBUST (`#410 <https://github.com/jsk-ros-pkg/jsk_travis/issues/410>`_)
