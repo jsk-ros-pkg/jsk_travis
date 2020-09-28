@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.16 (2020-09-28)
+-------------------
 * fix last release 0.5.15 (`#411 <https://github.com/jsk-ros-pkg/jsk_travis//issues/411>`_)
 
   * use GLOB_RECOURSE to install scripts in test code
