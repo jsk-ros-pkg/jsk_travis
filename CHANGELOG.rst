@@ -2,6 +2,11 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* move to .travis directory to load travis_utils.sh (`#412 <https://github.com/jsk-ros-pkg/jsk_travis//issues/412>`_)
+* Contributors: Kei Okada
+
 0.5.16 (2020-09-28)
 -------------------
 * fix last release 0.5.15 (`#411 <https://github.com/jsk-ros-pkg/jsk_travis//issues/411>`_)
