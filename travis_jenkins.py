@@ -250,7 +250,7 @@ sudo apt-get install -qq -y mesa-utils
 glxinfo | grep GLX || echo "OK"
 
 # start testing
-`cat .travis/travis.sh`
+.travis/travis.sh
 
 EOL
 )"
