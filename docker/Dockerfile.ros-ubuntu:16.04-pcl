@@ -10,7 +10,7 @@ RUN rosdep resolve gtk2 | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # i
 RUN rosdep resolve python-qt-bindings | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # qt_gui_core
 
 # fix latest pip install fcn errors
-RUN curl https://bootstrap.pypa.io/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
+RUN curl https://bootstrap.pypa.io/2.7/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
 RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91
 
 # install common package to speedup
