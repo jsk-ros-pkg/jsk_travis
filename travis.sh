@@ -173,7 +173,7 @@ if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 
 # Install pip
-curl https://bootstrap.pypa.io/get-pip.py | sudo python -
+curl https://bootstrap.pypa.io/2.7/get-pip.py | sudo python -
 # pip>=10 no longer uninstalls distutils packages (ex. packages installed via apt),
 # and fails to install packages via pip if they are already installed via apt.
 # See https://github.com/pypa/pip/issues/4805 for detail.
