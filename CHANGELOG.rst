@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.18 (2021-01-27)
+-------------------
 * use 2.7 get-pip.py to install pip 20.3.4 to run  on python2.7 (`#414 <https://github.com/jsk-ros-pkg/jsk_travis/issues/414>`_)
   * use 2.7 get-pip.py because pip 21.0 is released, which droped python 2.7 support in january 2021.
     https://pip.pypa.io/en/latest/development/release-process/#python-2-support
