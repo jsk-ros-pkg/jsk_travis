@@ -14,7 +14,7 @@ fi
 sudo -E apt-get -y -qq update
 sudo -E apt-get -y -qq install apt-utils build-essential curl git lsb-release wget
 # 20.04 does not have pip, so install get-pip.py
-sudo -E apt-get -y -qq install python-pip python-setuptools || (sudo -E apt-get -y -qq install python; curl https://bootstrap.pypa.io/2.7/get-pip.py | sudo -E python; sudo -E apt-get -y -qq install python3-pip)
+sudo -E apt-get -y -qq install python-pip python-setuptools || (sudo -E apt-get -y -qq install python; curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo -E python; sudo -E apt-get -y -qq install python3-pip)
 
 # add user for testing
 adduser --disabled-password --gecos "" travis
