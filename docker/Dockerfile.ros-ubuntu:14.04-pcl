@@ -15,7 +15,7 @@ RUN rosdep resolve python-h5py | sed -e "s/^#.*//g" | xargs sudo apt-get install
 RUN sudo apt-get install -y octave festival
 
 # fix latest pip install fcn errors
-RUN curl https://bootstrap.pypa.io/2.7/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
 RUN sudo apt install -y python-tornado # pip installed tornado (5.1.1) fails on 14.04
 RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91
 
