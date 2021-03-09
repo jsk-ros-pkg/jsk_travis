@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.19 (2021-03-09)
+-------------------
 * update 2.7/get-pip.py url (`#416 <https://github.com/jsk-ros-pkg/jsk_travis/issues/416>`_)
 
   fix https://bootstrap.pypa.io/2.7/get-pip.py to
