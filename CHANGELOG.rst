@@ -2,6 +2,35 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* update 2.7/get-pip.py url (`#416 <https://github.com/jsk-ros-pkg/jsk_travis/issues/416>`_)
+
+  fix https://bootstrap.pypa.io/2.7/get-pip.py to
+      https://bootstrap.pypa.io/pip/2.7/get-pip.py
+  ```
+  +curl https://bootstrap.pypa.io/2.7/get-pip.py
+  +sudo python -
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+  Dload  Upload   Total   Spent    Left  Speed
+  100   936  100   936    0     0  11036      0 --:--:-- --:--:-- --:--:-- 11142
+  Hi there!
+  The URL you are using to fetch this script has changed, and this one will no
+  longer work. Please use get-pip.py from the following URL instead:
+  https://bootstrap.pypa.io/pip/2.7/get-pip.py
+  Sorry if this change causes any inconvenience for you!
+  We don't have a good mechanism to make more gradual changes here, and this
+  renaming is a part of an effort to make it easier to us to update these
+  scripts, when there's a pip release. It's also essential for improving how we
+  handle the `get-pip.py` scripts, when pip drops support for a Python minor
+  version.
+  There are no more renames/URL changes planned, and we don't expect that a need
+  would arise to do this again in the near future.
+  Thanks for understanding!
+  - Pradyun, on behalf of the volunteers who maintain pip.
+  ```
+* Contributors: Kei Okada
+
 0.5.18 (2021-01-27)
 -------------------
 * use 2.7 get-pip.py to install pip 20.3.4 to run  on python2.7 (`#414 <https://github.com/jsk-ros-pkg/jsk_travis/issues/414>`_)
