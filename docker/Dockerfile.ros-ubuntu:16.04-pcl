@@ -11,7 +11,7 @@ RUN rosdep resolve python-qt-bindings | sed -e "s/^#.*//g" | xargs sudo apt-get 
 
 # fix latest pip install fcn errors
 RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
-RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91
+RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91 decorator==4.4.2
 
 # install common package to speedup
 RUN sudo pip install freezegun
