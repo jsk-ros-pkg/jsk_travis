@@ -64,7 +64,11 @@ if [ "$USE_DOCKER" = true ]; then
   sudo apt-get update && sudo apt-get install -y apt-cacher-ng
   sudo sed -i "s@CacheDir: /var/cache/apt-cacher-ng@CacheDir: $HOME/apt-cacher-ng@" /etc/apt-cacher-ng/acng.conf
   grep CacheDir /etc/apt-cacher-ng/acng.conf
-  sudo chmod 777 $HOME/apt-cacher-ng && sudo /etc/init.d/apt-cacher-ng restart
+  # need the writable the permissions of $HOME/apt-cacher-ng
+  # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=772489
+  sudo chown apt-cacher-ng:apt-cacher-ng $HOME/apt-cacher-ng
+  ls -al $HOME/apt-cacher-ng
+  sudo chmod a+rwx -R $HOME && sudo /etc/init.d/apt-cacher-ng restart
   ls -al /var/cache/apt-cacher-ng
   ls -al /var/cache/apt-cacher-ng/
   ls -al $HOME/apt-cacher-ng
@@ -173,11 +177,20 @@ if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 
 # Install pip
-curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo python -
+# Note: pip 21.0, in January 2021, will remove Python 2 support
+sudo apt-get update -q || echo Ignore error of apt-get update
+sudo -E apt-get -y -qq install python python-setuptools
+# 12.04's pip does not support install whl
+curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz --output /tmp/pip-9.0.3.tar.gz
+(cd /tmp; tar -xzf pip-9.0.3.tar.gz)
+sudo -H python -m easy_install /tmp/pip-9.0.3
+#curl https://files.pythonhosted.org/packages/ac/95/a05b56bb975efa78d3557efa36acaf9cf5d2fd0ee0062060493687432e03/pip-9.0.3-py2.py3-none-any.whl --output /tmp/pip-9.0.3-py2.py3-none-any.whl
+#sudo -H pip install /tmp/pip-9.0.3-py2.py3-none-any.whl
+hash -r
+pip --version
 # pip>=10 no longer uninstalls distutils packages (ex. packages installed via apt),
 # and fails to install packages via pip if they are already installed via apt.
 # See https://github.com/pypa/pip/issues/4805 for detail.
-sudo -H pip install 'pip<10'
 
 # set DEBIAN_FRONTEND=noninteractive
 echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
@@ -217,6 +230,14 @@ sudo ln -s /usr/bin/ccache /usr/local/bin/g++
 sudo ln -s /usr/bin/ccache /usr/local/bin/cc
 sudo ln -s /usr/bin/ccache /usr/local/bin/c++
 ccache -s
+
+# check git : old linux needs newer git client ?
+# https://stackoverflow.com/questions/53207973/fatal-unknown-value-for-config-protocol-version-2
+sudo apt-get install -y -q software-properties-common python-software-properties
+sudo add-apt-repository -y ppa:git-core/ppa
+sudo apt-get install -y -q git
+git --version
+git config -l
 
 if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
