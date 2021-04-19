@@ -338,6 +338,8 @@ travis_time_start setup_pip_cache
 if [ `whoami` = travis ]; then
    sudo rm -fr /root/.cache/pip
    sudo cp -r $HOME/.cache/pip /root/.cache/
+   sudo ls -al /root/.cache/
+   sudo mkdir -p /root/.cache/pip/
    sudo chown -R root:root /root/.cache/pip/
 fi
 # Show cached PIP packages
