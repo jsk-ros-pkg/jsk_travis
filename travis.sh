@@ -162,7 +162,7 @@ function error {
 trap error ERR
 
 
-travis_time_start setup_ros
+travis_time_start setup_config
 
 # Define some config vars
 export CI_SOURCE_PATH=$(pwd)
@@ -176,7 +176,23 @@ if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://package
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 
+travis_time_end
+travis_time_start setup_pip
+
+# install add-apt-repository
+sudo apt-get install -y -q software-properties-common
+if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade" ]]; then
+    sudo apt-get install -y -q python-software-properties
+fi
+
 # Install pip
+# See https://github.com/pypa/pip/issues/4805 for detail.
+if [[ "$ROS_DISTRO" =~ "indigo"|"jade" ]]; then
+    # https://github.com/pypa/pypi-support/issues/978 requires Python >= 2.7.9
+    sudo add-apt-repository -y ppa:longsleep/python2.7-backports
+    sudo apt-get update
+    sudo apt-get dist-upgrade -y
+fi
 # Note: pip 21.0, in January 2021, will remove Python 2 support
 sudo apt-get update -q || echo Ignore error of apt-get update
 sudo -E apt-get -y -qq install python python-setuptools
@@ -188,9 +204,12 @@ sudo -H python -m easy_install /tmp/pip-9.0.3
 #sudo -H pip install /tmp/pip-9.0.3-py2.py3-none-any.whl
 hash -r
 pip --version
+python --version
 # pip>=10 no longer uninstalls distutils packages (ex. packages installed via apt),
 # and fails to install packages via pip if they are already installed via apt.
-# See https://github.com/pypa/pip/issues/4805 for detail.
+
+travis_time_end
+travis_time_start setup_ros
 
 # set DEBIAN_FRONTEND=noninteractive
 echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
@@ -224,6 +243,10 @@ if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
     export CATKIN_TOOLS_BUILD_OPTIONS="--summarize --no-status"
   fi
 fi
+
+travis_time_end
+travis_time_start setup_cache
+
 # setup ccache
 sudo ln -s /usr/bin/ccache /usr/local/bin/gcc
 sudo ln -s /usr/bin/ccache /usr/local/bin/g++
@@ -231,13 +254,18 @@ sudo ln -s /usr/bin/ccache /usr/local/bin/cc
 sudo ln -s /usr/bin/ccache /usr/local/bin/c++
 ccache -s
 
+travis_time_end
+travis_time_start setup_git
+
 # check git : old linux needs newer git client ?
 # https://stackoverflow.com/questions/53207973/fatal-unknown-value-for-config-protocol-version-2
-sudo apt-get install -y -q software-properties-common python-software-properties
 sudo add-apt-repository -y ppa:git-core/ppa
 sudo apt-get install -y -q git
 git --version
 git config -l
+
+travis_time_end
+travis_time_start setup_mongo
 
 if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
