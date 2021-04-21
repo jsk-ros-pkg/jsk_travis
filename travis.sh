@@ -187,21 +187,21 @@ fi
 
 # Install pip
 # See https://github.com/pypa/pip/issues/4805 for detail.
+# https://github.com/pypa/pypi-support/issues/978 requires Python >= 2.7.9
 if [[ "$ROS_DISTRO" =~ "indigo"|"jade" ]]; then
-    # https://github.com/pypa/pypi-support/issues/978 requires Python >= 2.7.9
     sudo add-apt-repository -y ppa:longsleep/python2.7-backports
     sudo apt-get update
     sudo apt-get dist-upgrade -y
 fi
 # Note: pip 21.0, in January 2021, will remove Python 2 support
-sudo apt-get update -q || echo Ignore error of apt-get update
-sudo -E apt-get -y -qq install python python-setuptools
 # 12.04's pip does not support install whl
-curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz --output /tmp/pip-9.0.3.tar.gz
-(cd /tmp; tar -xzf pip-9.0.3.tar.gz)
-sudo -H python -m easy_install /tmp/pip-9.0.3
-#curl https://files.pythonhosted.org/packages/ac/95/a05b56bb975efa78d3557efa36acaf9cf5d2fd0ee0062060493687432e03/pip-9.0.3-py2.py3-none-any.whl --output /tmp/pip-9.0.3-py2.py3-none-any.whl
-#sudo -H pip install /tmp/pip-9.0.3-py2.py3-none-any.whl
+if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade"|"kinetic"|"lunar" ]]; then
+    sudo apt-get update -q || echo Ignore error of apt-get update
+    sudo -E apt-get -y -qq install python python-setuptools
+    curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz --output /tmp/pip-9.0.3.tar.gz
+    (cd /tmp; tar -xzf pip-9.0.3.tar.gz)
+    sudo -H python -m easy_install /tmp/pip-9.0.3
+fi
 hash -r
 pip --version
 python --version
