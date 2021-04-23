@@ -207,8 +207,8 @@ if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade"|"kinetic"|"lunar" ]]; then
     sudo -H python -m easy_install /tmp/pip-9.0.3
 fi
 hash -r
-pip --version
-python --version
+pip --version || echo "pip is not installed"
+python --version || echo "python is not installed"
 # pip>=10 no longer uninstalls distutils packages (ex. packages installed via apt),
 # and fails to install packages via pip if they are already installed via apt.
 
