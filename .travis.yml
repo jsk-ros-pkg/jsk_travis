@@ -89,6 +89,7 @@ before_script:
   - find $HOME/.ccache    -type f
   - find $HOME/.cache/pip -type f
   - export ROSDEP_ADDITIONAL_OPTIONS='-n -v --ignore-src' # run rosdep without -q, -r and -v
+  - if [ ${ROS_DISTRO} == "hydro" ]; then export BEFORE_SCRIPT="sed -ie \"s/\(<.*-pip.*>\)/<!-- \1 -->/\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME hydro does not have python >= 2.7.9, so it fails on pip install
   - if [ ${ROS_DISTRO} == "noetic" ]; then export BEFORE_SCRIPT="sed -ie \"/gazebo/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME gazebo is not released in noetic
   - mkdir .travis; mv *.sh *.py *.conf .travis/ # need to move, since directory starting from . is ignoreed by catkin build
   - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
