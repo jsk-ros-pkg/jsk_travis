@@ -179,6 +179,10 @@ echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 travis_time_end
 travis_time_start setup_pip
 
+# set non interactive tzdata https://stackoverflow.com/questions/8671308/non-interactive-method-for-dpkg-reconfigure-tzdata
+# set DEBIAN_FRONTEND=noninteractive
+echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+
 # install add-apt-repository
 sudo apt-get install -y -q software-properties-common
 if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade" ]]; then
@@ -211,8 +215,6 @@ python --version
 travis_time_end
 travis_time_start setup_ros
 
-# set DEBIAN_FRONTEND=noninteractive
-echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 # Setup apt
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
