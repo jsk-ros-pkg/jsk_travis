@@ -17,9 +17,6 @@ RUN sudo apt-get install -y octave festival
 # fix latest pip install fcn errors
 RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
 RUN sudo apt install -y python-tornado # pip installed tornado (5.1.1) fails on 14.04
-# https://github.com/pypa/pypi-support/issues/978 requires Python >= 2.7.9
-RUN sudo apt-get install -y software-properties-common
-RUN sudo add-apt-repository ppa:longsleep/python2.7-backports && sudo apt-get update && sudo apt-get dist-upgrade -y
 RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91 decorator==4.4.2
 
 # install package to speedup
