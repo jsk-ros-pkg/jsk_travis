@@ -1,0 +1,202 @@
+# jsk_travis
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - build: jenkins_hydro
+            USE_JENKINS: true
+            ROS_DISTRO : hydro
+          - build: jenkins_indigo
+            USE_JENKINS: true
+            ROS_DISTRO : indigo
+          - build: jenkins_kinetic
+            USE_JENKINS: true
+            ROS_DISTRO : kinetic
+          - build: jenkins_kinetic_pcl
+            USE_JENKINS: true
+            ROS_DISTRO : kinetic
+            DOCKER_IMAGE_JENKINS : ros-ubuntu:16.04-pcl
+          - build: jenkins_melodic
+            USE_JENKINS: true
+            ROS_DISTRO : melodic
+          - build: jenkins_melodic_pcl
+            USE_JENKINS: true
+            ROS_DISTRO : melodic
+            DOCKER_IMAGE_JENKINS : ros-ubuntu:18.04-pcl
+          - build: jenkins_noetic
+            USE_JENKINS: true
+            ROS_DISTRO : noetic
+          - build: jenkins_noetic_pcl
+            USE_JENKINS: true
+            ROS_DISTRO : noetic
+            DOCKER_IMAGE_JENKINS : ros-ubuntu:20.04-pcl
+          - build: hydro
+            container: ubuntu:12.04
+            ROS_DISTRO : hydro
+          - build: indigo
+            container: ubuntu:14.04
+            ROS_DISTRO : indigo
+          - build: kinetic
+            container: ubuntu:16.04
+            ROS_DISTRO : kinetic
+          - build: melodic
+            container: ubuntu:18.04
+            ROS_DISTRO : melodic
+          - build: melodic_catkin_make
+            container : ubuntu:18.04
+            ROS_DISTRO : melodic
+            USE_CATKIN_MAKE : true
+            BEFORE_SCRIPT : "pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs"
+            NOT_TEST_INSTALL : true
+          - build: melodic_test_packages
+            container : ubuntu:18.04
+            ROS_DISTRO : melodic
+            TEST_PKGS : ""
+          - build: melodic_repository_path
+            container : ubuntu:18.04
+            ROS_DISTRO : melodic
+            ROS_REPOSITORY_PATH : http://packages.ros.org/ros/ubuntu
+          - build: noetic
+            container: ubuntu:20.04
+            ROS_DISTRO : noetic
+          - build: noetic_python2
+            container: ubuntu:20.04
+            ROS_DISTRO : noetic
+            ROS_PYTHON_VERSION : 2
+            ROSDEP_ADDITIONAL_OPTIONS : "-n -q -r --ignore-src"
+            BEFORE_SCRIPT : "sudo pip install empy"
+            TEST_PKGS : "rospy_tutorials"
+          - build: noetic_python3
+            container: ubuntu:20.04
+            ROS_DISTRO : noetic
+            ROS_PYTHON_VERSION : 3
+          - build: check_python3
+            container: ubuntu:20.04
+
+    env:
+      CI_SOURCE_PATH: ${{ github.workspace }}
+      ADDITIONAL_ENV_TO_DOCKER : ${{ matrix.ADDITIONAL_ENV_TO_DOCKER }}
+      BEFORE_SCRIPT : ${{ matrix.BEFORE_SCRIPT }}
+      BUILDER : ${{ matrix.BUILDER }}
+      BUILD_PKGS : ${{ matrix.BUILD_PKGS }}
+      CATKIN_PARALLEL_JOBS : ${{ matrix.CATKIN_PARALLEL_JOBS }}
+      CATKIN_PARALLEL_TEST_JOBS : ${{ matrix.CATKIN_PARALLEL_TEST_JOBS }}
+      CATKIN_TOOLS_BUILD_OPTIONS : ${{ matrix.CATKIN_TOOLS_BUILD_OPTIONS }}
+      CATKIN_TOOLS_CONFIG_OPTIONS : ${{ matrix.CATKIN_TOOLS_CONFIG_OPTIONS }}
+      CMAKE_DEVELOPER_ERROR : ${{ matrix.CMAKE_DEVELOPER_ERROR }}
+      DEBUG_TRAVIS_PYTHON : ${{ matrix.DEBUG_TRAVIS_PYTHON }}
+      DOCKER_IMAGE_JENKINS : ${{ matrix.DOCKER_IMAGE_JENKINS }}
+      EXTRA_DEB : ${{ matrix.EXTRA_DEB }}
+      NOT_TEST_INSTALL : ${{ matrix.NOT_TEST_INSTALL }}
+      ROSDEP_ADDITIONAL_OPTIONS : ${{ matrix.ROSDEP_ADDITIONAL_OPTIONS || '-n -v --ignore-src' }}  # run rosdep without -q, -r and -v
+      ROSDEP_UPDATE_QUIET : ${{ matrix.ROSDEP_UPDATE_QUIET }}
+      ROSWS : ${{ matrix.ROSWS }}
+      ROS_DISTRO : ${{ matrix.ROS_DISTRO }}
+      ROS_LOG_DIR : ${{ matrix.ROS_LOG_DIR }}
+      ROS_PARALLEL_JOBS : ${{ matrix.ROS_PARALLEL_JOBS }}
+      ROS_PARALLEL_TEST_JOBS : ${{ matrix.ROS_PARALLEL_TEST_JOBS }}
+      ROS_PYTHON_VERSION : ${{ matrix.ROS_PYTHON_VERSION || '' }}
+      ROS_REPOSITORY_PATH : ${{ matrix.ROS_REPOSITORY_PATH }}
+      SUDO_PIP : ${{ matrix.SUDO_PIP }}
+      TARGET_PKGS : ${{ matrix.TARGET_PKGS }}
+      TEST_PKGS : ${{ matrix.TEST_PKGS }}
+      USE_CATKIN_MAKE : ${{ matrix.USE_CATKIN_MAKE }}
+      USE_DEB : ${{ matrix.USE_DEB }}
+      USE_JENKINS : ${{ matrix.USE_JENKINS || 'false' }}
+      USE_PYTHON_VIRTUALENV : ${{ matrix.USE_PYTHON_VIRTUALENV }}
+      USE_TRAVIS : ${{ matrix.USE_JENKINS == true && 'false' || 'true' }} # if not use_jenkins, use travis(actions)
+
+    name: ${{ matrix.ROS_DISTRO || matrix.build }}${{ matrix.USE_JENKINS && '+jenkins' || '' }}${{ matrix.ROS_PYTHON_VERSION == '2' && '+python2' || '' }}${{ matrix.ROS_PYTHON_VERSION == '3' && '+python3' || '' }}${{ matrix.ROS_REPOSITORY_PATH }}${{ matrix.BEFORE_SCRIPT && toJSON(matrix.BEFORE_SCRIPT) || '' }}${{ matrix.TARGET_PKGS && toJSON(matrix.TARGET_PKGS) || '' }}${{ matrix.TEST_PKGS && toJSON(matrix.TEST_PKGS) || '' }}${{ matrix.DOCKER_IMAGE_JENKINS && toJSON(matrix.DOCKER_IMAGE_JENKINS) || '' }}
+
+    container: ${{ matrix.container || 'ubuntu:18.04' }}
+
+    steps:
+      - name: Chcekout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+        if: ${{ ! ( matrix.ROS_DISTRO == 'hydro' &&  matrix.USE_JENKINS != 'true' ) }}
+      - name: Chcekout # hydro container does not work with actions/checkout@v2
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 2
+        if: ${{ matrix.ROS_DISTRO == 'hydro' &&  matrix.USE_JENKINS != 'true' }}
+      - name: Install system commands
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get -y -qq update
+          apt-get -y -qq install sudo
+          # install fundamental packages
+          sudo -E apt-get -y -qq update
+          sudo -E apt-get -y -qq install apt-utils build-essential curl git lsb-release wget
+          # 20.04 does not have pip, so install get-pip.py
+          sudo -E apt-get -y -qq install python-pip python-setuptools || (sudo -E apt-get -y -qq install python; curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo -E python; sudo -E apt-get -y -qq install python3-pip)
+      - name: Run jsk_travis test
+        if: matrix.ROS_DISTRO != ''
+        run: |
+          set -x
+          # unset if  not defined
+          if [[ "${ADDITIONAL_ENV_TO_DOCKER}" == "" ]]; then unset ADDITIONAL_ENV_TO_DOCKER; fi
+          if [[ "${BEFORE_SCRIPT}" == "" ]]; then unset BEFORE_SCRIPT; fi
+          if [[ "${BUILDER}" == "" ]]; then unset BUILDER; fi
+          if [[ "${BUILD_PKGS}" == "" ]]; then unset BUILD_PKGS; fi
+          if [[ "${CATKIN_PARALLEL_JOBS}" == "" ]]; then unset CATKIN_PARALLEL_JOBS; fi
+          if [[ "${CATKIN_PARALLEL_TEST_JOBS}" == "" ]]; then unset CATKIN_PARALLEL_TEST_JOBS; fi
+          if [[ "${CATKIN_TOOLS_BUILD_OPTIONS}" == "" ]]; then unset CATKIN_TOOLS_BUILD_OPTIONS; fi
+          if [[ "${CATKIN_TOOLS_CONFIG_OPTIONS}" == "" ]]; then unset CATKIN_TOOLS_CONFIG_OPTIONS; fi
+          if [[ "${CMAKE_DEVELOPER_ERROR}" == "" ]]; then unset CMAKE_DEVELOPER_ERROR; fi
+          if [[ "${DEBUG_TRAVIS_PYTHON}" == "" ]]; then unset DEBUG_TRAVIS_PYTHON; fi
+          if [[ "${DOCKER_IMAGE_JENKINS}" == "" ]]; then unset DOCKER_IMAGE_JENKINS; fi
+          if [[ "${EXTRA_DEB}" == "" ]]; then unset EXTRA_DEB; fi
+          if [[ "${NOT_TEST_INSTALL}" == "" ]]; then unset NOT_TEST_INSTALL; fi
+          if [[ "${ROSDEP_ADDITIONAL_OPTIONS}" == "" ]]; then unset ROSDEP_ADDITIONAL_OPTIONS; fi
+          if [[ "${ROSDEP_UPDATE_QUIET}" == "" ]]; then unset ROSDEP_UPDATE_QUIET; fi
+          if [[ "${ROSWS}" == "" ]]; then unset ROSWS; fi
+          if [[ "${ROS_DISTRO}" == "" ]]; then unset ROS_DISTRO; fi
+          if [[ "${ROS_LOG_DIR}" == "" ]]; then unset ROS_LOG_DIR; fi
+          if [[ "${ROS_PARALLEL_JOBS}" == "" ]]; then unset ROS_PARALLEL_JOBS; fi
+          if [[ "${ROS_PARALLEL_TEST_JOBS}" == "" ]]; then unset ROS_PARALLEL_TEST_JOBS; fi
+          if [[ "${ROS_PYTHON_VERSION}" == "" ]]; then unset ROS_PYTHON_VERSION || ''; fi
+          if [[ "${ROS_REPOSITORY_PATH}" == "" ]]; then unset ROS_REPOSITORY_PATH; fi
+          if [[ "${SUDO_PIP}" == "" ]]; then unset SUDO_PIP; fi
+          if [[ "${TARGET_PKGS}" == "" ]]; then unset TARGET_PKGS; fi
+          if [[ "${TEST_PKGS}" == "" ]]; then unset TEST_PKGS; fi
+          if [[ "${USE_CATKIN_MAKE}" == "" ]]; then unset USE_CATKIN_MAKE; fi
+          if [[ "${USE_DEB}" == "" ]]; then unset USE_DEB; fi
+          if [[ "${USE_JENKINS}" == "" ]]; then unset USE_JENKINS; fi
+          if [[ "${USE_PYTHON_VIRTUALENV}" == "" ]]; then unset USE_PYTHON_VIRTUALENV; fi
+          if [[ "${USE_TRAVIS}" == "" ]]; then unset USE_TRAVIS; fi
+          # to compatible with travis
+          export TRAVIS_BRANCH=${GITHUB_REF#refs/heads/}
+          export TRAVIS_REPO_SLUG=${GITHUB_REPOSITORY}
+          export TRAVIS_JOB_ID=${GITHUB_RUN_ID}
+          export TRAVIS_JOB_NUMBER=${GITHUB_RUN_NUMBER}
+          export TRAVIS_COMMIT=${GITHUB_SHA}
+          export TRAVIS_PULL_REQUEST=false
+          # For testing ADDITIONAL_ENV_TO_DOCKER
+          export TEST_VAR1='true'
+          export TEST_VAR2='false'
+          export ADDITIONAL_ENV_TO_DOCKER='TEST_VAR1 TEST_VAR2'
+          ## start here
+          env
+          if [ "${ROS_DISTRO}" == "hydro" ]; then export BEFORE_SCRIPT="sed -ie \"/-pip/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME hydro does not have python >= 2.7.9, so it fails on pip install
+          if [ "${ROS_DISTRO}" == "noetic" ]; then export BEFORE_SCRIPT="sed -ie \"/gazebo/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME gazebo is not released in noetic
+          if [ "${ROS_DISTRO}" == "noetic" ]; then export BEFORE_SCRIPT="touch ros_tutorials/turtlesim/CATKIN_IGNORE; ${BEFORE_SCRIPT}"; fi # qt5/moc does not work on docker (https://stackoverflow.com/questions/56319830/error-when-building-qt-app-in-a-recent-docker)
+          mkdir .travis; mv *.sh *.py *.conf .travis/ # need to move, since directory starting from . is ignoreed by catkin build
+          export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
+          if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin build -i -v --limit-status-rate 0.001@catkin_make@' .travis/travis.sh; fi
+          if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin run_tests --no-deps --limit-status-rate 0.001@catkin_make run_tests@' .travis/travis.sh; fi
+          if [ "${USE_CATKIN_MAKE}" == "true" ] ;then export CATKIN_PARALLEL_JOBS="--no-color" ; fi
+          if [ "${TEST_GAZEBO}" = "true" ]; then export CATKIN_TOOLS_BUILD_OPTIONS="--force-cmake --cmake-args -DENABLE_TEST_GAZEBO:BOOL=ON --"; fi
+          .travis/travis.sh
+        shell: bash
+      - name: Chcek python3
+        if: matrix.build == 'check_python3'
+        run: |
+          apt update -q && apt install -y -q python3
+          python3 -m compileall .
