@@ -204,6 +204,7 @@ sudo -E apt-get -y -qq install python python-setuptools
 curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz --output /tmp/pip-9.0.3.tar.gz
 (cd /tmp; tar -xzf pip-9.0.3.tar.gz)
 sudo -H python -m easy_install /tmp/pip-9.0.3
+sudo pip install -I 'pip<10' # reinsall pip9.0.3, otherwise it fails on, ImportError: Entry point ('console_scripts', 'pip2') not found
 
 hash -r
 pip --version || echo "pip is not installed"
