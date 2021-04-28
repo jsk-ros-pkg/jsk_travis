@@ -64,7 +64,11 @@ if [ "$USE_DOCKER" = true ]; then
   sudo apt-get update && sudo apt-get install -y apt-cacher-ng
   sudo sed -i "s@CacheDir: /var/cache/apt-cacher-ng@CacheDir: $HOME/apt-cacher-ng@" /etc/apt-cacher-ng/acng.conf
   grep CacheDir /etc/apt-cacher-ng/acng.conf
-  sudo chmod 777 $HOME/apt-cacher-ng && sudo /etc/init.d/apt-cacher-ng restart
+  # need the writable the permissions of $HOME/apt-cacher-ng
+  # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=772489
+  sudo chown apt-cacher-ng:apt-cacher-ng $HOME/apt-cacher-ng
+  ls -al $HOME/apt-cacher-ng
+  sudo chmod a+rwx -R $HOME && sudo /etc/init.d/apt-cacher-ng restart
   ls -al /var/cache/apt-cacher-ng
   ls -al /var/cache/apt-cacher-ng/
   ls -al $HOME/apt-cacher-ng
@@ -143,7 +147,7 @@ if [ "$USE_TRAVIS" != "true" ] && [ "$ROS_DISTRO" != "hydro" -o "${USE_JENKINS}"
         pip --version
         python --version
     fi
-    pip install --user -U python-jenkins==1.7.0 -q
+    pip install -U python-jenkins==1.7.0 -q
     PYTHONIOENCODING=utf-8 ${DEBUG_TRAVIS_PYTHON} ./.travis/travis_jenkins.py
     JENKINS_EXIT_CODE=$?
     exit $JENKINS_EXIT_CODE
@@ -158,7 +162,7 @@ function error {
 trap error ERR
 
 
-travis_time_start setup_ros
+travis_time_start setup_config
 
 # Define some config vars
 export CI_SOURCE_PATH=$(pwd)
@@ -172,15 +176,47 @@ if [ ! "$ROS_REPOSITORY_PATH" ]; then export ROS_REPOSITORY_PATH="http://package
 if [ ! "$ROSDEP_ADDITIONAL_OPTIONS" ]; then export ROSDEP_ADDITIONAL_OPTIONS="-n -q -r --ignore-src"; fi
 echo "Testing branch $TRAVIS_BRANCH of $REPOSITORY_NAME"
 
-# Install pip
-curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo python -
-# pip>=10 no longer uninstalls distutils packages (ex. packages installed via apt),
-# and fails to install packages via pip if they are already installed via apt.
-# See https://github.com/pypa/pip/issues/4805 for detail.
-sudo -H pip install 'pip<10'
+travis_time_end
+travis_time_start setup_pip
 
+# set non interactive tzdata https://stackoverflow.com/questions/8671308/non-interactive-method-for-dpkg-reconfigure-tzdata
 # set DEBIAN_FRONTEND=noninteractive
 echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+
+# install add-apt-repository
+sudo apt-get install -y -q software-properties-common
+if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade" ]]; then
+    sudo apt-get install -y -q python-software-properties
+fi
+
+# Install pip
+# See https://github.com/pypa/pip/issues/4805 for detail.
+# https://github.com/pypa/pypi-support/issues/978 requires Python >= 2.7.9
+if [[ "$ROS_DISTRO" =~ "indigo"|"jade" ]]; then
+    sudo add-apt-repository -y ppa:longsleep/python2.7-backports
+    sudo apt-get update
+    sudo apt-get dist-upgrade -y
+fi
+# Note: pip 21.0, in January 2021, will remove Python 2 support
+# 12.04's pip does not support install whl
+sudo apt-get update -q || echo Ignore error of apt-get update
+sudo -E apt-get -y -qq install python python-setuptools
+curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz --output /tmp/pip-9.0.3.tar.gz
+(cd /tmp; tar -xzf pip-9.0.3.tar.gz)
+sudo -H python -m easy_install /tmp/pip-9.0.3
+if [[ ! "$ROS_DISTRO" =~ "hydro" ]]; then # on hydro:  Could not find a version that satisfies the requirement pip<10 (from versions: )
+    sudo pip install -I 'pip<10' # on melodic  reinsall pip9.0.3, otherwise it fails on, ImportError: Entry point ('console_scripts', 'pip2') not found
+fi
+
+hash -r
+pip --version || echo "pip is not installed"
+python --version || echo "python is not installed"
+# pip>=10 no longer uninstalls distutils packages (ex. packages installed via apt),
+# and fails to install packages via pip if they are already installed via apt.
+
+travis_time_end
+travis_time_start setup_ros
+
 # Setup apt
 sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
 wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
@@ -211,12 +247,29 @@ if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
     export CATKIN_TOOLS_BUILD_OPTIONS="--summarize --no-status"
   fi
 fi
+
+travis_time_end
+travis_time_start setup_cache
+
 # setup ccache
 sudo ln -s /usr/bin/ccache /usr/local/bin/gcc
 sudo ln -s /usr/bin/ccache /usr/local/bin/g++
 sudo ln -s /usr/bin/ccache /usr/local/bin/cc
 sudo ln -s /usr/bin/ccache /usr/local/bin/c++
 ccache -s
+
+travis_time_end
+travis_time_start setup_git
+
+# check git : old linux needs newer git client ?
+# https://stackoverflow.com/questions/53207973/fatal-unknown-value-for-config-protocol-version-2
+sudo add-apt-repository -y ppa:git-core/ppa
+sudo apt-get install -y -q git
+git --version
+git config -l
+
+travis_time_end
+travis_time_start setup_mongo
 
 if [ "$EXTRA_DEB" ]; then sudo apt-get install -q -qq -y $EXTRA_DEB;  fi
 # MongoDB hack - I don't fully understand this but its for moveit_warehouse
@@ -317,6 +370,8 @@ travis_time_start setup_pip_cache
 if [ `whoami` = travis ]; then
    sudo rm -fr /root/.cache/pip
    sudo cp -r $HOME/.cache/pip /root/.cache/
+   sudo ls -al /root/.cache/
+   sudo mkdir -p /root/.cache/pip/
    sudo chown -R root:root /root/.cache/pip/
 fi
 # Show cached PIP packages
