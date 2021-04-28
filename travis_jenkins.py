@@ -121,13 +121,13 @@ if [ "%(REPOSITORY_NAME)s" = "jsk_travis" ]; then
 fi
 
 travis_time_end
-travis_time_start docker_build
+# travis_time_start docker_build
 
-# run docker build
-docker build -t %(DOCKER_IMAGE_JENKINS)s -f $(echo .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s | sed -e s/-[^-]*\$//) .travis/docker
-docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s .travis/docker
+# # run docker build
+# docker build -t %(DOCKER_IMAGE_JENKINS)s -f $(echo .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s | sed -e s/-[^-]*\$//) .travis/docker
+# docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s .travis/docker
 
-travis_time_end
+# travis_time_end
 set +x
 
 echo "DOCKER_CONTAINER_NAME: %(DOCKER_CONTAINER_NAME)s"
