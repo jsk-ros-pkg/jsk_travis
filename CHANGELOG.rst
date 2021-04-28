@@ -2,6 +2,48 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix travis to work (again....) (`#419 <https://github.com/jsk-ros-pkg/jsk_travis/issues/419>`_)
+
+  * pip install -I pip<9 does not work on hydro
+    * reinstall pip-9 from pypi, otherwise
+  ```
+  ImportError: Entry point ('console_scripts', 'pip2') not found
+  ```
+  occurs
+  * instal python >= 2.7.9 on ros-ubuntu:14.04-base
+  * hydro does not like lates pip install....
+  * apply turtlesim/CATKIN_IGNORE for all noetic tests
+  * fix hydro pip remove
+  * 20.04 needs pip
+  * hydro does not have python >= 2.7.9, so it fails on pip install, comment out pip depends
+  * do not error when pip/python is not installed
+  * set noninteractive before apt-get install
+  * On ubuntu >= 18, does not need to install pip
+  * pypa requires python >= 2.7.9, where trusty uses pyton 2.7.6, install ppa veresion of python2.7.13
+  * since .travis.yml move to bionic, do not run indigo/jade on travis
+  * update .travis.yml to bionic
+  * --user install is not supported
+  * mkdir -p /root/.cache/pip/
+  * fix travis problem, fix apt-ag-cacher, could not install get-pip.py, git clone fails of protocol.version2...
+  add python-pip, on 14.04 get-pip.py fils with
+  +curl https://bootstrap.pypa.io/pip/2.7/get-pip.py
+  +sudo python -
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+  Dload  Upload   Total   Spent    Left  Speed
+  100 1863k  100 1863k    0     0  10.9M      0 --:--:-- --:--:-- --:--:-- 10.9M
+  DEPRECATION: Python 2.7 reached the end of its life on January 1st, 2020. Please upgrade your Python as Python 2.7 is no longer maintained. pip 21.0 will drop support for Python 2.7 in January 2021. More details about Python 2 support in pip can be found at https://pip.pypa.io/en/latest/development/release-process/#python-2-support pip 21.0 will remove support for this functionality.
+  WARNING: The directory '/home/travis/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you may want sudo's -H flag.
+  /tmp/tmpqCDyYn/pip.zip/pip/_vendor/urllib3/util/ssl\_.py:424: SNIMissingWarning: An HTTPS request has been made, but the SNI (Server Name Indication) extension to TLS is not available on this platform. This may cause the server to present an incorrect TLS certificate, which can cause validation failures. You can upgrade to a newer version of Python to solve this. For more information, see https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  /tmp/tmpqCDyYn/pip.zip/pip/_vendor/urllib3/util/ssl\_.py:164: InsecurePlatformWarning: A true SSLContext object is not available. This prevents urllib3 from configuring SSL appropriately and may cause certain SSL connections to fail. You can upgrade to a newer version of Python to solve this. For more information, see https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+  ERROR: Could not find a version that satisfies the requirement pip<21.0 (from versions: none)
+  ERROR: No matching distribution found for pip<21.0
+  /tmp/tmpqCDyYn/pip.zip/pip/_vendor/urllib3/util/ssl\_.py:164: InsecurePlatformWarning: A true SSLContext object is not available. This prevents urllib3 from configuring SSL appropriately and may cause certain SSL connections to fail. You can upgrade to a newer version of Python to solve this. For more information, see https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
+
+  * install decorator==4.4.2
+* Contributors: Kei Okada, Shingo Kitagawa
+
 0.5.19 (2021-03-09)
 -------------------
 * update 2.7/get-pip.py url (`#416 <https://github.com/jsk-ros-pkg/jsk_travis/issues/416>`_)
