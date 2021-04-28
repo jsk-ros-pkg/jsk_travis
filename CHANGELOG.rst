@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.20 (2021-04-28)
+-------------------
 * fix travis to work (again....) (`#419 <https://github.com/jsk-ros-pkg/jsk_travis/issues/419>`_)
 
   * pip install -I pip<9 does not work on hydro
