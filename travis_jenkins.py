@@ -15,6 +15,8 @@ import time
 import os
 import re
 import sys
+import random
+import string
 
 from os import environ as env
 
@@ -364,7 +366,9 @@ TRAVIS_BUILD_ID = env.get('TRAVIS_BUILD_ID')
 TRAVIS_BUILD_NUMBER = env.get('TRAVIS_BUILD_NUMBER')
 TRAVIS_JOB_ID = env.get('TRAVIS_JOB_ID')
 TRAVIS_JOB_NUMBER = env.get('TRAVIS_JOB_NUMBER')
-TRAVIS_JENKINS_UNIQUE_ID = '{}.{}'.format(TRAVIS_JOB_ID,time.time())
+TRAVIS_JENKINS_UNIQUE_ID = '{}.{}.{}'.format(time.time(),TRAVIS_JOB_ID,
+                                             ''.join(random.choice(string.digits) for _ in range(16)))
+
 ROS_DISTRO = env.get('ROS_DISTRO', 'indigo')
 USE_DEB = env.get('USE_DEB', 'true')
 EXTRA_DEB = env.get('EXTRA_DEB', '')
