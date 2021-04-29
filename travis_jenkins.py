@@ -42,7 +42,12 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.TextParameterDefinition>
-          <name>TRAVIS_JENKINS_UNIQUE_ID</name>
+          <name>TRAVIS_BRANCH</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_COMMIT</name>
           <description></description>
           <defaultValue></defaultValue>
         </hudson.model.TextParameterDefinition>
@@ -52,7 +57,162 @@ CONFIGURE_XML = '''<?xml version='1.0' encoding='UTF-8'?>
           <defaultValue></defaultValue>
         </hudson.model.TextParameterDefinition>
         <hudson.model.TextParameterDefinition>
-          <name>TRAVIS_COMMIT</name>
+          <name>TRAVIS_REPO_SLUG</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_BUILD_ID</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_BUILD_NUMBER</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_JOB_ID</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_JOB_NUMBER</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_JENKINS_UNIQUE_ID</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>ROS_DISTRO</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>USE_DEB</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>EXTRA_DEB</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TEST_PKGS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TARGET_PKGS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>BEFORE_SCRIPT</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>NOT_TEST_INSTALL</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>ROS_PARALLEL_JOBS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>ROS_PYTHON_VERSION</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>CATKIN_PARALLEL_JOBS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>CATKIN_TOOLS_BUILD_OPTIONS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>CATKIN_TOOLS_CONFIG_OPTIONS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>ROS_PARALLEL_TEST_JOBS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>CATKIN_PARALLEL_TEST_JOBS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>CMAKE_DEVELOPER_ERROR</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>BUILD_PKGS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>ROS_REPOSITORY_PATH</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>ROSDEP_ADDITIONAL_OPTIONS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>DOCKER_CONTAINER_NAME</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>DOCKER_RUN_OPTION</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>NUMBER_OF_LOGS_TO_KEEP</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>REPOSITORY_NAME</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_BUILD_WEB_URL</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>TRAVIS_JOB_WEB_URL</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>DOCKER_IMAGE_JENKINS</name>
+          <description></description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>ADD_ENV_VALUE_TO_DOCKER</name>
           <description></description>
           <defaultValue></defaultValue>
         </hudson.model.TextParameterDefinition>
@@ -99,13 +259,13 @@ WORKSPACE=`pwd`
 trap "set +x" EXIT
 
 # try git clone until success
-until git clone https://github.com/%(TRAVIS_REPO_SLUG)s ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
+until git clone https://github.com/$TRAVIS_REPO_SLUG ${BUILD_TAG}/$TRAVIS_REPO_SLUG
 do
   echo "Retrying"
 done
-cd ${BUILD_TAG}/%(TRAVIS_REPO_SLUG)s
+cd ${BUILD_TAG}/$TRAVIS_REPO_SLUG
 #git fetch -q origin '+refs/pull/*:refs/remotes/pull/*'
-#git checkout -qf %(TRAVIS_COMMIT)s || git checkout -qf pull/${TRAVIS_PULL_REQUEST}/head
+#git checkout -qf $TRAVIS_COMMIT || git checkout -qf pull/${TRAVIS_PULL_REQUEST}/head
 if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
  git fetch -q origin +refs/pull/${TRAVIS_PULL_REQUEST}/merge
  git checkout -qf FETCH_HEAD
@@ -116,7 +276,7 @@ fi
 git submodule init
 git submodule update
 
-if [ "%(REPOSITORY_NAME)s" = "jsk_travis" ]; then
+if [ "$REPOSITORY_NAME" = "jsk_travis" ]; then
   mkdir .travis; cp -r * .travis # need to copy, since directory starting from . is ignoreed by catkin build
 fi
 
@@ -124,41 +284,67 @@ travis_time_end
 # travis_time_start docker_build
 
 # # run docker build
-# docker build -t %(DOCKER_IMAGE_JENKINS)s -f $(echo .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s | sed -e s/-[^-]*\$//) .travis/docker
-# docker build -t %(DOCKER_IMAGE_JENKINS)s --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f .travis/docker/Dockerfile.%(DOCKER_IMAGE_JENKINS)s .travis/docker
+# docker build -t $DOCKER_IMAGE_JENKINS -f $(echo .travis/docker/Dockerfile.$DOCKER_IMAGE_JENKINS | sed -e s/-[^-]*\$//) .travis/docker
+# docker build -t $DOCKER_IMAGE_JENKINS --build-arg CACHEBUST=$(date +%%Y%%m%%d) -f .travis/docker/Dockerfile.$DOCKER_IMAGE_JENKINS .travis/docker
 
 # travis_time_end
 set +x
 
-echo "DOCKER_CONTAINER_NAME: %(DOCKER_CONTAINER_NAME)s"
-echo "TRAVIS_BRANCH        : %(TRAVIS_BRANCH)s"
-echo "TRAVIS_COMMIT        : %(TRAVIS_COMMIT)s"
-echo "TRAVIS_PULL_REQUEST  : %(TRAVIS_PULL_REQUEST)s"
-echo "TRAVIS_REPO_SLUG     : %(TRAVIS_REPO_SLUG)s"
-echo "TRAVIS_BUILD_ID      : %(TRAVIS_BUILD_ID)s"
-echo "TRAVIS_BUILD_NUMBER  : %(TRAVIS_BUILD_NUMBER)s"
-echo "TRAVIS_JOB_ID        : %(TRAVIS_JOB_ID)s"
-echo "TRAVIS_JOB_NUMBER    : %(TRAVIS_JOB_NUMBER)s"
-echo "TRAVIS_JENKINS_UNIQUE_ID : %(TRAVIS_JENKINS_UNIQUE_ID)s"
+echo "DOCKER_CONTAINER_NAME: $DOCKER_CONTAINER_NAME"
+echo "TRAVIS_BRANCH        : $TRAVIS_BRANCH"
+echo "TRAVIS_COMMIT        : $TRAVIS_COMMIT"
+echo "TRAVIS_PULL_REQUEST  : $TRAVIS_PULL_REQUEST"
+echo "TRAVIS_REPO_SLUG     : $TRAVIS_REPO_SLUG"
+echo "TRAVIS_BUILD_ID      : $TRAVIS_BUILD_ID"
+echo "TRAVIS_BUILD_NUMBER  : $TRAVIS_BUILD_NUMBER"
+echo "TRAVIS_JOB_ID        : $TRAVIS_JOB_ID"
+echo "TRAVIS_JOB_NUMBER    : $TRAVIS_JOB_NUMBER"
+echo "TRAVIS_JENKINS_UNIQUE_ID : $TRAVIS_JENKINS_UNIQUE_ID"
+echo "ROS_DISTRO           : $ROS_DISTRO"
+echo "USE_DEB              : $USE_DEB"
+echo "EXTRA_DEB            : $EXTRA_DEB"
+echo "TEST_PKGS            : $TEST_PKGS"
+echo "TARGET_PKGS          : $TARGET_PKGS"
+echo "BEFORE_SCRIPT        : $BEFORE_SCRIPT"
+echo "NOT_TEST_INSTALL     : $NOT_TEST_INSTALL"
+echo "ROS_PARALLEL_JOBS    : $ROS_PARALLEL_JOBS"
+echo "ROS_PYTHON_VERSION   : $ROS_PYTHON_VERSION"
+echo "CATKIN_PARALLEL_JOBS        : $CATKIN_PARALLEL_JOBS"
+echo "CATKIN_TOOLS_BUILD_OPTIONS  : $CATKIN_TOOLS_BUILD_OPTIONS"
+echo "CATKIN_TOOLS_CONFIG_OPTIONS : $CATKIN_TOOLS_CONFIG_OPTIONS"
+echo "ROS_PARALLEL_TEST_JOBS      : $ROS_PARALLEL_TEST_JOBS"
+echo "CATKIN_PARALLEL_TEST_JOBS   : $CATKIN_PARALLEL_TEST_JOBS"
+echo "CMAKE_DEVELOPER_ERROR       : $CMAKE_DEVELOPER_ERROR"
+echo "BUILD_PKGS           : $BUILD_PKGS"
+echo "ROS_REPOSITORY_PATH  : $ROS_REPOSITORY_PATH"
+echo "ROSDEP_ADDITIONAL_OPTIONS   : $ROSDEP_ADDITIONAL_OPTIONS"
+echo "DOCKER_CONTAINER_NAME       : $DOCKER_CONTAINER_NAME"
+echo "DOCKER_RUN_OPTION           : $DOCKER_RUN_OPTION"
+echo "NUMBER_OF_LOGS_TO_KEEP      : $NUMBER_OF_LOGS_TO_KEEP"
+echo "REPOSITORY_NAME      : $REPOSITORY_NAME"
+echo "TRAVIS_BUILD_WEB_URL : $TRAVIS_BUILD_WEB_URL"
+echo "TRAVIS_JOB_WEB_URL   : $TRAVIS_JOB_WEB_URL"
+echo "DOCKER_IMAGE_JENKINS : $DOCKER_IMAGE_JENKINS"
+echo "ADD_ENV_VALUE_TO_DOCKER     : $ADD_ENV_VALUE_TO_DOCKER"
 
 travis_time_start setup_cache
 
 set -x
 # run watchdog for kill orphan docker container
-.travis/travis_watchdog.py %(DOCKER_CONTAINER_NAME)s &amp;
+.travis/travis_watchdog.py $DOCKER_CONTAINER_NAME &amp;
 
 # setup cache dir
-mkdir -p /data/cache/%(ROS_DISTRO)s/ccache
-mkdir -p /data/cache/%(ROS_DISTRO)s/pip-cache
-mkdir -p /data/cache/%(ROS_DISTRO)s/chainer
-mkdir -p /data/cache/%(ROS_DISTRO)s/ros/data
-mkdir -p /data/cache/%(ROS_DISTRO)s/ros/rosdep
+mkdir -p /data/cache/$ROS_DISTRO/ccache
+mkdir -p /data/cache/$ROS_DISTRO/pip-cache
+mkdir -p /data/cache/$ROS_DISTRO/chainer
+mkdir -p /data/cache/$ROS_DISTRO/ros/data
+mkdir -p /data/cache/$ROS_DISTRO/ros/rosdep
 
 # setup docker env-file
 DOCKER_ENV_FILE="/tmp/docker_env_file_$$"
 : > $DOCKER_ENV_FILE
-if [ "%(ADD_ENV_VALUE_TO_DOCKER)s" != "" ]; then
-  env_var_list=(`echo "%(ADD_ENV_VALUE_TO_DOCKER)s"`)
+if [ "$ADD_ENV_VALUE_TO_DOCKER" != "" ]; then
+  env_var_list=(`echo "$ADD_ENV_VALUE_TO_DOCKER"`)
   for env_var in ${env_var_list[@]}; do
     echo "$env_var" >> $DOCKER_ENV_FILE
   done
@@ -169,48 +355,48 @@ travis_time_end
 
 #
 docker ps -a
-if [ "$(docker ps -a | grep %(DOCKER_CONTAINER_NAME)s || true)" ] ; then
-   echo "Reanaming docker container name to %(DOCKER_CONTAINER_NAME)s_%(TRAVIS_JENKINS_UNIQUE_ID)s"
-   docker rename %(DOCKER_CONTAINER_NAME)s %(DOCKER_CONTAINER_NAME)s_%(TRAVIS_JENKINS_UNIQUE_ID)s
+if [ "$(docker ps -a | grep $DOCKER_CONTAINER_NAME || true)" ] ; then
+   echo "Reanaming docker container name to $DOCKER_CONTAINER_NAME_$TRAVIS_JENKINS_UNIQUE_ID"
+   docker rename $DOCKER_CONTAINER_NAME $DOCKER_CONTAINER_NAME_$TRAVIS_JENKINS_UNIQUE_ID
 fi
 
 travis_time_start docker_run
 
-docker run %(DOCKER_RUN_OPTION)s \\
-    --name %(DOCKER_CONTAINER_NAME)s \\
-    -e ROS_DISTRO='%(ROS_DISTRO)s' \\
-    -e USE_DEB='%(USE_DEB)s' \\
-    -e TRAVIS_REPO_SLUG='%(TRAVIS_REPO_SLUG)s' \\
-    -e EXTRA_DEB='%(EXTRA_DEB)s' \\
-    -e TARGET_PKGS='%(TARGET_PKGS)s' \\
-    -e BEFORE_SCRIPT='%(BEFORE_SCRIPT)s' \\
-    -e TEST_PKGS='%(TEST_PKGS)s' \\
-    -e NOT_TEST_INSTALL='%(NOT_TEST_INSTALL)s' \\
-    -e ROS_PARALLEL_JOBS='%(ROS_PARALLEL_JOBS)s' \\
-    -e ROS_PYTHON_VERSION='%(ROS_PYTHON_VERSION)s' \\
-    -e CATKIN_PARALLEL_JOBS='%(CATKIN_PARALLEL_JOBS)s' \\
-    -e CATKIN_TOOLS_BUILD_OPTIONS='%(CATKIN_TOOLS_BUILD_OPTIONS)s' \\
-    -e CATKIN_TOOLS_CONFIG_OPTIONS='%(CATKIN_TOOLS_CONFIG_OPTIONS)s' \\
-    -e ROS_PARALLEL_TEST_JOBS='%(ROS_PARALLEL_TEST_JOBS)s' \\
-    -e CATKIN_PARALLEL_TEST_JOBS='%(CATKIN_PARALLEL_TEST_JOBS)s' \\
-    -e CMAKE_DEVELOPER_ERROR='%(CMAKE_DEVELOPER_ERROR)s' \\
-    -e BUILD_PKGS='%(BUILD_PKGS)s' \\
-    -e ROS_REPOSITORY_PATH='%(ROS_REPOSITORY_PATH)s'  \\
-    -e ROSDEP_ADDITIONAL_OPTIONS='%(ROSDEP_ADDITIONAL_OPTIONS)s'  \\
-    -e DOCKER_RUN_OPTION='%(DOCKER_RUN_OPTION)s'  \\
+docker run $DOCKER_RUN_OPTION \\
+    --name $DOCKER_CONTAINER_NAME \\
+    -e ROS_DISTRO="$ROS_DISTRO" \\
+    -e USE_DEB="$USE_DEB" \\
+    -e TRAVIS_REPO_SLUG="$TRAVIS_REPO_SLUG" \\
+    -e EXTRA_DEB="$EXTRA_DEB" \\
+    -e TARGET_PKGS="$TARGET_PKGS" \\
+    -e BEFORE_SCRIPT="$BEFORE_SCRIPT" \\
+    -e TEST_PKGS="$TEST_PKGS" \\
+    -e NOT_TEST_INSTALL="$NOT_TEST_INSTALL" \\
+    -e ROS_PARALLEL_JOBS="$ROS_PARALLEL_JOBS" \\
+    -e ROS_PYTHON_VERSION="$ROS_PYTHON_VERSION" \\
+    -e CATKIN_PARALLEL_JOBS="$CATKIN_PARALLEL_JOBS" \\
+    -e CATKIN_TOOLS_BUILD_OPTIONS="$CATKIN_TOOLS_BUILD_OPTIONS" \\
+    -e CATKIN_TOOLS_CONFIG_OPTIONS="$CATKIN_TOOLS_CONFIG_OPTIONS" \\
+    -e ROS_PARALLEL_TEST_JOBS="$ROS_PARALLEL_TEST_JOBS" \\
+    -e CATKIN_PARALLEL_TEST_JOBS="$CATKIN_PARALLEL_TEST_JOBS" \\
+    -e CMAKE_DEVELOPER_ERROR="$CMAKE_DEVELOPER_ERROR" \\
+    -e BUILD_PKGS="$BUILD_PKGS" \\
+    -e ROS_REPOSITORY_PATH="$ROS_REPOSITORY_PATH" \\
+    -e ROSDEP_ADDITIONAL_OPTIONS="$ROSDEP_ADDITIONAL_OPTIONS" \\
+    -e DOCKER_RUN_OPTION="$DOCKER_RUN_OPTION" \\
     -e HOME=/workspace \\
     --env-file $DOCKER_ENV_FILE \\
     -v $WORKSPACE/${BUILD_TAG}:/workspace \\
-    -v /data/cache/%(ROS_DISTRO)s/ccache:/workspace/.ccache \\
-    -v /data/cache/%(ROS_DISTRO)s/pip-cache:/root/.cache/pip \\
-    -v /data/cache/%(ROS_DISTRO)s/chainer:/workspace/.chainer \\
-    -v /data/cache/%(ROS_DISTRO)s/ros/data:/workspace/.ros/data \\
-    -v /data/cache/%(ROS_DISTRO)s/ros/rosdep:/workspace/.ros/rosdep \\
+    -v /data/cache/$ROS_DISTRO/ccache:/workspace/.ccache \\
+    -v /data/cache/$ROS_DISTRO/pip-cache:/root/.cache/pip \\
+    -v /data/cache/$ROS_DISTRO/chainer:/workspace/.chainer \\
+    -v /data/cache/$ROS_DISTRO/ros/data:/workspace/.ros/data \\
+    -v /data/cache/$ROS_DISTRO/ros/rosdep:/workspace/.ros/rosdep \\
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
-    -w /workspace %(DOCKER_IMAGE_JENKINS)s /bin/bash \\
+    -w /workspace $DOCKER_IMAGE_JENKINS /bin/bash \\
     -c "$(cat &lt;&lt;EOL
 
-cd %(TRAVIS_REPO_SLUG)s
+cd $TRAVIS_REPO_SLUG
 set -x
 trap 'exit 1' ERR
 env
@@ -496,7 +682,43 @@ while [item for item in j.get_queue_info() if item['task']['name'] == job_name]:
 j.reconfig_job(job_name, CONFIGURE_XML % locals())
 
 ## get next number and run
-queue_number = j.build_job(job_name, {'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID, 'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST, 'TRAVIS_COMMIT':TRAVIS_COMMIT})
+queue_number = j.build_job(job_name, {
+    'TRAVIS_BRANCH':TRAVIS_BRANCH,
+    'TRAVIS_COMMIT':TRAVIS_COMMIT,
+    'TRAVIS_PULL_REQUEST':TRAVIS_PULL_REQUEST,
+    'TRAVIS_REPO_SLUG':TRAVIS_REPO_SLUG,
+    'TRAVIS_BUILD_ID':TRAVIS_BUILD_ID,
+    'TRAVIS_BUILD_NUMBER':TRAVIS_BUILD_NUMBER,
+    'TRAVIS_JOB_ID':TRAVIS_JOB_ID,
+    'TRAVIS_JOB_NUMBER':TRAVIS_JOB_NUMBER,
+    'TRAVIS_JENKINS_UNIQUE_ID':TRAVIS_JENKINS_UNIQUE_ID,
+    'ROS_DISTRO':ROS_DISTRO,
+    'USE_DEB':USE_DEB,
+    'EXTRA_DEB':EXTRA_DEB,
+    'TEST_PKGS':TEST_PKGS,
+    'TARGET_PKGS':TARGET_PKGS,
+    'BEFORE_SCRIPT':BEFORE_SCRIPT,
+    'NOT_TEST_INSTALL':NOT_TEST_INSTALL,
+    'ROS_PARALLEL_JOBS':ROS_PARALLEL_JOBS,
+    'ROS_PYTHON_VERSION':ROS_PYTHON_VERSION,
+    'CATKIN_PARALLEL_JOBS':CATKIN_PARALLEL_JOBS,
+    'CATKIN_TOOLS_BUILD_OPTIONS':CATKIN_TOOLS_BUILD_OPTIONS,
+    'CATKIN_TOOLS_CONFIG_OPTIONS':CATKIN_TOOLS_CONFIG_OPTIONS,
+    'ROS_PARALLEL_TEST_JOBS':ROS_PARALLEL_TEST_JOBS,
+    'CATKIN_PARALLEL_TEST_JOBS':CATKIN_PARALLEL_TEST_JOBS,
+    'CMAKE_DEVELOPER_ERROR':CMAKE_DEVELOPER_ERROR,
+    'BUILD_PKGS':BUILD_PKGS,
+    'ROS_REPOSITORY_PATH':ROS_REPOSITORY_PATH,
+    'ROSDEP_ADDITIONAL_OPTIONS':ROSDEP_ADDITIONAL_OPTIONS,
+    'DOCKER_CONTAINER_NAME':DOCKER_CONTAINER_NAME,
+    'DOCKER_RUN_OPTION':DOCKER_RUN_OPTION,
+    'NUMBER_OF_LOGS_TO_KEEP':NUMBER_OF_LOGS_TO_KEEP,
+    'REPOSITORY_NAME':REPOSITORY_NAME,
+    'TRAVIS_BUILD_WEB_URL':TRAVIS_BUILD_WEB_URL,
+    'TRAVIS_JOB_WEB_URL':TRAVIS_JOB_WEB_URL,
+    'DOCKER_IMAGE_JENKINS':DOCKER_IMAGE_JENKINS,
+    'ADD_ENV_VALUE_TO_DOCKER':ADD_ENV_VALUE_TO_DOCKER
+})
 
 # wait for queueing
 while True:
