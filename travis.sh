@@ -61,7 +61,8 @@ if [ "$USE_DOCKER" = true ]; then
   travis_time_start setup_apt_cacher_ng
 
   # start apt-cacher-ng
-  sudo apt-get update && sudo apt-get install -y apt-cacher-ng
+  sudo apt-get update -q || echo Ignore error of apt-get update
+  sudo apt-get install -y apt-cacher-ng
   sudo sed -i "s@CacheDir: /var/cache/apt-cacher-ng@CacheDir: $HOME/apt-cacher-ng@" /etc/apt-cacher-ng/acng.conf
   grep CacheDir /etc/apt-cacher-ng/acng.conf
   # need the writable the permissions of $HOME/apt-cacher-ng
