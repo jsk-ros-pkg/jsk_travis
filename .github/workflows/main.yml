@@ -1,0 +1,360 @@
+# jsk_travis
+on: [push]
+
+env:
+  TEST_VAR1: true
+  TEST_VAR2: false
+
+jobs:
+  jenkins_hydro:
+    name: jenkins_hydro
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          USE_JENKINS: true
+          ROS_DISTRO : hydro
+
+  jenkins_indigo:
+    name: jenkins_indigo
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          USE_JENKINS: true
+          ROS_DISTRO : indigo
+
+  jenkins_kinetic:
+    name: jenkins_kinetic
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          USE_JENKINS: true
+          ROS_DISTRO : kinetic
+
+  jenkins_kinetic_pcl:
+    name: jenkins_kinetic_pcl
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          USE_JENKINS: true
+          ROS_DISTRO : kinetic
+          DOCKER_IMAGE_JENKINS : ros-ubuntu:16.04-pcl
+
+  jenkins_melodic:
+    name: jenkins_melodic
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          USE_JENKINS: true
+          ROS_DISTRO : melodic
+
+  jenkins_melodic_pcl:
+    name: jenkins_melodic_pcl
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          USE_JENKINS: true
+          ROS_DISTRO : melodic
+          DOCKER_IMAGE_JENKINS : ros-ubuntu:18.04-pcl
+
+  jenkins_noetic:
+    name: jenkins_noetic
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          USE_JENKINS: true
+          ROS_DISTRO : noetic
+
+  jenkins_noetic_pcl:
+    name: jenkins_noetic_pcl
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          USE_JENKINS: true
+          ROS_DISTRO : noetic
+          DOCKER_IMAGE_JENKINS : ros-ubuntu:20.04-pcl
+
+  hydro:
+    name: hydro
+    runs-on: ubuntu-latest
+    container: ubuntu:12.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : hydro
+
+  indigo:
+    name: indigo
+    runs-on: ubuntu-latest
+    container: ubuntu:14.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+           fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : indigo
+
+  kinetic:
+    name: kinetic
+    runs-on: ubuntu-latest
+    container: ubuntu:16.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : kinetic
+
+  melodic:
+    name: melodic
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : melodic
+
+  melodic_catkin_make:
+    name: melodic_catkin_make
+    runs-on: ubuntu-latest
+    container: ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : melodic
+          USE_CATKIN_MAKE : true
+          BEFORE_SCRIPT : "pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs"
+          NOT_TEST_INSTALL : true
+
+  melodic_test_packages:
+    name: melodic_test_packages
+    runs-on: ubuntu-latest
+    container : ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : melodic
+          TEST_PKGS : ""
+
+  melodic_repository_path:
+    name: melodic_repository_path
+    runs-on: ubuntu-latest
+    container : ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : melodic
+          ROS_REPOSITORY_PATH : http://packages.ros.org/ros/ubuntu
+
+  noetic:
+    name: noetic
+    runs-on: ubuntu-latest
+    container : ubuntu:20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : noetic
+
+  noetic_python2:
+    name: noetic_python2
+    runs-on: ubuntu-latest
+    container : ubuntu:20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : noetic
+          ROS_PYTHON_VERSION : 2
+          ROSDEP_ADDITIONAL_OPTIONS : "-n -q -r --ignore-src"
+          BEFORE_SCRIPT : "sudo pip install empy"
+          TEST_PKGS : "rospy_tutorials"
+
+  noetic_python3:
+    name: noetic_python3
+    runs-on: ubuntu-latest
+    container: ubuntu:20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : noetic
+          ROS_PYTHON_VERSION : 3
+
+  docker_kinetic:
+    name: docker_kinetic
+    runs-on: ubuntu-latest
+    container: jskrobotics/ros-ubuntu:16.04
+    steps:
+      - name: Before Checkout # need for actoins/checkout with ros-ubuntu container
+        run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : kinetic
+
+  docker_melodic:
+    name: docker_melodic
+    runs-on: ubuntu-latest
+    container: jskrobotics/ros-ubuntu:18.04
+    steps:
+      - name: Before Checkout # need for actoins/checkout with ros-ubuntu container
+        run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : melodic
+
+  docker_noetic:
+    name: docker_noetic
+    runs-on: ubuntu-latest
+    container: jskrobotics/ros-ubuntu:20.04
+    steps:
+      - name: Before Checkout # need for actoins/checkout with ros-ubuntu container
+        run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : noetic
+
+  check_python3:
+    name: check_python3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Check python3
+        run: |
+          apt update -q && apt install -y -q python3
+          python3 -m compileall .
