@@ -178,7 +178,7 @@ runs:
         export TRAVIS_JOB_ID=${GITHUB_RUN_ID}
         export TRAVIS_JOB_NUMBER=${GITHUB_RUN_NUMBER}
         export TRAVIS_COMMIT=${GITHUB_SHA}
-        export TRAVIS_PULL_REQUEST=false
+        if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then export TRAVIS_PULL_REQUEST=${GITHUB_REF#refs/pull/}; export TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST%/merge}; else export TRAVIS_PULL_REQUEST=false; fi
         ## start here
         env
         if [ "${ROS_DISTRO}" == "hydro" ]; then export BEFORE_SCRIPT="sed -ie \"/-pip/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME hydro does not have python >= 2.7.9, so it fails on pip install
