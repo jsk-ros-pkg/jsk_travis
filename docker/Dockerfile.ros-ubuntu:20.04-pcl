@@ -5,8 +5,10 @@ INCLUDE+ Dockerfile.ros-ubuntu:20.04
 RUN sudo apt-get update && \
     sudo apt-get install -y ros-noetic-pcl-conversions ros-noetic-pcl-ros ros-noetic-octomap-server && \
     sudo rm -rf /var/lib/apt/lists/*
+
+    # remove ros-noetic-moveit-ros-perception / http://repositories.ros.org/status_page/ros_noetic_default.html?q=moveit_ros_perception
 RUN sudo apt-get update && \
-    sudo apt-get install -y ros-noetic-rviz ros-noetic-robot-self-filter ros-noetic-moveit-ros-perception && \
+    sudo apt-get install -y ros-noetic-rviz ros-noetic-robot-self-filter && \
     sudo rm -rf /var/lib/apt/lists/*
 RUN sudo apt-get update && \
     sudo apt-get install -y libopencv-dev liblapack-dev && \
