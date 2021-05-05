@@ -1,4 +1,6 @@
-FROM ros-ubuntu:14.04
+# syntax = edrevo/dockerfile-plus
+
+INCLUDE+ Dockerfile.ros-ubuntu:14.04
 
 RUN sudo apt-get update
 RUN sudo apt-get install -y python-vtk tcl-vtk

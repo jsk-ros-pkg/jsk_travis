@@ -1,4 +1,6 @@
-FROM ros-ubuntu:20.04
+# syntax = edrevo/dockerfile-plus
+
+INCLUDE+ Dockerfile.ros-ubuntu:20.04
 
 RUN sudo apt-get update
 RUN sudo apt-get install -y ros-noetic-pcl-conversions ros-noetic-pcl-ros ros-noetic-octomap-server
