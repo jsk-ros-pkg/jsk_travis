@@ -1,4 +1,6 @@
-FROM ros-ubuntu:18.04
+# syntax = edrevo/dockerfile-plus
+
+INCLUDE+ Dockerfile.ros-ubuntu:18.04
 
 RUN sudo apt-get update
 RUN sudo apt-get install -y ros-melodic-pcl-conversions ros-melodic-pcl-ros ros-melodic-octomap-server

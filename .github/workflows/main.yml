@@ -1,5 +1,5 @@
 # jsk_travis
-on: [push]
+on: [push, pull_request]
 
 env:
   TEST_VAR1: true

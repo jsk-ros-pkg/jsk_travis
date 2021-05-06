@@ -1,4 +1,6 @@
-FROM ros-ubuntu:14.04
+# syntax = edrevo/dockerfile-plus
+
+INCLUDE+ Dockerfile.ros-ubuntu:14.04
 
 RUN cd ~ && \
     wget -q https://github.com/PointCloudLibrary/pcl/archive/pcl-1.8.0rc2.tar.gz && \
