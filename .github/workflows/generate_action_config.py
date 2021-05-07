@@ -48,7 +48,7 @@ jobs:
       - name: Chcekout
         uses: %(checkout)s
       - name: Run jsk_travis
-        uses: jsk-ros-pkg/jsk_travis@main
+        uses: jsk-ros-pkg/jsk_travis@master
         with:
           ROS_DISTRO : %(distro)s
 ''' % locals())
