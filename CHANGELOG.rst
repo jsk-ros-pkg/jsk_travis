@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.21 (2021-05-08)
+-------------------
 * fix .github/workflows to git update submodules (`#427 <https://github.com/jsk-ros-pkg/jsk_travis/issues/427>`_)
 
   * git submodule update --init .travis for non jsk_travis pacakges
