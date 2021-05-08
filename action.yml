@@ -143,7 +143,7 @@ runs:
       shell: bash
     - name: Run jsk_travis test
       run: |
-        set -x
+        if [[ "${GITHUB_REPOSITORY#*/}" == "jsk_travis" ]]; then set -x; fi
         # unset if  not defined
         if [[ "${{ inputs.ADDITIONAL_ENV_TO_DOCKER }}" != "" ]]; then export ADDITIONAL_ENV_TO_DOCKER="${{ inputs.ADDITIONAL_ENV_TO_DOCKER }}"; fi
         if [[ "${{ inputs.BEFORE_SCRIPT }}" != "" ]]; then export BEFORE_SCRIPT="${{ inputs.BEFORE_SCRIPT }}"; fi
@@ -179,17 +179,21 @@ runs:
         export TRAVIS_JOB_NUMBER=${GITHUB_RUN_NUMBER}
         export TRAVIS_COMMIT=${GITHUB_SHA}
         if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then export TRAVIS_PULL_REQUEST=${GITHUB_REF#refs/pull/}; export TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST%/merge}; else export TRAVIS_PULL_REQUEST=false; fi
-        ## start here
-        env
-        if [ "${ROS_DISTRO}" == "hydro" ]; then export BEFORE_SCRIPT="sed -ie \"/-pip/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME hydro does not have python >= 2.7.9, so it fails on pip install
-        if [ "${ROS_DISTRO}" == "noetic" ]; then export BEFORE_SCRIPT="sed -ie \"/gazebo/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME gazebo is not released in noetic
-        if [ "${ROS_DISTRO}" == "noetic" ]; then export BEFORE_SCRIPT="touch ros_tutorials/turtlesim/CATKIN_IGNORE; ${BEFORE_SCRIPT}"; fi # qt5/moc does not work on docker (https://stackoverflow.com/questions/56319830/error-when-building-qt-app-in-a-recent-docker)
-        mkdir .travis; mv *.sh *.py *.conf .travis/ # need to move, since directory starting from . is ignoreed by catkin build
-        export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
-        if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin build -i -v --limit-status-rate 0.001@catkin_make@' .travis/travis.sh; fi
-        if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin run_tests --no-deps --limit-status-rate 0.001@catkin_make run_tests@' .travis/travis.sh; fi
-        if [ "${USE_CATKIN_MAKE}" == "true" ] ;then export CATKIN_PARALLEL_JOBS="--no-color" ; fi
-        if [ "${TEST_GAZEBO}" = "true" ]; then export CATKIN_TOOLS_BUILD_OPTIONS="--force-cmake --cmake-args -DENABLE_TEST_GAZEBO:BOOL=ON --"; fi
+        ## jsk_travis only codes start here
+        if [[ "${GITHUB_REPOSITORY#*/}" == "jsk_travis" ]]; then
+          env
+          if [ "${ROS_DISTRO}" == "hydro" ]; then export BEFORE_SCRIPT="sed -ie \"/-pip/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME hydro does not have python >= 2.7.9, so it fails on pip install
+          if [ "${ROS_DISTRO}" == "noetic" ]; then export BEFORE_SCRIPT="sed -ie \"/gazebo/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME gazebo is not released in noetic
+          if [ "${ROS_DISTRO}" == "noetic" ]; then export BEFORE_SCRIPT="touch ros_tutorials/turtlesim/CATKIN_IGNORE; ${BEFORE_SCRIPT}"; fi # qt5/moc does not work on docker (https://stackoverflow.com/questions/56319830/error-when-building-qt-app-in-a-recent-docker)
+          mkdir .travis; mv *.sh *.py *.conf .travis/ # need to move, since directory starting from . is ignoreed by catkin build
+          export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
+          if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin build -i -v --limit-status-rate 0.001@catkin_make@' .travis/travis.sh; fi
+          if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin run_tests --no-deps --limit-status-rate 0.001@catkin_make run_tests@' .travis/travis.sh; fi
+          if [ "${USE_CATKIN_MAKE}" == "true" ] ;then export CATKIN_PARALLEL_JOBS="--no-color" ; fi
+          if [ "${TEST_GAZEBO}" = "true" ]; then export CATKIN_TOOLS_BUILD_OPTIONS="--force-cmake --cmake-args -DENABLE_TEST_GAZEBO:BOOL=ON --"; fi
+        else
+          git submodule update --init .travis
+        fi
         .travis/travis.sh
       shell: bash
 
