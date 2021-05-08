@@ -2,6 +2,44 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix .github/workflows to git update submodules (`#427 <https://github.com/jsk-ros-pkg/jsk_travis/issues/427>`_)
+
+  * git submodule update --init .travis for non jsk_travis pacakges
+
+* skip code only used in jsk_travis (`#426 <https://github.com/jsk-ros-pkg/jsk_travis/issues/426>`_)
+
+  * default branch name for jsk_travis is master
+
+* add hooks/build for docker automatead test (`#425 <https://github.com/jsk-ros-pkg/jsk_travis/issues/425>`_)
+
+  * moveit-ros-perception is not available as for 2021/5/5 http://repositories.ros.org/status_page/ros_noetic_default.html?q=moveit_ros_perception
+  * apt-get update and remove apt cache every run
+    we need to apt-get update in every steps to get latest apt information
+    we need to remove apt cache in every steps to make docker images lighter
+
+* add on: [pull_request] (`#422 <https://github.com/jsk-ros-pkg/jsk_travis/issues/422>`_)
+
+  * add each tests with individual workflow, to re-run single job, see https://github.community/t/ability-to-rerun-just-a-single-job-in-a-workflow/17234/41
+
+* try to build dockerhub images from jsk_travis/docker #420  (`#420 <https://github.com/jsk-ros-pkg/jsk_travis/issues/420>`_)
+
+  * ubuntu 14.04 need Python >= 2.7.9 to run pip
+  * use INCLUDE+ syntax, to run docker build within same directory, without using built images: see https://stackoverflow.com/a/65567427
+
+* enable to run github actions, until travis back (`#421 <https://github.com/jsk-ros-pkg/jsk_travis/issues/421>`_)
+
+  * add status badge
+  * support actions.yml, add exmaple files under .github/workflows/*.yml
+  * .travis.yml -> .github/workflow/main.yml
+  * travis_jenkins.py: send all environment variable through parameters, not config file
+  * do not build docker file on travis_jenkins
+  * use random value for TRAVIS_JENKINS_UNIQUE_ID
+  * somehow cat /dev/urandom whtin command substitution did not work on Github actions, not sure why
+
+* Contributors: Kei Okada, Shingo Kitagawa
+
 0.5.20 (2021-04-28)
 -------------------
 * fix travis to work (again....) (`#419 <https://github.com/jsk-ros-pkg/jsk_travis/issues/419>`_)
