@@ -414,7 +414,7 @@ if [ "${ROS_PYTHON_VERSION_ORIG}" != "" ]; then export ROS_PYTHON_VERSION=${ROS_
 # for catkin
 if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
-if [ -z $TRAVIS_JOB_ID ]; then
+if [ -z $TRAVIS_JOB_ID || ! -z "$GITHUB_RUN_ID" ]; then
   # on Jenkins
   catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
 else
