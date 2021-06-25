@@ -408,6 +408,9 @@ sudo chown -R user.jenkins /workspace/.chainer
 sudo chown -R user.jenkins /workspace/.ccache
 sudo chown -R user.jenkins /workspace/.ros
 
+# check if archive.ubuntu.com is available in this distribution
+sudo apt-get -y -qq update || if [ \$? -eq 100 ]; then sudo sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list; fi
+
 # mkdir log dir
 mkdir log
 export ROS_LOG_DIR=\$PWD/log

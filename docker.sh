@@ -7,9 +7,11 @@ travis_time_start setup_docker
 export DEBIAN_FRONTEND=noninteractive
 
 if [ "$(which sudo)" = "" ]; then
-  apt-get -y -qq update
+  # check if archive.ubuntu.com is available in this distribution
+  apt-get -y -qq update || if [ $? -eq 100 ]; then sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list; apt-get -y -qq update; fi
   apt-get -y -qq install sudo
 fi
+
 # install fundamental packages
 sudo -E apt-get -y -qq update
 sudo -E apt-get -y -qq install apt-utils build-essential curl git lsb-release wget
