@@ -115,6 +115,7 @@ if [ "$USE_DOCKER" = true ]; then
   docker run -v $HOME:$HOME -v $HOME/.ccache:$HOME/.ccache/ -v $HOME/.cache/pip:$HOME/.cache/pip/ \
     $DOCKER_XSERVER_OPTIONS \
     -e TRAVIS_BRANCH -e TRAVIS_COMMIT -e TRAVIS_JOB_ID -e TRAVIS_OS_NAME -e TRAVIS_PULL_REQUEST -e TRAVIS_REPO_SLUG \
+    -e GITHUB_RUN_ID \
     -e CI_SOURCE_PATH -e HOME -e REPOSITORY_NAME \
     -e BUILD_PKGS -e TARGET_PKGS -e TEST_PKGS \
     -e BEFORE_SCRIPT -e BUILDER -e EXTRA_DEB -e USE_DEB \
@@ -414,8 +415,8 @@ if [ "${ROS_PYTHON_VERSION_ORIG}" != "" ]; then export ROS_PYTHON_VERSION=${ROS_
 # for catkin
 if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
 if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
-if [ -z $TRAVIS_JOB_ID ]; then
-  # on Jenkins
+if [ -z $TRAVIS_JOB_ID ] || [ ! -z $GITHUB_RUN_ID ] ; then
+  # on Jenkins or GithubAction
   catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
 else
   # on Travis, the command must outputs log within 10 min to avoid failures, so the `travis_wait` is necessary.
@@ -441,8 +442,8 @@ if [[ "$ROS_DISTRO" > "indigo" ]] && [[ "$CMAKE_DEVELOPER_ERROR" == "true" ]]; t
 else
   CMAKE_ARGS_FLAGS=""
 fi
-if [ -z $TRAVIS_JOB_ID ]; then
-  # on Jenkins
+if [ -z $TRAVIS_JOB_ID ] || [ ! -z $GITHUB_RUN_ID ] ; then
+  # on Jenkins or GithubAction
   # suppressing the output
   # - https://github.com/catkin/catkin_tools/issues/405
   # - https://github.com/ros-planning/moveit_ci/pull/18
@@ -473,8 +474,8 @@ if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
     catkin clean --yes || catkin clean -a # 0.3.1 uses -a, 0.4.0 uses --yes
     catkin config --install $CATKIN_TOOLS_CONFIG_OPTIONS
-    if [ -z $TRAVIS_JOB_ID ]; then
-      # on Jenkins
+    if [ -z $TRAVIS_JOB_ID ] || [ ! -z $GITHUB_RUN_ID ] ; then
+      # on Jenkins or GithubAction
       catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
     else
       # on Travis
