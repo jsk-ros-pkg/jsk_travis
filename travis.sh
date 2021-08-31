@@ -441,7 +441,7 @@ if [[ "$ROS_DISTRO" > "indigo" ]] && [[ "$CMAKE_DEVELOPER_ERROR" == "true" ]]; t
 else
   CMAKE_ARGS_FLAGS=""
 fi
-if [ -z $TRAVIS_JOB_ID ]; then
+if [ -z $TRAVIS_JOB_ID || ! -z "$GITHUB_RUN_ID" ]; then
   # on Jenkins
   # suppressing the output
   # - https://github.com/catkin/catkin_tools/issues/405
