@@ -265,6 +265,7 @@ travis_time_start setup_git
 # check git : old linux needs newer git client ?
 # https://stackoverflow.com/questions/53207973/fatal-unknown-value-for-config-protocol-version-2
 sudo add-apt-repository -y ppa:git-core/ppa
+sudo apt-get update
 sudo apt-get install -y -q git
 git --version
 git config -l
