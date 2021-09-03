@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.22 (2021-09-03)
+-------------------
 * remove duplicate keyf( `#428 <https://github.com/jsk-ros-pkg/jsk_travis/issues/428>`_)
 * add python2.yml github actions (`#435 <https://github.com/jsk-ros-pkg/jsk_travis/issues/435>`_)
 
