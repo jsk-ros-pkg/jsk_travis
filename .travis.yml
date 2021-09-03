@@ -2,7 +2,6 @@
 #   Generic MoveIt Travis Continuous Integration Configuration File
 #   Works with all MoveIt! repositories/branches
 #   Author: Dave Coleman, Jonathan Bohren
-language: c++
 cache:
   apt: true
   pip: true
