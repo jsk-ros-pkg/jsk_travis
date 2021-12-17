@@ -460,13 +460,19 @@ else
 fi
 
 travis_time_end
+set +e
+roscore &
+sleep 3
+(rostest -r -t openrtm_tools test-rtmlaunch.test &)
+sleep 5
+ps -auxwww
+rosnode list
+rostopic list
+source $(rospack find openrtm_tools)/scripts/rtshell-setup.sh
+RTCTREE_NAMESERVERS=localhost:5809 rtls
+set -e
+
 travis_time_start catkin_test_results
-
-rostest openrtm_tools test-rtmlaunch.test || echo "done"
-rostest openrtm_tools test-openrtm-tools.test || echo "done"
-
-rostest -t openrtm_tools test-rtmlaunch.test || echo "done"
-rostest -t openrtm_tools test-openrtm-tools.test || echo "done"
 
 catkin_test_results --verbose --all build || error
 
