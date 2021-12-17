@@ -462,6 +462,12 @@ fi
 travis_time_end
 travis_time_start catkin_test_results
 
+rostest openrtm_tools test-rtmlaunch.test || echo "done"
+rostest openrtm_tools test-openrtm-tools.test || echo "done"
+
+rostest -t openrtm_tools test-rtmlaunch.test || echo "done"
+rostest -t openrtm_tools test-openrtm-tools.test || echo "done"
+
 catkin_test_results --verbose --all build || error
 
 travis_time_end
