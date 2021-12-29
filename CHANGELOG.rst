@@ -2,6 +2,14 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add test to check if rosdep correctly install python-lxml, see https://github.com/ros/rosdistro/issues/31569 (`#437 <https://github.com/jsk-ros-pkg/jsk_travis/issues/437>`_)
+
+  * use snapshot of rosdep list for eol distros
+
+* Contributors: Kei Okada
+
 0.5.22 (2021-09-03)
 -------------------
 * remove duplicate keyf( `#428 <https://github.com/jsk-ros-pkg/jsk_travis/issues/428>`_)
