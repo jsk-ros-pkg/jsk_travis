@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.23 (2021-12-29)
+-------------------
 * add test to check if rosdep correctly install python-lxml, see https://github.com/ros/rosdistro/issues/31569 (`#437 <https://github.com/jsk-ros-pkg/jsk_travis/issues/437>`_)
 
   * use snapshot of rosdep list for eol distros
