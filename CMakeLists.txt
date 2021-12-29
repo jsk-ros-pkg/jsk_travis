@@ -10,6 +10,7 @@ if(CATKIN_ENABLE_TESTING)
   # Check if rosdep is correctly install scipy
   if ("$ENV{ROS_DISTRO}" STRGREATER "hydro") # hydro does not install pip scipy
     catkin_add_nosetests(test/test_scipy.py)
+    catkin_add_nosetests(test/test_lxml.py)
   endif()
 endif()
 
