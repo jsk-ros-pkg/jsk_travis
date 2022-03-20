@@ -345,6 +345,9 @@ if [ "$USE_DEB" == false ]; then
         # install (maybe unreleased version) dependencies from source for specific ros version
         wstool merge --merge-replace -y file://$CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO
     fi
+    # since https://github.blog/2021-09-01-improving-git-protocol-security-github/ we can not use git://
+    # we need to remove git:// from submodules and run wstool update again
+    wstool update || find -iname .gitmodules -exec  cat {} \; -exec sed -i s@git://github@https://github@ {} \; -exec sh -c 'cd $(dirname "$1"); git submodule sync;' sh {} \; -exec cat {} \;
     wstool update
 fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
