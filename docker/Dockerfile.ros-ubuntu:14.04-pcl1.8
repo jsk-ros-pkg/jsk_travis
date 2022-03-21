@@ -25,6 +25,11 @@ RUN mkdir -p ~/ros/ws_jsk_recognition/src && \
     wstool up -j -1 && \
     sudo rm -rf /var/lib/apt/lists/*
 
+# use snapshot of rosdep list
+# https://github.com/ros/rosdistro/pull/31570#issuecomment-1000497517
+RUN sudo rm /etc/ros/rosdep/sources.list.d/20-default.list && \
+    sudo wget https://gist.githubusercontent.com/cottsay/b27a46e53b8f7453bf9ff637d32ea283/raw/476b3714bb90cfbc6b8b9d068162fc6408fa7f76/30-xenial.list -O /etc/ros/rosdep/sources.list.d/30-xenial.list
+
 RUN cd ~/ros/ws_jsk_recognition/src && \
     sudo apt-get update && \
     rosdep update --include-eol-distros && \
