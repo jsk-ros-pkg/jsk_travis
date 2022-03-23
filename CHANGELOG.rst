@@ -2,6 +2,16 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add melodic_unencrypted_git_protocol to cehck git:// (`#438 <https://github.com/jsk-ros-pkg/jsk_travis/issues/438>`_)
+
+  * use snapshot of rosdep list for Dockerfile.ros-ubuntu:14.04-pcl1.8
+  * replace git:// with https:// in .gitmodules to work with github enw security protocols (https://github.blog/2021-09-01-improving-git-protocol-security-github/)
+  * add melodic_unencrypted_git_protocol to cehck git://
+
+* Contributors: Kei Okada
+
 0.5.23 (2021-12-29)
 -------------------
 * add test to check if rosdep correctly install python-lxml, see https://github.com/ros/rosdistro/issues/31569 (`#437 <https://github.com/jsk-ros-pkg/jsk_travis/issues/437>`_)
