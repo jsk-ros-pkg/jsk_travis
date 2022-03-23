@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.24 (2022-03-23)
+-------------------
 * add melodic_unencrypted_git_protocol to cehck git:// (`#438 <https://github.com/jsk-ros-pkg/jsk_travis/issues/438>`_)
 
   * use snapshot of rosdep list for Dockerfile.ros-ubuntu:14.04-pcl1.8
