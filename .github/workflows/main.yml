@@ -247,6 +247,33 @@ jobs:
           ROS_DISTRO : melodic
           ROS_REPOSITORY_PATH : http://packages.ros.org/ros/ubuntu
 
+  # since https://github.blog/2021-09-01-improving-git-protocol-security-github/ we can not use git://
+  # we need to remove git:// from submodules and .rosinstall
+  melodic_unencrypted_git_protocol:
+    name: melodic_unencrypted_git_protocol
+    runs-on: ubuntu-latest
+    container : ubuntu:18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Add pr2eus repository to .travis.rosinstall
+        run: |
+          echo "- git:" >> .travis.rosinstall
+          echo "    local-name: jsk-ros-pkg/jsk_pr2eus" >> .travis.rosinstall
+          echo "    uri: https://github.com/jsk-ros-pkg/jsk_pr2eus.git" >> .travis.rosinstall
+          echo "    version: a228cc7d3bb5b26b92ed25c7d55f32a64d9d7825"  >> .travis.rosinstall
+          pwd
+          ls -al
+          cat .travis.rosinstall
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ROS_DISTRO : melodic
+          USE_DEB : false
+          TEST_PKGS : ""
+
   noetic:
     name: noetic
     runs-on: ubuntu-latest
