@@ -308,6 +308,23 @@ jobs:
           BEFORE_SCRIPT : "sudo pip install empy"
           TEST_PKGS : "rospy_tutorials"
 
+  noetic_lc_all:
+    name: noetic_lc_all
+    runs-on: ubuntu-latest
+    container : ubuntu:20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Run jsk_travis
+        uses: ./
+        with:
+          ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
+          ROS_DISTRO : noetic
+          LC_ALL : LC_ALL_TEST
+          BEFORE_SCRIPT : 'set -x; env | grep LC; if [ \"\${LC_ALL}\" != \"LC_ALL_TEST\" ]; then exit 1; fi'
+
   noetic_python3:
     name: noetic_python3
     runs-on: ubuntu-latest
