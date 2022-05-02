@@ -185,6 +185,7 @@ travis_time_start setup_pip
 echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 
 # install add-apt-repository
+sudo apt-get update
 sudo apt-get install -y -q software-properties-common
 if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade" ]]; then
     sudo apt-get install -y -q python-software-properties
