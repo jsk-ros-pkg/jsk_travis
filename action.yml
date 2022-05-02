@@ -124,7 +124,7 @@ inputs:
     description: >
       force to run test on Github Actions
   LC_ALL:
-    description: >-
+    description: >
       The LC_ALL variable sets all locale variables output by the command'locale-a'.
       This is a convenient way to specify the language environment with one variable without having to specify each LC_ * variable.
 
