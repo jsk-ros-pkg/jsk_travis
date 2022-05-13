@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.25 (2022-05-13)
+-------------------
 * add CATKNI_IGNORE, whcih is wrongly removed in 728c456
 * Do apt-get update before install package (`#446 <https://github.com/jsk-ros-pkg/jsk_travis/issues/446>`_)
 * enable to set TIMEOUT in Jenkins (default 120)f( `#443 <https://github.com/jsk-ros-pkg/jsk_travis/issues/443>`_)
