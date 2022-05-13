@@ -2,6 +2,15 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add CATKNI_IGNORE, whcih is wrongly removed in 728c456
+* Do apt-get update before install package (`#446 <https://github.com/jsk-ros-pkg/jsk_travis/issues/446>`_)
+* enable to set TIMEOUT in Jenkins (default 120)f( `#443 <https://github.com/jsk-ros-pkg/jsk_travis/issues/443>`_)
+* fix permision issue  https://github.com/actions/checkout/issues/760#issuecomment-1097501613 (`#442 <https://github.com/jsk-ros-pkg/jsk_travis/issues/442>`_)
+
+* Contributors: Kei Okada, Iori Yanokura
+
 0.5.24 (2022-03-23)
 -------------------
 * add melodic_unencrypted_git_protocol to cehck git:// (`#438 <https://github.com/jsk-ros-pkg/jsk_travis/issues/438>`_)
