@@ -51,7 +51,7 @@ inputs:
     description: >
       Docker image used in Jenkins., (defualt:
         `ros-ubuntu:$(lsb_release -sr)`)
-  TIMEOUT_JENKINS:
+  TIMEOUT_MINUTES:
     description: >
       Timeout minutes in Jenkins., (defualt: 120)
   EXTRA_DEB:
@@ -159,7 +159,7 @@ runs:
         if [[ "${{ inputs.CMAKE_DEVELOPER_ERROR }}" != "" ]]; then export CMAKE_DEVELOPER_ERROR="${{ inputs.CMAKE_DEVELOPER_ERROR }}"; fi
         if [[ "${{ inputs.DEBUG_TRAVIS_PYTHON }}" != "" ]]; then export DEBUG_TRAVIS_PYTHON="${{ inputs.DEBUG_TRAVIS_PYTHON }}"; fi
         if [[ "${{ inputs.DOCKER_IMAGE_JENKINS }}" != "" ]]; then export DOCKER_IMAGE_JENKINS="${{ inputs.DOCKER_IMAGE_JENKINS }}"; fi
-        if [[ "${{ inputs.TIMEOUT_JENKINS }}" != "" ]]; then export TIMEOUT_JENKINS="${{ inputs.TIMEOUT_JENKINS }}"; fi
+        if [[ "${{ inputs.TIEMOUT_MINUTES }}" != "" ]]; then export TIEMOUT_MINUTES="${{ inputs.TIEMOUT_MINUTES }}"; fi
         if [[ "${{ inputs.EXTRA_DEB }}" != "" ]]; then export EXTRA_DEB="${{ inputs.EXTRA_DEB }}"; fi
         if [[ "${{ inputs.NOT_TEST_INSTALL }}" != "" ]]; then export NOT_TEST_INSTALL="${{ inputs.NOT_TEST_INSTALL }}"; fi
         if [[ "${{ inputs.ROSDEP_ADDITIONAL_OPTIONS }}" != "" ]]; then export ROSDEP_ADDITIONAL_OPTIONS="${{ inputs.ROSDEP_ADDITIONAL_OPTIONS }}"; fi
