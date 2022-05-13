@@ -21,6 +21,7 @@ jobs:
           ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
           USE_JENKINS: true
           ROS_DISTRO : hydro
+          TIMEOUT_JENKINS: 60
 
   jenkins_indigo:
     name: jenkins_indigo
@@ -37,6 +38,7 @@ jobs:
           ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
           USE_JENKINS: true
           ROS_DISTRO : indigo
+          TIMEOUT_JENKINS: 60
 
   jenkins_kinetic:
     name: jenkins_kinetic
@@ -53,6 +55,7 @@ jobs:
           ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
           USE_JENKINS: true
           ROS_DISTRO : kinetic
+          TIMEOUT_JENKINS: 60
 
   jenkins_kinetic_pcl:
     name: jenkins_kinetic_pcl
@@ -70,6 +73,7 @@ jobs:
           USE_JENKINS: true
           ROS_DISTRO : kinetic
           DOCKER_IMAGE_JENKINS : ros-ubuntu:16.04-pcl
+          TIMEOUT_JENKINS: 60
 
   jenkins_melodic:
     name: jenkins_melodic
@@ -86,6 +90,7 @@ jobs:
           ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
           USE_JENKINS: true
           ROS_DISTRO : melodic
+          TIMEOUT_JENKINS: 60
 
   jenkins_melodic_pcl:
     name: jenkins_melodic_pcl
@@ -103,6 +108,7 @@ jobs:
           USE_JENKINS: true
           ROS_DISTRO : melodic
           DOCKER_IMAGE_JENKINS : ros-ubuntu:18.04-pcl
+          TIMEOUT_JENKINS: 60
 
   jenkins_noetic:
     name: jenkins_noetic
@@ -119,6 +125,7 @@ jobs:
           ADDITIONAL_ENV_TO_DOCKER: 'TEST_VAR1 TEST_VAR2'
           USE_JENKINS: true
           ROS_DISTRO : noetic
+          TIMEOUT_JENKINS: 60
 
   jenkins_noetic_pcl:
     name: jenkins_noetic_pcl
@@ -136,6 +143,7 @@ jobs:
           USE_JENKINS: true
           ROS_DISTRO : noetic
           DOCKER_IMAGE_JENKINS : ros-ubuntu:20.04-pcl
+          TIMEOUT_JENKINS: 60
 
   hydro:
     name: hydro
