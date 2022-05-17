@@ -13,7 +13,13 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get update && apt-get install -y python-vtk tcl-vtk
 
 RUN apt-get update && apt-get install -y python-pip
-RUN pip install -U dlib
+# Install pip
+# See https://github.com/pypa/pip/issues/4805 for detail.
+# https://github.com/pypa/pypi-support/issues/978 requires Python >= 2.7.9
+RUN apt-get update && sudo apt-get install -y software-properties-common
+RUN add-apt-repository -y ppa:longsleep/python2.7-backports
+RUN apt-get update && sudo apt-get dist-upgrade -y
+RUN pip install -U dlib==19.21.1
 
 RUN apt-get update && apt-get install -y curl git wget sudo lsb-release ccache apt-cacher-ng patch man-db
 RUN apt-get update && apt-get install -y mesa-utils
@@ -24,6 +30,10 @@ RUN echo "deb http://snapshots.ros.org/jade/final/ubuntu `lsb_release -sc` main"
 RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xCBF125EA
 RUN apt-get update && apt-get install -y ros-jade-ros-base
 ##
+
+# https://github.com/pypa/pypi-support/issues/978 requires Python >= 2.7.9
+RUN sudo apt-get install -y software-properties-common
+RUN sudo add-apt-repository ppa:longsleep/python2.7-backports && sudo apt-get update && sudo apt-get dist-upgrade -y
 
 RUN addgroup --gid 976 jenkins
 RUN adduser --uid 983 --disabled-password --gecos "" --force-badname --ingroup jenkins user

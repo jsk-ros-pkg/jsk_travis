@@ -5,6 +5,7 @@ FROM ubuntu:12.04
 ####
 
 # install packages
+RUN apt-get update || if [ $? -eq 100 ]; then sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list; apt-get update; fi
 RUN apt-get update && apt-get install -q -y dirmngr gnupg2 lsb-release sudo wget
 
 # setup keys

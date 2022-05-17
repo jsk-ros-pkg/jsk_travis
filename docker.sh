@@ -7,14 +7,16 @@ travis_time_start setup_docker
 export DEBIAN_FRONTEND=noninteractive
 
 if [ "$(which sudo)" = "" ]; then
-  apt-get -y -qq update
+  # check if archive.ubuntu.com is available in this distribution
+  apt-get -y -qq update || if [ $? -eq 100 ]; then sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list; apt-get -y -qq update; fi
   apt-get -y -qq install sudo
 fi
+
 # install fundamental packages
 sudo -E apt-get -y -qq update
 sudo -E apt-get -y -qq install apt-utils build-essential curl git lsb-release wget
 # 20.04 does not have pip, so install get-pip.py
-sudo -E apt-get -y -qq install python-pip python-setuptools || (sudo -E apt-get -y -qq install python; curl https://bootstrap.pypa.io/get-pip.py | sudo -E python; sudo -E apt-get -y -qq install python3-pip)
+sudo -E apt-get -y -qq install python-pip python-setuptools || (sudo -E apt-get -y -qq install python; curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo -E python; sudo -E apt-get -y -qq install python3-pip)
 
 # add user for testing
 adduser --disabled-password --gecos "" travis

@@ -1,23 +1,60 @@
-FROM ros-ubuntu:14.04
+# syntax = edrevo/dockerfile-plus
 
-RUN sudo apt-get update
-RUN sudo apt-get install -y python-vtk tcl-vtk
-RUN sudo apt-get install -y ros-indigo-pcl-conversions ros-indigo-pcl-ros ros-indigo-octomap-server
-RUN sudo apt-get install -y ros-indigo-rviz ros-indigo-robot-self-filter ros-indigo-moveit-ros-perception
-RUN sudo apt-get install -y libopencv-dev liblapack-dev
-RUN sudo apt-get install -y emacs cython
-RUN rosdep update --include-eol-distros
-RUN rosdep resolve gtk2 | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # image_view
-RUN rosdep resolve python-qt-bindings | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # qt_gui_core
-RUN rosdep resolve libqt5-gui | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # libqt5-gui
-RUN rosdep resolve qt5-qmake | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # qt5-qmake
-RUN rosdep resolve python-h5py | sed -e "s/^#.*//g" | xargs sudo apt-get install -y # python-h5py
-RUN sudo apt-get install -y octave festival
+INCLUDE+ Dockerfile.ros-ubuntu:14.04
+
+RUN sudo apt-get update && \
+    sudo apt-get install -y python-vtk tcl-vtk && \
+    sudo rm -rf /var/lib/apt/lists/*
+RUN sudo apt-get update && \
+    sudo apt-get install -y ros-indigo-pcl-conversions ros-indigo-pcl-ros ros-indigo-octomap-server && \
+    sudo rm -rf /var/lib/apt/lists/*
+RUN sudo apt-get update && \
+    sudo apt-get install -y ros-indigo-rviz ros-indigo-robot-self-filter ros-indigo-moveit-ros-perception && \
+    sudo rm -rf /var/lib/apt/lists/*
+RUN sudo apt-get update && \
+    sudo apt-get install -y libopencv-dev liblapack-dev && \
+    sudo rm -rf /var/lib/apt/lists/*
+RUN sudo apt-get update && \
+    sudo apt-get install -y emacs cython && \
+    sudo rm -rf /var/lib/apt/lists/*
+
+# image_view
+RUN sudo apt-get update && \
+    rosdep update --include-eol-distros && \
+    rosdep resolve gtk2 | sed -e "s/^#.*//g" | xargs sudo apt-get install -y  && \
+    sudo rm -rf /var/lib/apt/lists/*
+# qt_gui_core
+RUN sudo apt-get update && \
+    rosdep update --include-eol-distros && \
+    rosdep resolve python-qt-bindings | sed -e "s/^#.*//g" | xargs sudo apt-get install -y && \
+    sudo rm -rf /var/lib/apt/lists/*
+# libqt5-gui
+RUN sudo apt-get update && \
+    rosdep update --include-eol-distros && \
+    rosdep resolve libqt5-gui | sed -e "s/^#.*//g" | xargs sudo apt-get install -y && \
+    sudo rm -rf /var/lib/apt/lists/*
+# qt5-qmake
+RUN sudo apt-get update && \
+    rosdep update --include-eol-distros && \
+    rosdep resolve qt5-qmake | sed -e "s/^#.*//g" | xargs sudo apt-get install -y && \
+    sudo rm -rf /var/lib/apt/lists/*
+# python-h5py
+RUN sudo apt-get update && \
+    rosdep update --include-eol-distros && \
+    rosdep resolve python-h5py | sed -e "s/^#.*//g" | xargs sudo apt-get install -y && \
+    sudo rm -rf /var/lib/apt/lists/*
+RUN sudo apt-get update && \
+    sudo apt-get install -y octave festival && \
+    sudo rm -rf /var/lib/apt/lists/*
+
+# pip installed tornado (5.1.1) fails on 14.04
+RUN sudo apt-get update && \
+    sudo apt-get install -y python-tornado && \
+    sudo rm -rf /var/lib/apt/lists/*
 
 # fix latest pip install fcn errors
-RUN curl https://bootstrap.pypa.io/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
-RUN sudo apt install -y python-tornado # pip installed tornado (5.1.1) fails on 14.04
-RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
+RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91 decorator==4.4.2
 
 # install package to speedup
 RUN sudo pip install freezegun

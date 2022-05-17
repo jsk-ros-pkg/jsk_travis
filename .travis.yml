@@ -2,7 +2,6 @@
 #   Generic MoveIt Travis Continuous Integration Configuration File
 #   Works with all MoveIt! repositories/branches
 #   Author: Dave Coleman, Jonathan Bohren
-language: c++
 cache:
   apt: true
   pip: true
@@ -10,8 +9,9 @@ cache:
     - $HOME/.ccache
     - $HOME/.cache/pip
     - $HOME/apt-cacher-ng
-sudo: required
-dist: trusty
+sudo: true
+dist: bionic
+language: python
 services:
   - docker
 notifications:
@@ -31,20 +31,16 @@ env:
     - ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
     - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS=ros-ubuntu:14.04-pcl
     - ROS_DISTRO=indigo DOCKER_IMAGE_JENKINS=ros-ubuntu:14.04-pcl1.8
-    - ROS_DISTRO=jade
-    - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-    - ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    # travis
-    - USE_TRAVIS=true ROS_DISTRO=indigo
-    - USE_TRAVIS=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-    - USE_TRAVIS=true ROS_DISTRO=indigo TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
-    - USE_TRAVIS=true ROS_DISTRO=jade
-    - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis
-    - USE_TRAVIS=true ROS_DISTRO=jade TRAVIS_REPO_SLUG=jsk-ros-pkg/jsk_travis TRAVIS_BRANCH=master TRAVIS_COMMIT='HEAD' TRAVIS_PULL_REQUEST='false'
+    - ROS_DISTRO=kinetic
+    - ROS_DISTRO=kinetic DOCKER_IMAGE_JENKINS=ros-ubuntu:16.04-pcl
+    - ROS_DISTRO=melodic
+    - ROS_DISTRO=melodic DOCKER_IMAGE_JENKINS=ros-ubuntu:18.04-pcl
+    - ROS_DISTRO=noetic
+    - ROS_DISTRO=noetic  DOCKER_IMAGE_JENKINS=ros-ubuntu:20.04-pcl
+    # use docker image
     - USE_JENKINS=true ROS_DISTRO=kinetic DOCKER_IMAGE_JENKINS=ros-ubuntu:16.04-pcl
     - USE_JENKINS=true ROS_DISTRO=melodic DOCKER_IMAGE_JENKINS=ros-ubuntu:18.04-pcl
     - USE_JENKINS=true ROS_DISTRO=noetic  DOCKER_IMAGE_JENKINS=ros-ubuntu:20.04-pcl
-    - USE_JENKINS=true ROS_DISTRO=noetic BEFORE_SCRIPT="touch ros_tutorials/turtlesim/CATKIN_IGNORE" # qt5/moc does not work on docker (https://stackoverflow.com/questions/56319830/error-when-building-qt-app-in-a-recent-docker)
     # travis + docker
     - USE_DOCKER=true ROS_DISTRO=hydro
     - USE_DOCKER=true ROS_DISTRO=hydro USE_CATKIN_MAKE=true BEFORE_SCRIPT="pwd; git clone http://github.com/jsk-ros-pkg/jsk_common_msgs" NOT_TEST_INSTALL=true
@@ -91,7 +87,9 @@ before_script:
   - find $HOME/.ccache    -type f
   - find $HOME/.cache/pip -type f
   - export ROSDEP_ADDITIONAL_OPTIONS='-n -v --ignore-src' # run rosdep without -q, -r and -v
+  - if [ ${ROS_DISTRO} == "hydro" ]; then export BEFORE_SCRIPT="sed -ie \"/-pip/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME hydro does not have python >= 2.7.9, so it fails on pip install
   - if [ ${ROS_DISTRO} == "noetic" ]; then export BEFORE_SCRIPT="sed -ie \"/gazebo/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME gazebo is not released in noetic
+  - if [ ${ROS_DISTRO} == "noetic" ]; then export BEFORE_SCRIPT="touch ros_tutorials/turtlesim/CATKIN_IGNORE; ${BEFORE_SCRIPT}"; fi # qt5/moc does not work on docker (https://stackoverflow.com/questions/56319830/error-when-building-qt-app-in-a-recent-docker)
   - mkdir .travis; mv *.sh *.py *.conf .travis/ # need to move, since directory starting from . is ignoreed by catkin build
   - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin build -i -v --limit-status-rate 0.001@catkin_make@' .travis/travis.sh; fi

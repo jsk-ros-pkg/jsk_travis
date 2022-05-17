@@ -1,0 +1,207 @@
+name: 'Dockerfile for speedup jsk_travis'
+author: 'JSK Robotics Laboratory'
+description: 'Dockerfile for speedup jsk_travis, try docker run --rm -ti jskrobotics:ros-ubuntu:18.04-pcl'
+inputs:
+  ROS_DISTRO:
+    description: 'Specify your target distribution of ROS'
+    required: true
+    default: melodic
+  ADDITIONAL_ENV_TO_DOCKER:
+    description: >
+      Specify environment variables you want to pass to docker on
+      travis/jenkins. You can specify multiple variables separated by
+      a space. e.g. `IS_EUSLISP_TRAVIS_TEST IS_GAZEBO_TRAVIS_TEST`
+  BEFORE_SCRIPT:
+    description: >
+      `BEFORE_SCRIPT` is used to specify shell commands which run
+      before building packages. Some characters won\'t work without
+      escaping it for xml on Jenkins. (see:
+        [here](https://github.com/jsk-ros-pkg/jsk_travis/issues/171))
+  BUILD_PKGS:
+    description: >
+      You can specify the packages to build and test. If your
+      repository has some troubles about several packages, you can
+      ignore them by this option like `BUILD_PKGS="jsk_pcl_ros
+      jsk_recognition_msgs"`.
+  CATKIN_PARALLEL_JOBS:
+    description: >
+      The number of catkin parallel processes in build.
+  CATKIN_PARALLEL_TEST_JOBS:
+    description: >
+      The number of catkin parallel processes in test.
+    default: '-p4'
+  CATKIN_TOOLS_BUILD_OPTIONS:
+    description: >
+      Options to be passed like `catkin build
+      $CATKIN_TOOLS_BUILD_OPTIONS`. (default: `-iv --summarize
+      --no-status` for `catkin-tools==0.3.X`  and `--summarize
+      --no-status` for `catkin-tools` of other version.)
+  CATKIN_TOOLS_CONFIG_OPTIONS:
+    description: >
+      Options to be passed like `catkin config
+      $CATKIN_TOOLS_CONFIG_OPTIONS`.
+  CMAKE_DEVELOPER_ERROR:
+    description: >
+      Flag to show CMake developer error in catkin run_tests.
+  DEBUG_TRAVIS_PYTHON:
+    description: >
+      Specify python command to run within travis/docker/jenkins, for
+      example set `DEBUG_TRAVIS_PYTHON` to `python -v`
+  DOCKER_IMAGE_JENKINS:
+    description: >
+      Docker image used in Jenkins., (defualt:
+        `ros-ubuntu:$(lsb_release -sr)`)
+  TIMEOUT_JENKINS:
+    description: >
+      Timeout minutes in Jenkins., (defualt: 120)
+  EXTRA_DEB:
+    description: >
+      You can specify extra deb packages by `EXTRA_DEB` variable. The
+      packages are installed before building packages.
+  NOT_TEST_INSTALL:
+    description: >
+      Flag to skip testing catkin install in addition to devel
+      build. i.e. If true, skip testing.
+  ROSDEP_ADDITIONAL_OPTIONS:
+    description: >
+      The options passed when rosdep install.(default: \'-n -q -r
+      --ignore-src\')
+  ROSDEP_UPDATE_QUIET:
+    description: >
+      Set true to disable verbose option for \'rosdep update\'
+  ROS_LOG_DIR:
+    description: >
+      Specify ROS_LOG_DIR
+      (http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LOG_DIR),
+      otherwise uses ~/.ros/test_results
+  ROS_PARALLEL_JOBS:
+    description: >
+      Specify ROS_PARALLEL_JOBS environment, (defult: -j8)
+  ROS_PARALLEL_TEST_JOBS:
+    description: >
+      Specify ROS_PARALLEL_TEST_JOBS environment, (defult: -j8)
+  ROS_PYTHON_VERSION:
+    description: >
+      Specify your target python version used of ROS. Available from
+      Noetic. see [Build Using
+      Python3](http://wiki.ros.org/UsingPython3/BuildUsingPython3) and
+      [rep 149](https://github.com/ros-infrastructure/rep/blob/master/rep-0149.rst)
+  ROS_REPOSITORY_PATH:
+    description: >
+      Specify ROS repository path, (defualt:
+        http://packages.ros.org/ros-testing/ubuntu)
+  TARGET_PKGS:
+    description: >
+      Specify packages to build
+  TEST_PKGS:
+    description: >
+      Specify packages to test
+  USE_CATKIN_MAKE:
+    description: >
+      Set true to use `catkin_make`
+  USE_DEB:
+    description: >
+      If `false`, travis firstly sees [config
+      files](https://github.com/jsk-ros-pkg/jsk_travis#config-files)
+      to resolve dependencies and then installs left dependencies by
+      apt. If `source`, travis does not sees [config
+      files](https://github.com/jsk-ros-pkg/jsk_travis#config-files)
+      but runs `setup_upstream.sh`
+      file. See [here](https://github.com/jsk-ros-pkg/jsk_roseus) for
+      example.
+  USE_JENKINS:
+    description: >
+      Force to run test on jenkins. jenkins server is more powerful
+      than travis environment, so we can use jenkins to compile
+      pcl-related packages such as
+      [jsk_recognition](https://github.com/jsk-ros-pkg/jsk_recognition.git). This
+      variable needs to be `true` to run test with [container-based travis
+      environment](http://docs.travis-ci.com/user/workers/container-based-infrastructure/). This
+      overwrites default configuration described
+      [here](https://github.com/jsk-ros-pkg/jsk_travis#where-test-runs).
+    default: 'false'
+  USE_PYTHON_VIRTUALENV:
+    description: >
+      Set true to use python virtualenv
+  USE_TRAVIS:
+    description: >
+      force to run test on Github Actions
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install system commands
+      run: |
+        export DEBIAN_FRONTEND=noninteractive
+        if [ "$EUID" -eq 0 ]; then # if we run with root
+          # check if archive.ubuntu.com is available in this distribution
+          apt-get -y -qq update || if [ $? -eq 100 ]; then sed -i 's/archive.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list; apt-get -y -qq update; fi
+          apt-get -y -qq install sudo
+        fi
+        # install fundamental packages
+        sudo -E apt-get -y -qq update
+        sudo -E apt-get -y -qq install apt-utils build-essential curl git lsb-release wget
+        # 20.04 does not have pip, so install get-pip.py
+        sudo -E apt-get -y -qq install python-pip python-setuptools || (sudo -E apt-get -y -qq install python; curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo -E python; sudo -E apt-get -y -qq install python3-pip)
+      shell: bash
+    - name: Run jsk_travis test
+      run: |
+        if [[ "${GITHUB_REPOSITORY#*/}" == "jsk_travis" ]]; then set -x; fi
+        # unset if  not defined
+        if [[ "${{ inputs.ADDITIONAL_ENV_TO_DOCKER }}" != "" ]]; then export ADDITIONAL_ENV_TO_DOCKER="${{ inputs.ADDITIONAL_ENV_TO_DOCKER }}"; fi
+        if [[ "${{ inputs.BEFORE_SCRIPT }}" != "" ]]; then export BEFORE_SCRIPT="${{ inputs.BEFORE_SCRIPT }}"; fi
+        if [[ "${{ inputs.BUILD_PKGS }}" != "" ]]; then export BUILD_PKGS="${{ inputs.BUILD_PKGS }}"; fi
+        if [[ "${{ inputs.CATKIN_PARALLEL_JOBS }}" != "" ]]; then export CATKIN_PARALLEL_JOBS="${{ inputs.CATKIN_PARALLEL_JOBS }}"; fi
+        if [[ "${{ inputs.CATKIN_PARALLEL_TEST_JOBS }}" != "" ]]; then export CATKIN_PARALLEL_TEST_JOBS="${{ inputs.CATKIN_PARALLEL_TEST_JOBS }}"; fi
+        if [[ "${{ inputs.CATKIN_TOOLS_BUILD_OPTIONS }}" != "" ]]; then export CATKIN_TOOLS_BUILD_OPTIONS="${{ inputs.CATKIN_TOOLS_BUILD_OPTIONS }}"; fi
+        if [[ "${{ inputs.CATKIN_TOOLS_CONFIG_OPTIONS }}" != "" ]]; then export CATKIN_TOOLS_CONFIG_OPTIONS="${{ inputs.CATKIN_TOOLS_CONFIG_OPTIONS }}"; fi
+        if [[ "${{ inputs.CMAKE_DEVELOPER_ERROR }}" != "" ]]; then export CMAKE_DEVELOPER_ERROR="${{ inputs.CMAKE_DEVELOPER_ERROR }}"; fi
+        if [[ "${{ inputs.DEBUG_TRAVIS_PYTHON }}" != "" ]]; then export DEBUG_TRAVIS_PYTHON="${{ inputs.DEBUG_TRAVIS_PYTHON }}"; fi
+        if [[ "${{ inputs.DOCKER_IMAGE_JENKINS }}" != "" ]]; then export DOCKER_IMAGE_JENKINS="${{ inputs.DOCKER_IMAGE_JENKINS }}"; fi
+        if [[ "${{ inputs.TIMEOUT_JENKINS }}" != "" ]]; then export TIMEOUT_JENKINS="${{ inputs.TIMEOUT_JENKINS }}"; fi
+        if [[ "${{ inputs.EXTRA_DEB }}" != "" ]]; then export EXTRA_DEB="${{ inputs.EXTRA_DEB }}"; fi
+        if [[ "${{ inputs.NOT_TEST_INSTALL }}" != "" ]]; then export NOT_TEST_INSTALL="${{ inputs.NOT_TEST_INSTALL }}"; fi
+        if [[ "${{ inputs.ROSDEP_ADDITIONAL_OPTIONS }}" != "" ]]; then export ROSDEP_ADDITIONAL_OPTIONS="${{ inputs.ROSDEP_ADDITIONAL_OPTIONS }}"; fi
+        if [[ "${{ inputs.ROSDEP_UPDATE_QUIET }}" != "" ]]; then export ROSDEP_UPDATE_QUIET="${{ inputs.ROSDEP_UPDATE_QUIET }}"; fi
+        if [[ "${{ inputs.ROS_DISTRO }}" != "" ]]; then export ROS_DISTRO="${{ inputs.ROS_DISTRO }}"; fi
+        if [[ "${{ inputs.ROS_LOG_DIR }}" != "" ]]; then export ROS_LOG_DIR="${{ inputs.ROS_LOG_DIR }}"; fi
+        if [[ "${{ inputs.ROS_PARALLEL_JOBS }}" != "" ]]; then export ROS_PARALLEL_JOBS="${{ inputs.ROS_PARALLEL_JOBS }}"; fi
+        if [[ "${{ inputs.ROS_PARALLEL_TEST_JOBS }}" != "" ]]; then export ROS_PARALLEL_TEST_JOBS="${{ inputs.ROS_PARALLEL_TEST_JOBS }}"; fi
+        if [[ "${{ inputs.ROS_PYTHON_VERSION }}" != "" ]]; then export ROS_PYTHON_VERSION="${{ inputs.ROS_PYTHON_VERSION }}"; fi
+        if [[ "${{ inputs.ROS_REPOSITORY_PATH }}" != "" ]]; then export ROS_REPOSITORY_PATH="${{ inputs.ROS_REPOSITORY_PATH }}"; fi
+        if [[ "${{ inputs.TARGET_PKGS }}" != "" ]]; then export TARGET_PKGS="${{ inputs.TARGET_PKGS }}"; fi
+        if [[ "${{ inputs.TEST_PKGS }}" != "" ]]; then export TEST_PKGS="${{ inputs.TEST_PKGS }}"; fi
+        if [[ "${{ inputs.USE_CATKIN_MAKE }}" != "" ]]; then export USE_CATKIN_MAKE="${{ inputs.USE_CATKIN_MAKE }}"; fi
+        if [[ "${{ inputs.USE_DEB }}" != "" ]]; then export USE_DEB="${{ inputs.USE_DEB }}"; fi
+        if [[ "${{ inputs.USE_JENKINS }}" != "" ]]; then export USE_JENKINS="${{ inputs.USE_JENKINS }}"; else export USE_JENKINS="false"; fi
+        if [[ "${{ inputs.USE_PYTHON_VIRTUALENV }}" != "" ]]; then export USE_PYTHON_VIRTUALENV="${{ inputs.USE_PYTHON_VIRTUALENV }}"; fi
+        if [[ "${{ inputs.USE_TRAVIS }}" != "" ]]; then export USE_TRAVIS="${{ inputs.USE_TRAVIS }}"; else if [[ "${{ inputs.USE_JENKINS }}" == "true" ]]; then export USE_TRAVIS="false"; else export USE_TRAVIS="true"; fi; fi # if not USE_JENKINS, use travis(github actions)
+        # to compatible with travis
+        export TRAVIS_BRANCH=${GITHUB_REF#refs/heads/}
+        export TRAVIS_REPO_SLUG=${GITHUB_REPOSITORY}
+        export TRAVIS_JOB_ID=${GITHUB_RUN_ID}
+        export TRAVIS_JOB_NUMBER=${GITHUB_RUN_NUMBER}
+        export TRAVIS_COMMIT=${GITHUB_SHA}
+        if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then export TRAVIS_PULL_REQUEST=${GITHUB_REF#refs/pull/}; export TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST%/merge}; else export TRAVIS_PULL_REQUEST=false; fi
+        ## jsk_travis only codes start here
+        if [[ "${GITHUB_REPOSITORY#*/}" == "jsk_travis" ]]; then
+          env
+          if [ "${ROS_DISTRO}" == "hydro" ]; then export BEFORE_SCRIPT="sed -ie \"/-pip/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME hydro does not have python >= 2.7.9, so it fails on pip install
+          if [ "${ROS_DISTRO}" == "noetic" ]; then export BEFORE_SCRIPT="sed -ie \"/gazebo/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME gazebo is not released in noetic
+          if [ "${ROS_DISTRO}" == "noetic" ]; then export BEFORE_SCRIPT="touch ros_tutorials/turtlesim/CATKIN_IGNORE; ${BEFORE_SCRIPT}"; fi # qt5/moc does not work on docker (https://stackoverflow.com/questions/56319830/error-when-building-qt-app-in-a-recent-docker)
+          mkdir .travis; mv *.sh *.py *.conf .travis/ # need to move, since directory starting from . is ignoreed by catkin build
+          export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
+          if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin build -i -v --limit-status-rate 0.001@catkin_make@' .travis/travis.sh; fi
+          if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin run_tests --no-deps --limit-status-rate 0.001@catkin_make run_tests@' .travis/travis.sh; fi
+          if [ "${USE_CATKIN_MAKE}" == "true" ] ;then export CATKIN_PARALLEL_JOBS="--no-color" ; fi
+          if [ "${TEST_GAZEBO}" = "true" ]; then export CATKIN_TOOLS_BUILD_OPTIONS="--force-cmake --cmake-args -DENABLE_TEST_GAZEBO:BOOL=ON --"; fi
+        else
+          git submodule update --init .travis
+        fi
+        .travis/travis.sh
+      shell: bash
+
+branding:
+  icon: 'wind'
+  color: 'blue'
