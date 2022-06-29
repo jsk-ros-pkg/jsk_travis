@@ -28,7 +28,12 @@ RUN sudo apt-get update && \
 
 # fix latest pip install fcn errors
 RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
-RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91 decorator==4.4.2
+RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91 decorator==4.4.2 \
+    pytesseract==0.3.6 \
+    python-dateutil==2.5.0 \
+    && wget https://download.pytorch.org/whl/cu90/torch-1.1.0-cp27-cp27mu-linux_x86_64.whl -O torch-1.1.0-cp27-cp27mu-linux_x86_64.whl \
+    && wget https://download.pytorch.org/whl/cu90/torchvision-0.3.0-cp27-cp27mu-manylinux1_x86_64.whl -O torchvision-0.3.0-cp27-cp27mu-manylinux1_x86_64.whl \
+    && sudo pip install torch-1.1.0-cp27-cp27mu-linux_x86_64.whl torchvision-0.3.0-cp27-cp27mu-manylinux1_x86_64.whl
 
 # install common package to speedup
 RUN sudo pip install freezegun
