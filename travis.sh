@@ -401,6 +401,11 @@ else
     wget http://raw.github.com/jsk-ros-pkg/jsk_travis/master/rosdep-install.sh -O - | bash
 fi
 
+# indigo + catkin_virtualenv: set upgrade_pip false to avoid pip error
+if [[ "$ROS_DISTRO" == "indigo" ]] && [ -e  /opt/ros/indigo/share/catkin_virtualenv/cmake/build_venv.py ]; then
+  sudo sed -i 's/upgrade_pip=True/upgrade_pip=False/' /opt/ros/indigo/share/catkin_virtualenv/cmake/build_venv.py
+fi
+
 # Store docker cache
 if [ `whoami` = travis ]; then
     sudo rm -fr $HOME/.cache/pip/*
