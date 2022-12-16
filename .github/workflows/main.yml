@@ -12,7 +12,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -29,7 +29,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -46,7 +46,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -63,7 +63,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -81,7 +81,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -98,7 +98,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -116,7 +116,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -133,7 +133,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -166,7 +166,7 @@ jobs:
     container: ubuntu:14.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
            fetch-depth: 2
       - name: Run jsk_travis
@@ -181,7 +181,7 @@ jobs:
     container: ubuntu:16.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -196,7 +196,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -211,7 +211,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -229,7 +229,7 @@ jobs:
     container : ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -245,7 +245,7 @@ jobs:
     container : ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -263,7 +263,7 @@ jobs:
     container : ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Add pr2eus repository to .travis.rosinstall
@@ -288,7 +288,7 @@ jobs:
     container : ubuntu:20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -303,7 +303,7 @@ jobs:
     container : ubuntu:20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -322,7 +322,7 @@ jobs:
     container: ubuntu:20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -340,7 +340,7 @@ jobs:
       - name: Before Checkout # need for actoins/checkout with ros-ubuntu container
         run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
       - name: Run jsk_travis
         uses: ./
         with:
@@ -355,7 +355,7 @@ jobs:
       - name: Before Checkout # need for actoins/checkout with ros-ubuntu container
         run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -378,7 +378,7 @@ jobs:
           sudo chmod 777 -R /__w/
           sudo chown -R $USER $HOME
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -392,7 +392,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Check python3

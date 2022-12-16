@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Chcekout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
       - name: Check python2
         run: |
           apt update -q && apt install -y -q python2
