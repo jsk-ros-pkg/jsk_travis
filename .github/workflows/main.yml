@@ -151,7 +151,7 @@ jobs:
     container: ubuntu:12.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 2
       - name: Run jsk_travis
