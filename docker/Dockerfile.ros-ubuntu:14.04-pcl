@@ -54,7 +54,7 @@ RUN sudo apt-get update && \
 
 # fix latest pip install fcn errors
 RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py | sudo python -; sudo -H pip install 'pip<10'
-RUN sudo pip install fcn chainercv chainer==6.7.0 cupy-cuda91 decorator==4.4.2
+RUN sudo pip install fcn chainercv chainer==6.7.0 protobuf==3.17.3 cupy-cuda91 decorator==4.4.2
 
 # install package to speedup
 RUN sudo pip install freezegun

@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     libvtk6-dev
 
 RUN apt-get update && apt-get install -y python-pip
-RUN pip install -U dlib
+RUN pip install -U dlib==19.21.1
 
 RUN apt-get update && apt-get install -y curl git wget sudo lsb-release ccache apt-cacher-ng patch man-db
 RUN apt-get update && apt-get install -y mesa-utils
