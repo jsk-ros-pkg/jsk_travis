@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.26 (2023-08-10)
+-------------------
 * suppress test warning in catkin run_tests (`#448 <https://github.com/jsk-ros-pkg/jsk_travis/issues/448>`_)
 * fix dockerhub (`#456 <https://github.com/jsk-ros-pkg/jsk_travis/issues/456>`_)
 
