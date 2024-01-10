@@ -296,7 +296,7 @@ fi
 # https://github.com/ros/rosdistro/pull/31570#issuecomment-1000497517
 if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade"|"kinetic"|"lunar" ]]; then
     sudo rm /etc/ros/rosdep/sources.list.d/20-default.list
-    sudo wget https://gist.githubusercontent.com/cottsay/b27a46e53b8f7453bf9ff637d32ea283/raw/476b3714bb90cfbc6b8b9d068162fc6408fa7f76/30-xenial.list -O /etc/ros/rosdep/sources.list.d/30-xenial.list
+    sudo cp $(dirname "${BASH_SOURCE[0]}")/rosdep_snapshots/30-xenial.list /etc/ros/rosdep/sources.list.d
 fi
 ret=1
 rosdep update --include-eol-distros|| while [ $ret != 0 ]; do sleep 1; rosdep update --include-eol-distros && ret=0 || echo "failed"; done
