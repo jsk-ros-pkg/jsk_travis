@@ -297,6 +297,9 @@ fi
 if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade"|"kinetic"|"lunar" ]]; then
     sudo rm /etc/ros/rosdep/sources.list.d/20-default.list
     sudo cp $(dirname "${BASH_SOURCE[0]}")/rosdep_snapshots/30-xenial.list /etc/ros/rosdep/sources.list.d
+elif [[ "$ROS_DISTRO" == "melodic" ]]; then
+    sudo rm /etc/ros/rosdep/sources.list.d/20-default.list
+    sudo cp $(dirname "${BASH_SOURCE[0]}")/rosdep_snapshots/30-bionic.list /etc/ros/rosdep/sources.list.d
 fi
 ret=1
 rosdep update --include-eol-distros|| while [ $ret != 0 ]; do sleep 1; rosdep update --include-eol-distros && ret=0 || echo "failed"; done
