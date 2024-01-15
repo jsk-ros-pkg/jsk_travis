@@ -2,6 +2,17 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Use snapshot of rosdep list on melodic (`#457 <https://github.com/jsk-ros-pkg/jsk_travis/issues/457>`_)
+
+  * Move rosdep_snapshots as well as travis.sh to use rosdep_snapshots in travis.sh
+  * Use snapshot of rosdep list on melodic
+    After https://github.com/ros/rosdistro/pull/39174 was merged, rosdep key 'python-omniorb' cannot be resolved on melodic
+  * Include snapshot of rosdep list in this repository
+
+* Contributors: Shun Hasegawa
+
 0.5.26 (2023-08-10)
 -------------------
 * suppress test warning in catkin run_tests (`#448 <https://github.com/jsk-ros-pkg/jsk_travis/issues/448>`_)
