@@ -1,0 +1,12 @@
+# This list targets a snapshot of rosdistro for post-EOL use on Xenial
+
+# os-specific listings first
+yaml https://raw.githubusercontent.com/ros/rosdistro/d234db9d9c888e052a5bf05f6092eaaca45c0527/rosdep/osx-homebrew.yaml osx
+
+# generic
+yaml https://raw.githubusercontent.com/ros/rosdistro/d234db9d9c888e052a5bf05f6092eaaca45c0527/rosdep/base.yaml
+yaml https://raw.githubusercontent.com/ros/rosdistro/d234db9d9c888e052a5bf05f6092eaaca45c0527/rosdep/python.yaml
+yaml https://raw.githubusercontent.com/ros/rosdistro/d234db9d9c888e052a5bf05f6092eaaca45c0527/rosdep/ruby.yaml
+gbpdistro https://raw.githubusercontent.com/ros/rosdistro/d234db9d9c888e052a5bf05f6092eaaca45c0527/releases/fuerte.yaml fuerte
+
+# newer distributions (Groovy, Hydro, ...) must not be listed anymore, they are being fetched from the rosdistro index.yaml instead
