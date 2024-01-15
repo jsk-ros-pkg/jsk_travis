@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.27 (2024-01-15)
+-------------------
 * Use snapshot of rosdep list on melodic (`#457 <https://github.com/jsk-ros-pkg/jsk_travis/issues/457>`_)
 
   * Move rosdep_snapshots as well as travis.sh to use rosdep_snapshots in travis.sh
