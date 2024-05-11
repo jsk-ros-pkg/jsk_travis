@@ -404,6 +404,19 @@ else
     wget http://raw.github.com/jsk-ros-pkg/jsk_travis/master/rosdep-install.sh -O - | bash
 fi
 
+# following requirements.txt syntax is not support on 14.04
+# google-api-core[grpc]==1.31.5 # via google-cloud-language
+# so we intentionally use requirements.txt
+# To use this program, we need to run
+# sed -i 's/upgrade_pip=True/upgrade_pip=False/' /opt/ros/indigo/share/catkin_virtualenv/cmake/build_venv.py
+# to prevent upgrading to latest pip, which is not Python2 compatible
+# https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/342
+if [ "$ROS_DISTRO" == "indigo" ]; then
+    if [ -e /opt/ros/indigo/share/catkin_virtualenv/cmake/build_venv.py ]; then
+        sed -i 's/upgrade_pip=True/upgrade_pip=False/' /opt/ros/indigo/share/catkin_virtualenv/cmake/build_venv.py
+    fi
+fi
+
 # Store docker cache
 if [ `whoami` = travis ]; then
     sudo rm -fr $HOME/.cache/pip/*
