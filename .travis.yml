@@ -86,11 +86,12 @@ matrix:
 before_script:
   - find $HOME/.ccache    -type f
   - find $HOME/.cache/pip -type f
-  - export ROSDEP_ADDITIONAL_OPTIONS='-n -v --ignore-src' # run rosdep without -q, -r and -v
+  - export ROSDEP_ADDITIONAL_OPTIONS='-n -r -v --ignore-src' # run rosdep without -q. FIXME: we want to remove -r to notice rosdep errors, but we currently cannot avoid errors on 'sudo -H pip install -U fcn/chainercv/chainer' because it tries to upgrade all dependencies on pip 9.0.3 (default upgrade-strategy: eager). Upgrading chainer and protobuf fails because they release incompatible versions to Python2 (https://github.com/chainer/chainer/issues/8545, https://github.com/protocolbuffers/protobuf/issues/8984)
   - if [ ${ROS_DISTRO} == "hydro" ]; then export BEFORE_SCRIPT="sed -ie \"/-pip/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME hydro does not have python >= 2.7.9, so it fails on pip install
+  - if [[ ${ROS_DISTRO} > "hydro" ]] && [[ ${ROS_DISTRO} < "noetic" ]]; then export BEFORE_SCRIPT="sudo -E apt-get -y -qq install python-dev python-numpy; sudo -H pip install fcn chainercv chainer==6.7.0 protobuf==3.17.3;${BEFORE_SCRIPT}"; fi # FIXME fcn, chainercv, and chainer cannot be installed via rosdep install using pip 9.0.3 ('sudo -H pip install -U fcn/chainercv/chainer' and its upgrade-strategy is eager) on Python 2. That command tries to upgrade all dependencies, but upgrading chainer and protobuf fails because they release incompatible versions to Python2 (https://github.com/chainer/chainer/issues/8545, https://github.com/protocolbuffers/protobuf/issues/8984)
   - if [ ${ROS_DISTRO} == "noetic" ]; then export BEFORE_SCRIPT="sed -ie \"/gazebo/ d\" \${CI_SOURCE_PATH}/package.xml;${BEFORE_SCRIPT}"; fi # FIXME gazebo is not released in noetic
   - if [ ${ROS_DISTRO} == "noetic" ]; then export BEFORE_SCRIPT="touch ros_tutorials/turtlesim/CATKIN_IGNORE; ${BEFORE_SCRIPT}"; fi # qt5/moc does not work on docker (https://stackoverflow.com/questions/56319830/error-when-building-qt-app-in-a-recent-docker)
-  - mkdir .travis; mv *.sh *.py *.conf .travis/ # need to move, since directory starting from . is ignoreed by catkin build
+  - mkdir .travis; mv *.sh *.py *.conf rosdep_snapshots .travis/ # need to move, since directory starting from . is ignoreed by catkin build
   - export BEFORE_SCRIPT="rm -fr jsk_travis/CATKIN_IGNORE; git clone https://github.com/ros/ros_tutorials -b ${ROS_DISTRO}-devel;${BEFORE_SCRIPT}"
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin build -i -v --limit-status-rate 0.001@catkin_make@' .travis/travis.sh; fi
   - if [ "${USE_CATKIN_MAKE}" == "true" ] ;then sed -i 's@catkin run_tests --no-deps --limit-status-rate 0.001@catkin_make run_tests@' .travis/travis.sh; fi

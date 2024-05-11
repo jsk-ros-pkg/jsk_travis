@@ -1,0 +1,12 @@
+# This list targets a snapshot of rosdistro (before https://github.com/ros/rosdistro/pull/39174 was merged) for post-EOL use on Bionic
+
+# os-specific listings first
+yaml https://raw.githubusercontent.com/ros/rosdistro/e0a9ff920317daff3b6f177e1325e27f498063c1/rosdep/osx-homebrew.yaml osx
+
+# generic
+yaml https://raw.githubusercontent.com/ros/rosdistro/e0a9ff920317daff3b6f177e1325e27f498063c1/rosdep/base.yaml
+yaml https://raw.githubusercontent.com/ros/rosdistro/e0a9ff920317daff3b6f177e1325e27f498063c1/rosdep/python.yaml
+yaml https://raw.githubusercontent.com/ros/rosdistro/e0a9ff920317daff3b6f177e1325e27f498063c1/rosdep/ruby.yaml
+gbpdistro https://raw.githubusercontent.com/ros/rosdistro/e0a9ff920317daff3b6f177e1325e27f498063c1/releases/fuerte.yaml fuerte
+
+# newer distributions (Groovy, Hydro, ...) must not be listed anymore, they are being fetched from the rosdistro index.yaml instead

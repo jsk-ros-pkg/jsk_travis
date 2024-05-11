@@ -23,7 +23,7 @@ def main(sysargs):
 
     for distro in distros:
         print("Generate {}.yml".format(distro))
-        checkout = defaultdict(lambda: 'actions/checkout@v2',hydro='actions/checkout@v1')[distro]
+        checkout = defaultdict(lambda: 'actions/checkout@v3.0.2',hydro='actions/checkout@v1')[distro]
         container = defaultdict(lambda: 'jskrobotics/ros-ubuntu:18.04',
                                 hydro  = 'jskrobotics/ros-ubuntu:12.04',
                                 indigo = 'jskrobotics/ros-ubuntu:14.04',
@@ -43,7 +43,7 @@ jobs:
     container: %(container)s
 
     steps:
-      - name: Install latest git ( use sudo for ros-ubuntu, remove sudo for ubuntu container), checkout@v2 uses REST API for git<2.18, which removes .git folder and does not checkout .travis submodules
+      - name: Install latest git ( use sudo for ros-ubuntu, remove sudo for ubuntu container), checkout@v3.0.2 uses REST API for git<2.18, which removes .git folder and does not checkout .travis submodules
         run: sudo apt-get update && sudo apt-get install -y software-properties-common && sudo apt-get update && sudo add-apt-repository -y ppa:git-core/ppa && sudo apt-get update && sudo apt-get install -y git
       - name: Before Checkout # need for actions/checkout with ros-ubuntu container
         run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
@@ -71,7 +71,7 @@ jobs:
 
     steps:
       - name: Chcekout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
       - name: Check Python3
         run: |
           apt update -q && apt install -y -q python3
@@ -93,7 +93,7 @@ jobs:
 
     steps:
       - name: Chcekout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.2
       - name: Check python2
         run: |
           apt update -q && apt install -y -q python2
