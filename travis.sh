@@ -207,6 +207,7 @@ curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f47
 (cd /tmp; tar -xzf pip-9.0.3.tar.gz)
 sudo -H python -m easy_install /tmp/pip-9.0.3
 if [[ ! "$ROS_DISTRO" =~ "hydro" ]]; then # on hydro:  Could not find a version that satisfies the requirement pip<10 (from versions: )
+    echo -e "[global]\ntrusted-host = pypi.python.org\n               pypi.org\n               files.pythonhosted.org" | sudo tee /etc/pip.conf  # https://stackoverflow.com/questions/25981703/pip-install-fails-with-connection-error-ssl-certificate-verify-failed-certi
     sudo pip install -I 'pip<10' # on melodic  reinsall pip9.0.3, otherwise it fails on, ImportError: Entry point ('console_scripts', 'pip2') not found
 fi
 
