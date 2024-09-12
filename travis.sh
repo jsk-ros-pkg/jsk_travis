@@ -339,7 +339,7 @@ cd ~/ros/ws_$REPOSITORY_NAME
 catkin init
 catkin config $CATKIN_TOOLS_CONFIG_OPTIONS
 cd ~/ros/ws_$REPOSITORY_NAME/src
-wstool init
+wstool init || cat .rosinstall
 if [ "$USE_DEB" == false ]; then
     if [ -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
         # install (maybe unreleased version) dependencies from source
