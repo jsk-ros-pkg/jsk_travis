@@ -2,6 +2,19 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [noetic] switch to new key / fix CI (`#459 <https://github.com/jsk-ros-pkg/jsk_travis/issues/459>`_)
+
+  * [docker_kinetic][docker_melodic] fix Error: Access to the path '/home/runner/work/jsk_travis/jsk_travis' is denied.
+  * downgrade checkout
+  * fix mkdir: cannot create directory ‘.travis’: Permission denied
+  * Fix ubuntu container and checkout version for fixing glibc issue
+  * switch to new apt key in travis.sh
+  * [noetic] switch to new key
+
+* Contributors: Yoshiki Obinata
+
 0.5.27 (2024-01-15)
 -------------------
 * Use snapshot of rosdep list on melodic (`#457 <https://github.com/jsk-ros-pkg/jsk_travis/issues/457>`_)
