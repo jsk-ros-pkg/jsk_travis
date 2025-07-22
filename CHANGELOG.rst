@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.28 (2025-07-22)
+-------------------
 * [noetic] switch to new key / fix CI (`#459 <https://github.com/jsk-ros-pkg/jsk_travis/issues/459>`_)
 
   * [docker_kinetic][docker_melodic] fix Error: Access to the path '/home/runner/work/jsk_travis/jsk_travis' is denied.
