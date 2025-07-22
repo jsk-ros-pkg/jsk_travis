@@ -9,7 +9,7 @@ jobs:
   jenkins_hydro:
     name: jenkins_hydro
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
+    container: ubuntu:20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -26,7 +26,7 @@ jobs:
   jenkins_indigo:
     name: jenkins_indigo
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
+    container: ubuntu:20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -43,7 +43,7 @@ jobs:
   jenkins_kinetic:
     name: jenkins_kinetic
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
+    container: ubuntu:20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -60,7 +60,7 @@ jobs:
   jenkins_kinetic_pcl:
     name: jenkins_kinetic_pcl
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
+    container: ubuntu:20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -78,7 +78,7 @@ jobs:
   jenkins_melodic:
     name: jenkins_melodic
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
+    container: ubuntu:20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -95,7 +95,7 @@ jobs:
   jenkins_melodic_pcl:
     name: jenkins_melodic_pcl
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
+    container: ubuntu:20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -113,7 +113,7 @@ jobs:
   jenkins_noetic:
     name: jenkins_noetic
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
+    container: ubuntu:20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -130,7 +130,7 @@ jobs:
   jenkins_noetic_pcl:
     name: jenkins_noetic_pcl
     runs-on: ubuntu-latest
-    container: ubuntu:18.04
+    container: ubuntu:20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -166,7 +166,7 @@ jobs:
     container: ubuntu:14.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v1
         with:
            fetch-depth: 2
       - name: Run jsk_travis
@@ -181,7 +181,7 @@ jobs:
     container: ubuntu:16.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v1
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -196,7 +196,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v1
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -211,7 +211,7 @@ jobs:
     container: ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v1
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -229,7 +229,7 @@ jobs:
     container : ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v1
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -245,7 +245,7 @@ jobs:
     container : ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v1
         with:
           fetch-depth: 2
       - name: Run jsk_travis
@@ -263,7 +263,7 @@ jobs:
     container : ubuntu:18.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v1
         with:
           fetch-depth: 2
       - name: Add pr2eus repository to .travis.rosinstall
@@ -339,8 +339,18 @@ jobs:
     steps:
       - name: Before Checkout # need for actoins/checkout with ros-ubuntu container
         run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
+      - name: Install latest git ( use sudo for ros-ubuntu, remove sudo for ubuntu container), checkout@v3.0.2 uses REST API for git<2.18, which removes .git folder and does not checkout .travis submodules
+        run: sudo apt-get update && sudo apt-get install -y software-properties-common && sudo apt-get update && sudo add-apt-repository -y ppa:git-core/ppa && sudo apt-get update && sudo apt-get install -y git
+      - name: work around permission issue  # https://github.com/actions/checkout/issues/760#issuecomment-1097501613
+        run: |
+          set -x
+          export USER=$(whoami)
+          git config --global --add safe.directory $GITHUB_WORKSPACE || echo "OK" # Show 'could not lock config file /github/home/.gitconfig: Permission denied', but it is ok
+          sudo mkdir -p /__w/
+          sudo chmod 777 -R /__w/
+          sudo chown -R $USER $HOME
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v1
       - name: Run jsk_travis
         uses: ./
         with:
@@ -354,8 +364,18 @@ jobs:
     steps:
       - name: Before Checkout # need for actoins/checkout with ros-ubuntu container
         run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
+      - name: Install latest git ( use sudo for ros-ubuntu, remove sudo for ubuntu container), checkout@v3.0.2 uses REST API for git<2.18, which removes .git folder and does not checkout .travis submodules
+        run: sudo apt-get update && sudo apt-get install -y software-properties-common && sudo apt-get update && sudo add-apt-repository -y ppa:git-core/ppa && sudo apt-get update && sudo apt-get install -y git
+      - name: work around permission issue  # https://github.com/actions/checkout/issues/760#issuecomment-1097501613
+        run: |
+          set -x
+          export USER=$(whoami)
+          git config --global --add safe.directory $GITHUB_WORKSPACE || echo "OK" # Show 'could not lock config file /github/home/.gitconfig: Permission denied', but it is ok
+          sudo mkdir -p /__w/
+          sudo chmod 777 -R /__w/
+          sudo chown -R $USER $HOME
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v1
         with:
           fetch-depth: 2
       - name: Run jsk_travis

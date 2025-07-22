@@ -23,7 +23,7 @@ def main(sysargs):
 
     for distro in distros:
         print("Generate {}.yml".format(distro))
-        checkout = defaultdict(lambda: 'actions/checkout@v3.0.2',hydro='actions/checkout@v1')[distro]
+        checkout = defaultdict(lambda: 'actions/checkout@v1',noetic='actions/checkout@v3')[distro]
         container = defaultdict(lambda: 'jskrobotics/ros-ubuntu:18.04',
                                 hydro  = 'jskrobotics/ros-ubuntu:12.04',
                                 indigo = 'jskrobotics/ros-ubuntu:14.04',

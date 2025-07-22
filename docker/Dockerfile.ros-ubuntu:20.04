@@ -1,8 +1,8 @@
 FROM ubuntu:focal
 
 # setup sources.list
-RUN apt-get update && apt-get install -y gnupg
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+RUN apt-get update && apt-get install -y curl
+RUN curl -sS https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | sudo apt-key add -
 RUN echo "deb http://packages.ros.org/ros-testing/ubuntu focal main" > /etc/apt/sources.list.d/ros-latest.list
 
 # install
@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get update && apt-get install -y python3-pip
 RUN pip3 install -U dlib
 
-RUN apt-get update && apt-get install -y curl git wget sudo lsb-release ccache apt-cacher-ng patch man-db
+RUN apt-get update && apt-get install -y git wget sudo lsb-release ccache apt-cacher-ng patch man-db
 RUN apt-get update && apt-get install -y mesa-utils
 RUN apt-get update && apt-get install -y --force-yes -q -qq mongodb-clients mongodb-server -o Dpkg::Options::=--force-confdef
 

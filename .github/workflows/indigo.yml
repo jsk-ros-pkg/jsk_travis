@@ -25,7 +25,7 @@ jobs:
           sudo chmod 777 -R /__w/
           sudo chown -R $USER $HOME
       - name: Checkout
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v1
       - name: Run jsk_travis
         uses: ./
         with:
