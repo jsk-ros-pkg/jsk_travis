@@ -126,6 +126,7 @@ if [ "$USE_DOCKER" = true ]; then
     -e ROSDEP_ADDITIONAL_OPTIONS -e ROSDEP_UPDATE_QUIET \
     -e SUDO_PIP -e USE_PYTHON_VIRTUALENV \
     -e NOT_TEST_INSTALL -e DEBUG_TRAVIS_PYTHON \
+    -e LC_ALL \
     --env-file $DOCKER_ENV_FILE \
     -t $DOCKER_IMAGE bash -c 'cd $CI_SOURCE_PATH; .travis/docker.sh'
   DOCKER_EXIT_CODE=$?

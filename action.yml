@@ -126,6 +126,10 @@ inputs:
   USE_TRAVIS:
     description: >
       force to run test on Github Actions
+  LC_ALL:
+    description: >
+      The LC_ALL variable sets all locale variables output by the command'locale-a'.
+      This is a convenient way to specify the language environment with one variable without having to specify each LC_ * variable.
 
 
 runs:
@@ -177,6 +181,7 @@ runs:
         if [[ "${{ inputs.USE_JENKINS }}" != "" ]]; then export USE_JENKINS="${{ inputs.USE_JENKINS }}"; else export USE_JENKINS="false"; fi
         if [[ "${{ inputs.USE_PYTHON_VIRTUALENV }}" != "" ]]; then export USE_PYTHON_VIRTUALENV="${{ inputs.USE_PYTHON_VIRTUALENV }}"; fi
         if [[ "${{ inputs.USE_TRAVIS }}" != "" ]]; then export USE_TRAVIS="${{ inputs.USE_TRAVIS }}"; else if [[ "${{ inputs.USE_JENKINS }}" == "true" ]]; then export USE_TRAVIS="false"; else export USE_TRAVIS="true"; fi; fi # if not USE_JENKINS, use travis(github actions)
+        if [[ "${{ inputs.LC_ALL }}" != "" ]]; then export LC_ALL="${{ inputs.LC_ALL }}"; fi
         # to compatible with travis
         export TRAVIS_BRANCH=${GITHUB_REF#refs/heads/}
         export TRAVIS_REPO_SLUG=${GITHUB_REPOSITORY}
