@@ -478,12 +478,10 @@ fi
 travis_time_end
 travis_time_start catkin_test_results
 
-catkin_test_results --verbose --all build || error
+catkin_test_results --verbose --all build || (catkin_test_results build || error)
 
 travis_time_end
 set -x
-
-catkin_test_results build || echo "OK"
 
 if [ "$NOT_TEST_INSTALL" != "true" ]; then
 
