@@ -202,10 +202,10 @@ fi
 # Note: pip 21.0, in January 2021, will remove Python 2 support
 # 12.04's pip does not support install whl
 sudo apt-get update -q || echo Ignore error of apt-get update
-sudo -E apt-get -y -qq install python python-setuptools
+sudo -E apt-get -y -qq install python python-setuptools || sudo -E apt-get -y -qq install python3 python3-setuptools python-is-python3
 curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz --output /tmp/pip-9.0.3.tar.gz
 (cd /tmp; tar -xzf pip-9.0.3.tar.gz)
-sudo -H python -m easy_install /tmp/pip-9.0.3
+sudo -H python -m easy_install /tmp/pip-9.0.3 || sudo -E apt-get -y -qq install python3-pip
 if [[ ! "$ROS_DISTRO" =~ "hydro" ]]; then # on hydro:  Could not find a version that satisfies the requirement pip<10 (from versions: )
     sudo pip install -I 'pip<10' # on melodic  reinsall pip9.0.3, otherwise it fails on, ImportError: Entry point ('console_scripts', 'pip2') not found
 fi
