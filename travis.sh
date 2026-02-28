@@ -182,7 +182,7 @@ travis_time_start setup_pip
 
 # set non interactive tzdata https://stackoverflow.com/questions/8671308/non-interactive-method-for-dpkg-reconfigure-tzdata
 # set DEBIAN_FRONTEND=noninteractive
-# echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 
 # install add-apt-repository
 sudo apt-get update
@@ -201,14 +201,14 @@ if [[ "$ROS_DISTRO" =~ "indigo"|"jade" ]]; then
 fi
 # Note: pip 21.0, in January 2021, will remove Python 2 support
 # 12.04's pip does not support install whl
-# sudo apt-get update -q || echo Ignore error of apt-get update
-# sudo -E apt-get -y -qq install python python-setuptools
-# curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz --output /tmp/pip-9.0.3.tar.gz
-# (cd /tmp; tar -xzf pip-9.0.3.tar.gz)
-# sudo -H python -m easy_install /tmp/pip-9.0.3
-# if [[ ! "$ROS_DISTRO" =~ "hydro" ]]; then # on hydro:  Could not find a version that satisfies the requirement pip<10 (from versions: )
-#     sudo pip install -I 'pip<10' # on melodic  reinsall pip9.0.3, otherwise it fails on, ImportError: Entry point ('console_scripts', 'pip2') not found
-# fi
+sudo apt-get update -q || echo Ignore error of apt-get update
+sudo -E apt-get -y -qq install python python-setuptools
+curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz --output /tmp/pip-9.0.3.tar.gz
+(cd /tmp; tar -xzf pip-9.0.3.tar.gz)
+sudo -H python -m easy_install /tmp/pip-9.0.3
+if [[ ! "$ROS_DISTRO" =~ "hydro" ]]; then # on hydro:  Could not find a version that satisfies the requirement pip<10 (from versions: )
+    sudo pip install -I 'pip<10' # on melodic  reinsall pip9.0.3, otherwise it fails on, ImportError: Entry point ('console_scripts', 'pip2') not found
+fi
 
 hash -r
 pip --version || echo "pip is not installed"
@@ -266,22 +266,22 @@ travis_time_end
 travis_time_start setup_cache
 
 # setup ccache
-# sudo ln -s /usr/bin/ccache /usr/local/bin/gcc
-# sudo ln -s /usr/bin/ccache /usr/local/bin/g++
-# sudo ln -s /usr/bin/ccache /usr/local/bin/cc
-# sudo ln -s /usr/bin/ccache /usr/local/bin/c++
-# ccache -s
+sudo ln -s /usr/bin/ccache /usr/local/bin/gcc
+sudo ln -s /usr/bin/ccache /usr/local/bin/g++
+sudo ln -s /usr/bin/ccache /usr/local/bin/cc
+sudo ln -s /usr/bin/ccache /usr/local/bin/c++
+ccache -s
 
 travis_time_end
 travis_time_start setup_git
 
 # check git : old linux needs newer git client ?
 # https://stackoverflow.com/questions/53207973/fatal-unknown-value-for-config-protocol-version-2
-# sudo add-apt-repository -y ppa:git-core/ppa
-# sudo apt-get update
-# sudo apt-get install -y -q git
-# git --version
-# git config -l
+sudo add-apt-repository -y ppa:git-core/ppa
+sudo apt-get update
+sudo apt-get install -y -q git
+git --version
+git config -l
 
 travis_time_end
 travis_time_start setup_mongo
