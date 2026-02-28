@@ -379,7 +379,7 @@ if [ "$USE_DEB" == false ]; then
       wstool update
     fi
 fi
-ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
+ln -sf $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
 if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; wstool update; fi
 # disable hrpsys/doc generation
 find . -ipath "*/hrpsys/CMakeLists.txt" -exec sed -i s'@if(ENABLE_DOXYGEN)@if(0)@' {} \;
@@ -496,7 +496,11 @@ if [ "$ROS_DISTRO" == "hydro" ]; then
     (cd /opt/ros/$ROS_DISTRO/share; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/611.diff -O - | sed s@.cmake.em@.cmake@ | sed 's@/${PROJECT_NAME}@@' | sed 's@ DEPENDENCIES ${_rostest_DEPENDENCIES})@)@' | sudo patch -f -p2 || echo "ok")
 fi
 
-source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
+if [ "$ROS_VERSION" == 2 ]; then
+  source install/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
+else
+  source devel/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x ; rospack profile # force to update ROS_PACKAGE_PATH for rostest
+fi
 if [ "${ROS_PYTHON_VERSION_ORIG}" != "" ]; then export ROS_PYTHON_VERSION=${ROS_PYTHON_VERSION_ORIG}; fi
 
 # set -Werror=dev for developer errors (supported only fo kinetic and above)
@@ -506,34 +510,48 @@ else
   CMAKE_ARGS_FLAGS=""
 fi
 if [ -z $TRAVIS_JOB_ID ] || [ ! -z $GITHUB_RUN_ID ] ; then
-  # on Jenkins or GithubAction
-  # suppressing the output
-  # - https://github.com/catkin/catkin_tools/issues/405
-  # - https://github.com/ros-planning/moveit_ci/pull/18
-  # - https://github.com/catkin/catkin_tools/issues/405#issuecomment-573753780
-  #catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
-  catkin build --catkin-make-args run_tests -- -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --  | sed '/^[[:space:]]*$/d;/Linked/d;/Scanning/d;/Built target/d;/Symlinking/d;/Removing/d'
+  if [ "$ROS_VERSION" != 2 ]; then
+    # on Jenkins or GithubAction
+    # suppressing the output
+    # - https://github.com/catkin/catkin_tools/issues/405
+    # - https://github.com/ros-planning/moveit_ci/pull/18
+    # - https://github.com/catkin/catkin_tools/issues/405#issuecomment-573753780
+    #catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
+    catkin build --catkin-make-args run_tests -- -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --  | sed '/^[[:space:]]*$/d;/Linked/d;/Scanning/d;/Built target/d;/Symlinking/d;/Removing/d'
+  else
+    colcon test --packages-select $TEST_PKGS
+  fi
 else
-  # on Travis
-  # suppressing the output
-  # - https://github.com/catkin/catkin_tools/issues/405
-  # - https://github.com/ros-planning/moveit_ci/pull/18
-  # - https://github.com/catkin/catkin_tools/issues/405#issuecomment-573753780
-  #travis_wait 60 catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
-  travis_wait 60 catkin build --catkin-make-args run_tests -- -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS -- | sed '/^[[:space:]]*$/d;/Linked/d;/Scanning/d;/Built target/d;/Symlinking/d;/Removing/d'
+  if [ "$ROS_VERSION" != 2 ]; then
+    # on Travis
+    # suppressing the output
+    # - https://github.com/catkin/catkin_tools/issues/405
+    # - https://github.com/ros-planning/moveit_ci/pull/18
+    # - https://github.com/catkin/catkin_tools/issues/405#issuecomment-573753780
+    #travis_wait 60 catkin run_tests -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS --
+    travis_wait 60 catkin build --catkin-make-args run_tests -- -i --no-deps --no-status $TEST_PKGS $CATKIN_PARALLEL_TEST_JOBS --make-args $ROS_PARALLEL_TEST_JOBS $CMAKE_ARGS_FLAGS -- | sed '/^[[:space:]]*$/d;/Linked/d;/Scanning/d;/Built target/d;/Symlinking/d;/Removing/d'
+  else
+    travis_wait 60 colcon test --packages-select $TEST_PKGS
+  fi
 fi
 
 travis_time_end
 travis_time_start catkin_test_results
 
-catkin_test_results --verbose --all build || error
+if [ "$ROS_VERSION" != 2 ]; then
+  catkin_test_results --verbose --all build || error
+else
+  colcon test-result --verbose --all || error
+fi
 
 travis_time_end
 set -x
 
-catkin_test_results build || echo "OK"
+if [ "$ROS_VERSION" != 2 ]; then
+  catkin_test_results build || echo "OK"
+fi
 
-if [ "$NOT_TEST_INSTALL" != "true" ]; then
+if [ "$NOT_TEST_INSTALL" != "true" ] && [ "$ROS_VERSION" != 2 ] ; then
 
     travis_time_start catkin_install_build
 
@@ -580,11 +598,15 @@ travis_time_start after_script
 
 ## after_script
 PATH=/usr/local/bin:$PATH  # for installed catkin_test_results
-PYTHONPATH=/usr/local/lib/python2.7/dist-packages:$PYTHONPATH
-if [ "${ROS_LOG_DIR// }" == "" ]; then export ROS_LOG_DIR=~/.ros/test_results; fi # http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LOG_DIR
-if [ -e $ROS_LOG_DIR ]; then catkin_test_results --verbose --all $ROS_LOG_DIR || error; fi
-if [ -e ~/ros/ws_$REPOSITORY_NAME/build/ ]; then catkin_test_results --verbose --all ~/ros/ws_$REPOSITORY_NAME/build/ || error; fi
-if [ -e ~/.ros/test_results/ ]; then catkin_test_results --verbose --all ~/.ros/test_results/ || error; fi
+if [ "$ROS_VERSION" != 2]; then
+  PYTHONPATH=/usr/local/lib/python2.7/dist-packages:$PYTHONPATH
+  if [ "${ROS_LOG_DIR// }" == "" ]; then export ROS_LOG_DIR=~/.ros/test_results; fi # http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LOG_DIR
+  if [ -e $ROS_LOG_DIR ]; then catkin_test_results --verbose --all $ROS_LOG_DIR || error; fi
+  if [ -e ~/ros/ws_$REPOSITORY_NAME/build/ ]; then catkin_test_results --verbose --all ~/ros/ws_$REPOSITORY_NAME/build/ || error; fi
+  if [ -e ~/.ros/test_results/ ]; then catkin_test_results --verbose --all ~/.ros/test_results/ || error; fi
+else
+  colcon test-result --verbose --all || error
+fi
 ccache -s
 
 travis_time_end
