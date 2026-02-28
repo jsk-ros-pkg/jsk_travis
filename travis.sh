@@ -182,7 +182,7 @@ travis_time_start setup_pip
 
 # set non interactive tzdata https://stackoverflow.com/questions/8671308/non-interactive-method-for-dpkg-reconfigure-tzdata
 # set DEBIAN_FRONTEND=noninteractive
-echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
+# echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
 
 # install add-apt-repository
 sudo apt-get update
@@ -201,14 +201,14 @@ if [[ "$ROS_DISTRO" =~ "indigo"|"jade" ]]; then
 fi
 # Note: pip 21.0, in January 2021, will remove Python 2 support
 # 12.04's pip does not support install whl
-sudo apt-get update -q || echo Ignore error of apt-get update
-sudo -E apt-get -y -qq install python python-setuptools
-curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz --output /tmp/pip-9.0.3.tar.gz
-(cd /tmp; tar -xzf pip-9.0.3.tar.gz)
-sudo -H python -m easy_install /tmp/pip-9.0.3
-if [[ ! "$ROS_DISTRO" =~ "hydro" ]]; then # on hydro:  Could not find a version that satisfies the requirement pip<10 (from versions: )
-    sudo pip install -I 'pip<10' # on melodic  reinsall pip9.0.3, otherwise it fails on, ImportError: Entry point ('console_scripts', 'pip2') not found
-fi
+# sudo apt-get update -q || echo Ignore error of apt-get update
+# sudo -E apt-get -y -qq install python python-setuptools
+# curl https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz --output /tmp/pip-9.0.3.tar.gz
+# (cd /tmp; tar -xzf pip-9.0.3.tar.gz)
+# sudo -H python -m easy_install /tmp/pip-9.0.3
+# if [[ ! "$ROS_DISTRO" =~ "hydro" ]]; then # on hydro:  Could not find a version that satisfies the requirement pip<10 (from versions: )
+#     sudo pip install -I 'pip<10' # on melodic  reinsall pip9.0.3, otherwise it fails on, ImportError: Entry point ('console_scripts', 'pip2') not found
+# fi
 
 hash -r
 pip --version || echo "pip is not installed"
@@ -220,8 +220,16 @@ travis_time_end
 travis_time_start setup_ros
 
 # Setup apt
-sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
-curl -sS https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | sudo apt-key add -
+if [[ "$ROS_VERSION" == 2 ]]; then
+    # https://docs.ros.org/en/rolling/Installation/Ubuntu-Install-Debs.html
+    sudo add-apt-repository -y universe
+    export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F\" '{print $4}')
+    curl -L -o /tmp/ros2-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo ${UBUNTU_CODENAME:-${VERSION_CODENAME}})_all.deb"
+    sudo dpkg -i /tmp/ros2-apt-source.deb
+else
+    sudo -E sh -c 'echo "deb $ROS_REPOSITORY_PATH `lsb_release -cs` main" > /etc/apt/sources.list.d/ros-latest.list'
+    curl -sS https://raw.githubusercontent.com/ros/rosdistro/master/ros.key | sudo apt-key add -
+fi
 lsb_release -a
 # Setup EoL repository
 if [[ "$ROS_DISTRO" ==  "hydro" || "$ROS_DISTRO" ==  "jade" || "$ROS_DISTRO" ==  "lunar" ]]; then
@@ -236,9 +244,13 @@ if [[ "$ROS_DISTRO" ==  "hydro" ]]; then
     sudo apt-get install -y --force-yes -q python-vcstools=0.1.40-1
     sudo apt-mark hold python-vcstools
 fi
-# noetic uses python3-rosdep
-sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools || (sudo apt-get install -y --force-yes -q -qq python3-rosdep python3-wstool; sudo pip install catkin-tools)
-sudo apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache pv
+
+if [[ "$ROS_VERSION" == 2 ]]; then
+    sudo apt install -y --force-yes -q -qq ros-dev-tools python3-vcs2l
+else # noetic uses python3-rosdep
+    sudo apt-get install -y --force-yes -q -qq python-rosdep python-wstool python-catkin-tools || (sudo apt-get install -y --force-yes -q -qq python3-rosdep python3-wstool; sudo pip install catkin-tools)
+    sudo apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-rosbash ros-$ROS_DISTRO-rospack ccache pv
+fi
 
 # setup catkin-tools option
 if [ ! "$CATKIN_TOOLS_BUILD_OPTIONS" ]; then
@@ -254,22 +266,22 @@ travis_time_end
 travis_time_start setup_cache
 
 # setup ccache
-sudo ln -s /usr/bin/ccache /usr/local/bin/gcc
-sudo ln -s /usr/bin/ccache /usr/local/bin/g++
-sudo ln -s /usr/bin/ccache /usr/local/bin/cc
-sudo ln -s /usr/bin/ccache /usr/local/bin/c++
-ccache -s
+# sudo ln -s /usr/bin/ccache /usr/local/bin/gcc
+# sudo ln -s /usr/bin/ccache /usr/local/bin/g++
+# sudo ln -s /usr/bin/ccache /usr/local/bin/cc
+# sudo ln -s /usr/bin/ccache /usr/local/bin/c++
+# ccache -s
 
 travis_time_end
 travis_time_start setup_git
 
 # check git : old linux needs newer git client ?
 # https://stackoverflow.com/questions/53207973/fatal-unknown-value-for-config-protocol-version-2
-sudo add-apt-repository -y ppa:git-core/ppa
-sudo apt-get update
-sudo apt-get install -y -q git
-git --version
-git config -l
+# sudo add-apt-repository -y ppa:git-core/ppa
+# sudo apt-get update
+# sudo apt-get install -y -q git
+# git --version
+# git config -l
 
 travis_time_end
 travis_time_start setup_mongo
@@ -311,10 +323,12 @@ travis_time_start setup_catkin
 if [ "$ROS_DISTRO" == "hydro" ]; then
   [ ! -e /tmp/catkin ] && (cd /tmp/; git clone -q https://github.com/ros/catkin)
   (cd /tmp/catkin; git checkout 0.6.12; cmake . -DCMAKE_INSTALL_PREFIX=/opt/ros/$ROS_DISTRO/ ; make; sudo make install)
-else
+elif [ "$ROS_VERSION" != 2 ]; then
   sudo apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-catkin
 fi
-sudo apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-roslaunch
+if [ "$ROS_VERSION" != 2 ]; then
+    sudo apt-get install -y --force-yes -q -qq ros-$ROS_DISTRO-roslaunch
+fi
 ### https://github.com/ros/ros_comm/pull/641
 if [[ "$ROS_DISTRO" =~ "hydro"|"indigo"|"jade"|"kinetic"|"lunar"|"melodic" ]]; then
   (cd /opt/ros/$ROS_DISTRO/lib/python2.7/dist-packages; wget --no-check-certificate https://patch-diff.githubusercontent.com/raw/ros/ros_comm/pull/641.diff -O /tmp/641.diff; if [[ "$ROS_DISTRO" == "hydro" ]]; then sed -i s@items@iteritems@ /tmp/641.diff ; fi; sudo patch -p4 < /tmp/641.diff)
@@ -323,12 +337,14 @@ fi
 travis_time_end
 set -x
 
-# Check ROS tool's version
-echo -e "\e[0KROS tool's version"
-source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
-rosversion roslaunch
-rosversion rospack
-apt-cache show python-rospkg | grep '^Version:' | awk '{print $2}'
+if [ "$ROS_VERSION" != 2 ]; then
+  # Check ROS tool's version
+  echo -e "\e[0KROS tool's version"
+  source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x
+  rosversion roslaunch
+  rosversion rospack
+  apt-cache show python-rospkg | grep '^Version:' | awk '{print $2}'
+fi
 
 travis_time_start setup_rosws
 
@@ -336,10 +352,14 @@ travis_time_start setup_rosws
 # Create workspace
 mkdir -p ~/ros/ws_$REPOSITORY_NAME/src
 cd ~/ros/ws_$REPOSITORY_NAME
-catkin init
-catkin config $CATKIN_TOOLS_CONFIG_OPTIONS
+if [ "$ROS_VERSION" != 2 ]; then
+  catkin init
+  catkin config $CATKIN_TOOLS_CONFIG_OPTIONS
+fi
 cd ~/ros/ws_$REPOSITORY_NAME/src
-wstool init
+if [ "$ROS_VERSION" != 2 ]; then
+  wstool init
+fi
 if [ "$USE_DEB" == false ]; then
     if [ -e $CI_SOURCE_PATH/.travis.rosinstall ]; then
         # install (maybe unreleased version) dependencies from source
@@ -349,10 +369,15 @@ if [ "$USE_DEB" == false ]; then
         # install (maybe unreleased version) dependencies from source for specific ros version
         wstool merge --merge-replace -y file://$CI_SOURCE_PATH/.travis.rosinstall.$ROS_DISTRO
     fi
-    # since https://github.blog/2021-09-01-improving-git-protocol-security-github/ we can not use git://
-    # we need to remove git:// from submodules and run wstool update again
-    wstool update || find -iname .gitmodules -exec  cat {} \; -exec sed -i s@git://github@https://github@ {} \; -exec sh -c 'cd $(dirname "$1"); git submodule sync;' sh {} \; -exec cat {} \;
-    wstool update
+    if [ -e $CI_SOURCE_PATH/.travis.repos ]; then
+      vcs import < $CI_SOURCE_PATH/.travis.repos
+    fi
+    if [ "$ROS_VERSION" != 2]; then
+      # since https://github.blog/2021-09-01-improving-git-protocol-security-github/ we can not use git://
+      # we need to remove git:// from submodules and run wstool update again
+      wstool update || find -iname .gitmodules -exec  cat {} \; -exec sed -i s@git://github@https://github@ {} \; -exec sh -c 'cd $(dirname "$1"); git submodule sync;' sh {} \; -exec cat {} \;
+      wstool update
+    fi
 fi
 ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
 if [ "$USE_DEB" == source -a -e $REPOSITORY_NAME/setup_upstream.sh ]; then $REPOSITORY_NAME/setup_upstream.sh -w ~/ros/ws_$REPOSITORY_NAME ; wstool update; fi
@@ -417,8 +442,10 @@ sudo find -L $HOME/.cache/ | grep whl || echo "OK"
 travis_time_end
 set -x
 
-wstool --version
-wstool info -t .
+if [ "$ROS_VERSION" != 2 ]; then
+  wstool --version
+  wstool info -t .
+fi
 cd ../
 
 travis_time_start catkin_build
@@ -427,15 +454,36 @@ travis_time_start catkin_build
 source /opt/ros/$ROS_DISTRO/setup.bash > /tmp/$$.x 2>&1; grep export\ [^_] /tmp/$$.x # re-source setup.bash for setting environmet vairable for package installed via rosdep
 if [ "${ROS_PYTHON_VERSION_ORIG}" != "" ]; then export ROS_PYTHON_VERSION=${ROS_PYTHON_VERSION_ORIG}; fi
 
-# for catkin
-if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
-if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
-if [ -z $TRAVIS_JOB_ID ] || [ ! -z $GITHUB_RUN_ID ] ; then
-  # on Jenkins or GithubAction
-  catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
+if [ "$ROS_VERSION" != 2 ]; then
+  # for catkin
+  if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`catkin_topological_order ${CI_SOURCE_PATH} --only-names`; fi
+  if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
+  if [ -z $TRAVIS_JOB_ID ] || [ ! -z $GITHUB_RUN_ID ] ; then
+      # on Jenkins or GithubAction
+      catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
+  else
+      # on Travis, the command must outputs log within 10 min to avoid failures, so the `travis_wait` is necessary.
+      travis_wait 60 catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
+  fi
 else
-  # on Travis, the command must outputs log within 10 min to avoid failures, so the `travis_wait` is necessary.
-  travis_wait 60 catkin build $CATKIN_TOOLS_BUILD_OPTIONS $BUILD_PKGS $CATKIN_PARALLEL_JOBS --make-args $ROS_PARALLEL_JOBS --
+  # for colcon
+  if [ "${TARGET_PKGS// }" == "" ]; then export TARGET_PKGS=`colcon list --base-paths ${CI_SOURCE_PATH} --names-only`; fi
+  if [ "${TEST_PKGS// }" == "" ]; then export TEST_PKGS=$( [ "${BUILD_PKGS// }" == "" ] && echo "$TARGET_PKGS" || echo "$BUILD_PKGS"); fi
+  if [ -z $TRAVIS_JOB_ID ] || [ ! -z $GITHUB_RUN_ID ] ; then
+    # on Jenkins or GithubAction
+    if [ -z $BUILD_PKGS ]; then
+      colcon build $COLCON_BUILD_OPTIONS
+    else
+      colcon build $COLCON_BUILD_OPTIONS --packages-up-to $BUILD_PKGS
+    fi
+  else
+    # on Travis, the command must outputs log within 10 min to avoid failures, so the `travis_wait` is necessary.
+    if [ -z $BUILD_PKGS ]; then
+      travis_wait 60 colcon build $COLCON_BUILD_OPTIONS
+    else
+      travis_wait 60 colcon build $COLCON_BUILD_OPTIONS --packages-up-to $BUILD_PKGS
+    fi
+  fi
 fi
 
 travis_time_end
