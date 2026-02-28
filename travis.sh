@@ -598,7 +598,7 @@ travis_time_start after_script
 
 ## after_script
 PATH=/usr/local/bin:$PATH  # for installed catkin_test_results
-if [ "$ROS_VERSION" != 2]; then
+if [ "$ROS_VERSION" != 2 ]; then
   PYTHONPATH=/usr/local/lib/python2.7/dist-packages:$PYTHONPATH
   if [ "${ROS_LOG_DIR// }" == "" ]; then export ROS_LOG_DIR=~/.ros/test_results; fi # http://wiki.ros.org/ROS/EnvironmentVariables#ROS_LOG_DIR
   if [ -e $ROS_LOG_DIR ]; then catkin_test_results --verbose --all $ROS_LOG_DIR || error; fi
