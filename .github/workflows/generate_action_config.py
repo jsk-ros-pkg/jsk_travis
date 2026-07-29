@@ -44,7 +44,12 @@ jobs:
 
     steps:
       - name: Install latest git ( use sudo for ros-ubuntu, remove sudo for ubuntu container), checkout@v3.0.2 uses REST API for git<2.18, which removes .git folder and does not checkout .travis submodules
-        run: sudo apt-get update && sudo apt-get install -y software-properties-common && sudo apt-get update && sudo add-apt-repository -y ppa:git-core/ppa && sudo apt-get update && sudo apt-get install -y git
+        run: |
+          sudo apt-get update && sudo apt-get install -y software-properties-common && sudo apt-get update
+          # ppa:git-core queries Launchpad's API, which occasionally fails
+          # transiently with "user or team does not exist" under CI load.
+          for i in 1 2 3 4 5; do sudo add-apt-repository -y ppa:git-core/ppa && break || { echo "add-apt-repository failed, retrying ($i/5)"; sleep 15; }; done
+          sudo apt-get update && sudo apt-get install -y git
       - name: Before Checkout # need for actions/checkout with ros-ubuntu container
         run: sudo chown -R user:jenkins $RUNNER_WORKSPACE $HOME
       - name: Checkout

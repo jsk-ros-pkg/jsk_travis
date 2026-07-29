@@ -265,7 +265,10 @@ travis_time_start setup_git
 
 # check git : old linux needs newer git client ?
 # https://stackoverflow.com/questions/53207973/fatal-unknown-value-for-config-protocol-version-2
-sudo add-apt-repository -y ppa:git-core/ppa
+# add-apt-repository queries Launchpad's API to resolve the PPA owner, which
+# occasionally fails transiently with a bogus "user or team does not exist"
+# error under CI load. Retry a few times with a short backoff.
+for i in 1 2 3 4 5; do sudo add-apt-repository -y ppa:git-core/ppa && break || { echo "add-apt-repository failed, retrying ($i/5)"; sleep 15; }; done
 sudo apt-get update
 sudo apt-get install -y -q git
 git --version
