@@ -265,9 +265,20 @@ travis_time_start setup_git
 
 # check git : old linux needs newer git client ?
 # https://stackoverflow.com/questions/53207973/fatal-unknown-value-for-config-protocol-version-2
-sudo add-apt-repository -y ppa:git-core/ppa
-sudo apt-get update
-sudo apt-get install -y -q git
+# git 2.18 and later (e.g. 2.25 of Ubuntu 20.04) knows protocol.version 2 and does not need ppa:git-core/ppa, whose key
+# often times out ("Error: retrieving gpg key timed out."), so add-apt-repository is retried for the older git
+if ! dpkg --compare-versions "$(git --version 2>/dev/null | cut -d' ' -f3)" ge 2.18; then
+    for i in 1 2 3 4 5; do
+        sudo add-apt-repository -y ppa:git-core/ppa && break
+        if [ "$i" -eq 5 ]; then
+            error
+        fi
+        echo "add-apt-repository ppa:git-core/ppa failed ($i), retrying"
+        sleep 30
+    done
+    sudo apt-get update
+    sudo apt-get install -y -q git
+fi
 git --version
 git config -l
 
