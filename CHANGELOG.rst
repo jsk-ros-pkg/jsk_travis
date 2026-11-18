@@ -2,8 +2,8 @@
 Changelog for package jsk_travis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.29 (2026-11-18)
+-------------------
 * travis.sh: add ppa:git-core/ppa only for git older than 2.18, with retries (`#463 <https://github.com/jsk-ros-pkg/jsk_travis/issues/463>`_)
 
   * Improve Git PPA addition with retry logic
