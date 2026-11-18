@@ -270,6 +270,9 @@ travis_time_start setup_git
 if ! dpkg --compare-versions "$(git --version 2>/dev/null | cut -d' ' -f3)" ge 2.18; then
     for i in 1 2 3 4 5; do
         sudo add-apt-repository -y ppa:git-core/ppa && break
+        if [ "$i" -eq 5 ]; then
+            error
+        fi
         echo "add-apt-repository ppa:git-core/ppa failed ($i), retrying"
         sleep 30
     done
