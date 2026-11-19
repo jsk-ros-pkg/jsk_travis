@@ -423,8 +423,9 @@ export ROS_LOG_DIR=\$PWD/log
 ret=1; while [ \$ret != 0 ]; do sudo apt-get update -qq &amp;&amp; ret=0 || echo "apt-get update failed"; done
 ret=1; while [ \$ret != 0 ]; do sudo apt-get install -qq -y curl git wget sudo lsb-release ccache apt-cacher-ng apt-utils patch &amp;&amp; ret=0 || echo "apt-get install failed"; done
 
-# setup ccache
-sudo ccache -M 30G                   # set maximum size of ccache to 30G
+# setup ccache: as the user, whose HOME (/workspace) has the cache (/workspace/.ccache); sudo of Ubuntu 20.04
+# and later sets HOME to /root, so "sudo ccache -M" did not change the size of this cache there
+ccache -M 50G                        # set maximum size of ccache to 50G
 
 # Enable apt-cacher-ng to cache apt packages
 echo 'Acquire::http {proxy "http://$(ifdata -pa docker0):3142"; };' | sudo tee /etc/apt/apt.conf.d/02proxy.conf
